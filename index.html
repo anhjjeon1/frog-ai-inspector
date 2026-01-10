@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 기본 스타일 (안전 모드) --- */
+        /* --- 기본 스타일 (초기화) --- */
         body {
             margin: 0;
             padding: 15px;
@@ -16,10 +16,9 @@
             background-color: #ecf0f1; 
             color: #333; 
             line-height: 1.4;
-            /* 높이 100% 설정을 제거하여 오류 방지 */
         }
 
-        /* 헤더 디자인 (높이 축소) */
+        /* 헤더 디자인 */
         .header-container {
             background: linear-gradient(135deg, #3498db, #2c3e50);
             padding: 10px 15px; 
@@ -28,6 +27,7 @@
             margin-bottom: 15px; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             position: relative;
+            height: 50px;
         }
         .header-frog-img {
             height: 35px; width: 35px; 
@@ -55,7 +55,7 @@
             display: flex; flex-direction: row; gap: 10px; margin-bottom: 10px;
         }
 
-        /* 사진 영역 (정사각형) */
+        /* 사진 영역 */
         .photo-area {
             flex: 0 0 45%; /* 너비 45% 고정 */
             aspect-ratio: 1 / 1; /* 정사각형 비율 유지 */
@@ -65,7 +65,7 @@
             position: relative; cursor: pointer;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             overflow: hidden;
-            min-height: 120px; /* 최소 높이 보장 */
+            min-height: 120px;
         }
         .photo-icon { font-size: 1.8rem; margin-bottom: 3px; opacity: 0.5; color: #3498db; }
         .photo-text { font-size: 0.75rem; color: #666; font-weight: 700; text-align: center; }
@@ -74,28 +74,28 @@
             object-fit: cover; display: none; z-index: 10;
         }
 
-        /* 우측 입력 영역 (가로 정렬 스타일) */
+        /* 우측 입력 영역 */
         .basic-inputs {
             flex: 1; 
             display: flex; flex-direction: column; 
-            justify-content: space-between; /* 위아래 간격 균등 */
+            justify-content: space-between; 
             gap: 5px;
         }
         .input-group {
-            display: flex; flex-direction: row; /* 라벨과 입력칸을 가로로 */
+            display: flex; flex-direction: row; 
             align-items: center; gap: 5px;
         }
         .input-group label { 
             font-size: 0.75rem; color: #2c3e50; 
             font-weight: 700; margin: 0; 
-            width: 45px; /* 라벨 너비 고정 */
+            width: 45px; 
             flex-shrink: 0; text-align: right;
         }
         .input-group input, .input-group select {
-            flex: 1; /* 남은 공간 가득 채우기 */
+            flex: 1; 
             padding: 0 5px; font-size: 0.8rem;
             border: 1px solid #dfe4ea; border-radius: 6px;
-            height: 30px; /* 입력칸 높이 적절히 조절 */
+            height: 30px; 
             background: #fff;
         }
 
@@ -111,12 +111,12 @@
         textarea {
             width: 100%; padding: 8px; 
             border: 1px solid #3498db; border-radius: 8px; 
-            height: 60px; /* 높이 절반으로 축소 */
+            height: 60px; 
             font-size: 0.85rem;
             box-sizing: border-box; resize: none; background: #fdfdfd;
         }
 
-        /* 버튼 및 리스트 */
+        /* 버튼 */
         .action-buttons { display: flex; gap: 10px; margin-top: 15px; }
         .btn {
             flex: 1; padding: 12px; border: none; border-radius: 8px;
@@ -125,6 +125,7 @@
         .btn-save { background: #e74c3c; }
         .btn-export { background: #2ecc71; }
 
+        /* 리스트 */
         .list-area { margin-top: 20px; }
         .list-item {
             background: white; padding: 10px; border-radius: 8px; margin-bottom: 10px;
@@ -132,7 +133,7 @@
         }
         .list-thumb { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; }
         .tag { padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; color: white; margin-left: auto;}
-    </script>
+    </style>
 </head>
 <body>
 
@@ -200,12 +201,10 @@
         let defectDataList = [];
         let currentImageSrc = null;
 
-        // 카메라 실행
         function triggerCamera() {
             document.getElementById('cameraInput').click();
         }
 
-        // 사진 파일 처리
         function handleImageUpload(event) {
             const file = event.target.files[0];
             if (file) {
@@ -221,7 +220,6 @@
             }
         }
 
-        // AI 분석 시뮬레이션
         function runAIAnalysis() {
             const detailBox = document.getElementById('defectDetail');
             detailBox.value = "분석 중...";
@@ -243,7 +241,6 @@
             }, 1000);
         }
 
-        // 리스트 추가
         function addToList() {
             if (!currentImageSrc) { alert("사진을 촬영해주세요."); return; }
             const room = document.getElementById('roomSelect').value;
@@ -272,7 +269,6 @@
             document.getElementById('listCount').innerText = `(${count})`;
         }
 
-        // 엑셀 저장
         function saveAll() {
             if(defectDataList.length === 0) return;
             let csv = "\uFEFF번호,위치,하자유형,내용,판정\n";

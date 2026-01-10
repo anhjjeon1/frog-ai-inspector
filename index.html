@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>청개구리 사전점검 AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>청개구리 점검 AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         /* --- 기본 스타일 --- */
@@ -23,78 +23,82 @@
             padding: 10px 15px; border-radius: 12px;
             display: flex; align-items: center; justify-content: center; gap: 10px;
             height: 60px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
         }
         .header-frog-img {
             height: 45px; width: 45px; object-fit: cover; border-radius: 10px;
             border: 2px solid rgba(255,255,255,0.5);
         }
         .header-title { color: white; font-size: 1.2rem; font-weight: 700; margin: 0; }
+        
+        /* [수정1] 버전 2자리로 변경 */
         .version-badge {
-            position: absolute; top: 20px; right: 20px;
-            font-size: 0.7rem; color: rgba(255,255,255,0.6);
+            position: absolute; bottom: 5px; right: 10px;
+            font-size: 0.65rem; color: rgba(255,255,255,0.8); font-weight: 400;
         }
         .sub-desc { font-size: 0.8rem; text-align: center; color: #666; margin-bottom: 15px; }
 
-        /* --- 메인 레이아웃 (새로운 구조) --- */
+        /* --- 메인 카드 --- */
         .main-card {
             background: white; border-radius: 16px; padding: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            max-width: 800px; margin: 0 auto;
+            max-width: 600px; margin: 0 auto;
         }
 
-        /* 1. 상단 영역 (사진 + 기본입력) */
+        /* 상단 영역 (사진 + 입력) */
         .top-section {
-            display: flex; flex-direction: row; gap: 10px; margin-bottom: 15px;
+            display: flex; flex-direction: row; gap: 10px; margin-bottom: 5px;
+            align-items: flex-start; /* 위쪽 정렬 */
         }
 
-        /* 좌측: 사진 (넓게, 클릭 가능) */
+        /* [수정2] 사진 영역 1:1 비율 및 실제 카메라 연동 */
         .photo-area {
-            flex: 0 0 45%; /* 너비 45% 확보 */
+            flex: 0 0 50%; /* 화면 절반 차지 */
+            aspect-ratio: 1 / 1; /* 정사각형 비율 강제 고정 */
             background: var(--bg-light); border: 2px dashed var(--primary-color);
             border-radius: 10px; position: relative; cursor: pointer;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            min-height: 160px; /* 높이 확보 */
-            transition: all 0.2s;
+            overflow: hidden;
         }
-        .photo-area:active { transform: scale(0.98); background: #e8f0fe; }
         .photo-icon { font-size: 2rem; margin-bottom: 5px; opacity: 0.5; }
         .photo-text { font-size: 0.8rem; color: #666; font-weight: 700; text-align: center; }
         .preview-img { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            object-fit: cover; border-radius: 8px; display: none; 
+            object-fit: cover; display: none; z-index: 10;
         }
 
-        /* 우측: 기본 입력 (좁게) */
+        /* [수정2] 우측 입력 영역 (좁게) */
         .basic-inputs {
-            flex: 1; /* 나머지 공간 차지 */
-            display: flex; flex-direction: column; justify-content: space-between; gap: 5px;
+            flex: 1; /* 나머지 공간 */
+            display: flex; flex-direction: column; gap: 8px;
+            justify-content: center; height: 100%;
         }
-        .input-group label { font-size: 0.75rem; color: var(--secondary-color); font-weight: 700; margin-bottom: 2px; display: block; }
+        .input-group label { 
+            font-size: 0.75rem; color: var(--secondary-color); 
+            font-weight: 700; margin-bottom: 2px; display: block; 
+        }
         .input-group input, .input-group select {
-            width: 100%; padding: 8px; font-size: 0.85rem;
+            width: 100%; padding: 8px 5px; font-size: 0.85rem;
             border: 1px solid var(--border-color); border-radius: 6px;
-            box-sizing: border-box; /* 중요: 패딩 포함 크기 계산 */
+            box-sizing: border-box; background: #fff;
         }
 
-        /* 2. 하단 영역 (판정 + 내용) */
+        /* [수정2] 하단 영역 통합 (판정 박스 삭제됨) */
         .bottom-section {
-            display: flex; flex-direction: column; gap: 10px;
-            border-top: 1px solid #eee; padding-top: 15px;
+            display: flex; flex-direction: column; gap: 5px;
+            margin-top: 10px;
         }
-        .verdict-box {
-            background: var(--bg-light); padding: 10px; border-radius: 8px;
-            text-align: center; font-weight: 700; color: #aaa; border: 1px solid var(--border-color);
+        .auto-input-label {
+            font-size: 0.85rem; font-weight: 700; color: var(--primary-color);
+            display: flex; align-items: center; gap: 5px;
         }
-        .verdict-danger { background: #fff5f5; color: var(--danger-color); border-color: #feb2b2; }
-        .verdict-safe { background: #f0fff4; color: var(--success-color); border-color: #9ae6b4; }
-
         textarea {
-            width: 100%; padding: 10px; border: 1px solid var(--border-color);
-            border-radius: 8px; min-height: 80px; font-size: 0.9rem;
-            box-sizing: border-box; resize: none;
+            width: 100%; padding: 10px; border: 1px solid var(--primary-color);
+            border-radius: 8px; min-height: 100px; font-size: 0.9rem;
+            box-sizing: border-box; resize: none; background: #fdfdfd;
         }
 
-        /* 버튼 */
+        /* 버튼 및 리스트 */
         .action-buttons { display: flex; gap: 10px; margin-top: 20px; }
         .btn {
             flex: 1; padding: 12px; border: none; border-radius: 8px;
@@ -103,38 +107,38 @@
         .btn-save { background: var(--danger-color); }
         .btn-export { background: var(--success-color); }
 
-        /* 리스트 */
         .list-area { margin-top: 30px; }
         .list-item {
             background: white; padding: 10px; border-radius: 8px; margin-bottom: 10px;
             display: flex; gap: 10px; border: 1px solid #eee; align-items: center;
         }
         .list-thumb { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; }
-        .tag { padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; color: white; margin-left: 5px;}
-    </style>
+        .tag { padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; color: white; margin-left: auto;}
+    </script>
 </head>
 <body>
 
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 점검 AI</h2>
-        <span class="version-badge">Ver 1.0.7</span>
+        <span class="version-badge">Ver 1.1</span>
     </div>
-    <p class="sub-desc">촬영하면 AI가 자동으로 진단합니다.</p>
+    <p class="sub-desc">사진을 누르면 AI가 자동 분석합니다.</p>
 
     <div class="main-card">
         
         <div class="top-section">
-            <div class="photo-area" onclick="simulateAIAnalysis()" id="photoZone">
+            <input type="file" id="cameraInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+
+            <div class="photo-area" onclick="triggerCamera()">
                 <div class="photo-icon">📷</div>
-                <div class="photo-text">터치하여<br>촬영/분석</div>
+                <div class="photo-text">터치하여<br>촬영</div>
                 <img id="previewImage" class="preview-img">
             </div>
 
             <div class="basic-inputs">
                 <div class="input-group">
-                    <label>📍 점검실</label>
-                    <select id="roomSelect">
+                    <label>📍 위치</label> <select id="roomSelect">
                         <option value="거실">거실</option>
                         <option value="안방">안방</option>
                         <option value="주방">주방</option>
@@ -148,15 +152,16 @@
                     <input type="text" id="workType" placeholder="예: 도배">
                 </div>
                 <div class="input-group">
-                    <label>⚠️ 하자 유형</label>
-                    <input type="text" id="defectType" placeholder="예: 찢김">
+                    <label>⚠️ 하자유형</label> <input type="text" id="defectType" placeholder="예: 찢김">
                 </div>
             </div>
         </div>
 
         <div class="bottom-section">
-            <div id="aiVerdict" class="verdict-box">🤖 AI 분석 대기 중...</div>
-            <textarea id="defectDetail" placeholder="AI가 분석한 상세 내용이 여기에 표시됩니다."></textarea>
+            <div class="auto-input-label">
+                <i class="fa-solid fa-pen-nib"></i> 📝 AI하자내용 자동입력
+            </div>
+            <textarea id="defectDetail" placeholder="사진을 촬영하면 판정 결과와 상세 내용이 여기에 자동으로 입력됩니다."></textarea>
         </div>
 
     </div>
@@ -175,62 +180,76 @@
         let defectDataList = [];
         let currentImageSrc = null;
 
-        function simulateAIAnalysis() {
-            const verdictBox = document.getElementById('aiVerdict');
-            const previewImg = document.getElementById('previewImage');
-            const photoZone = document.getElementById('photoZone');
+        // [수정3] 카메라/갤러리 실행 함수
+        function triggerCamera() {
+            document.getElementById('cameraInput').click();
+        }
 
-            // 분석 중 표시
-            verdictBox.innerHTML = '⏳ 분석 중입니다...';
-            verdictBox.style.color = '#3498db';
+        // [수정3] 사진 선택 시 동작하는 함수
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('previewImage');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    currentImageSrc = e.target.result;
+                    
+                    // 사진이 로드되면 AI 분석 시뮬레이션 실행
+                    runAIAnalysis();
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function runAIAnalysis() {
+            const detailBox = document.getElementById('defectDetail');
+            detailBox.value = "⏳ AI가 이미지를 분석 중입니다...";
             
-            // 이미지 표시 (임시 스캔 이미지)
-            previewImg.style.display = 'block';
-            previewImg.src = "https://placehold.co/800x600/ffe0b2/e65100?text=Scanning...";
-
             setTimeout(() => {
+                // 랜덤 판정 로직
                 const isDefect = Math.random() < 0.6; 
+                
                 if (isDefect) {
-                    verdictBox.innerText = '🚨 심각한 하자 (보수 필요)';
-                    verdictBox.className = 'verdict-box verdict-danger';
-                    currentImageSrc = "https://placehold.co/800x600/ffcdd2/b71c1c?text=Defect+Found";
+                    // [수정2] 판정 결과를 텍스트 박스 안에 포함
                     document.getElementById('workType').value = '도배공사';
                     document.getElementById('defectType').value = '오염/훼손';
-                    document.getElementById('defectDetail').value = '벽면 중앙부에 약 15cm 길이의 심각한 오염 식별됨.';
+                    detailBox.value = "[판정: 심각]\n벽면 중앙부에 육안으로 식별되는 심각한 오염 및 찢김이 발견되었습니다. 보수가 필요합니다.";
+                    detailBox.style.borderColor = "#e74c3c"; // 테두리 빨간색
                 } else {
-                    verdictBox.innerText = '✅ 정상 (특이사항 없음)';
-                    verdictBox.className = 'verdict-box verdict-safe';
-                    currentImageSrc = "https://placehold.co/800x600/c8e6c9/1b5e20?text=Safe";
                     document.getElementById('workType').value = '';
                     document.getElementById('defectType').value = '';
-                    document.getElementById('defectDetail').value = '육안 검사 결과 특이사항 없음.';
+                    detailBox.value = "[판정: 정상]\n특이사항이 발견되지 않았습니다.";
+                    detailBox.style.borderColor = "#2ecc71"; // 테두리 초록색
                 }
-                previewImg.src = currentImageSrc;
-            }, 1000);
+            }, 1500);
         }
 
         function addToList() {
-            if (!currentImageSrc) { alert("먼저 사진을 눌러 분석해주세요."); return; }
+            if (!currentImageSrc) { alert("사진을 먼저 촬영해주세요."); return; }
             const room = document.getElementById('roomSelect').value;
             const type = document.getElementById('defectType').value;
-            const verdict = document.getElementById('aiVerdict').innerText;
+            const detail = document.getElementById('defectDetail').value;
             
-            if(!type) { alert("내용을 확인해주세요."); return; }
+            // 판정 결과 추출 (간단히 텍스트 앞부분으로 판단)
+            const isDanger = detail.includes("심각");
+            const verdict = isDanger ? "심각" : "정상";
 
             const count = defectDataList.length + 1;
-            defectDataList.push({ no: count, room, type, verdict });
+            defectDataList.push({ no: count, room, type, detail, verdict });
 
             const item = document.createElement('div');
             item.className = 'list-item';
-            const tagColor = verdict.includes('심각') ? '#e74c3c' : '#2ecc71';
+            const tagColor = isDanger ? '#e74c3c' : '#2ecc71';
             
             item.innerHTML = `
                 <img src="${currentImageSrc}" class="list-thumb">
                 <div style="flex:1;">
-                    <div style="font-weight:bold; font-size:0.9rem;">${room} - ${type}</div>
+                    <div style="font-weight:bold; font-size:0.9rem;">${room} - ${type || '미입력'}</div>
                     <div style="font-size:0.8rem; color:#666;">${verdict}</div>
                 </div>
-                <span class="tag" style="background:${tagColor}">${count}</span>
+                <span class="tag" style="background:${tagColor}">No.${count}</span>
             `;
             document.getElementById('listBox').prepend(item);
             document.getElementById('listCount').innerText = `(${count})`;
@@ -238,8 +257,8 @@
 
         function saveAll() {
             if(defectDataList.length === 0) return;
-            let csv = "\uFEFF번호,위치,내용,판정\n";
-            defectDataList.forEach(r => csv += `${r.no},"${r.room}","${r.type}","${r.verdict}"\n`);
+            let csv = "\uFEFF번호,위치,하자유형,내용,판정\n";
+            defectDataList.forEach(r => csv += `${r.no},"${r.room}","${r.type}","${r.detail.replace(/\n/g, ' ')}","${r.verdict}"\n`);
             const link = document.createElement("a");
             link.href = encodeURI("data:text/csv;charset=utf-8," + csv);
             link.download = "하자리스트.csv";

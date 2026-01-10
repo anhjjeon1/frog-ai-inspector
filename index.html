@@ -8,44 +8,60 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 스타일 (기존 Ver 1.9/2.1 과 동일) --- */
+        /* --- 기본 스타일 유지 --- */
         body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #ffffff; color: #333; line-height: 1.4; }
         .header-container { background: linear-gradient(135deg, #3498db, #2c3e50); padding: 15px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); height: 50px; position: relative; }
         .header-frog-img { height: 40px; width: 40px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.8); background-color: white; }
         .header-title { color: white; font-size: 1.1rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
         .version-badge { position: absolute; right: 20px; bottom: 12px; font-size: 0.75rem; color: #ffffff; font-weight: 700; opacity: 0.9; }
+        
         .sub-desc { font-size: 0.8rem; text-align: center; color: #666; margin: 15px 0 5px 0; background: #f8f9fa; padding: 5px; }
+        
+        /* 메인 카드 */
         .main-card { background: white; padding: 0 20px; max-width: 100%; margin: 0; }
         .top-section { display: flex; flex-direction: row; gap: 15px; margin-bottom: 15px; margin-top: 10px; }
+        
+        /* 사진 영역 */
         .photo-area { flex: 0 0 42%; aspect-ratio: 1 / 1; background: #f1f3f5; border: 2px dashed #bdc3c7; border-radius: 12px; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
         .photo-icon { font-size: 2rem; margin-bottom: 5px; opacity: 0.4; color: #3498db; }
         .photo-text { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; text-align: center; }
         .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 10; }
+
+        /* 입력 영역 */
         .basic-inputs { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 10px; }
         .input-group { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
         .input-group label { font-size: 0.75rem; color: #34495e; font-weight: 700; margin: 0; }
         .input-group input, .input-group select { width: 100%; padding: 0 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; height: 32px; background: #fff; box-sizing: border-box; }
-        .input-group input:focus, .input-group select:focus { border-color: #3498db; outline: none; }
+        
+        /* AI 결과 영역 */
         .bottom-section { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
         .auto-input-label { font-size: 0.85rem; font-weight: 700; color: #3498db; display: flex; align-items: center; gap: 6px; }
-        textarea { width: 100%; padding: 12px; border: 1px solid #dcdde1; border-radius: 12px; height: 70px; font-size: 0.9rem; box-sizing: border-box; resize: none; background: #fdfdfd; }
+        textarea { width: 100%; padding: 12px; border: 1px solid #dcdde1; border-radius: 12px; height: 70px; font-size: 0.9rem; box-sizing: border-box; resize: none; background: #fdfdfd; transition: all 0.2s; }
         textarea:focus { border-color: #3498db; outline: none; }
+
+        /* 버튼 그룹 */
         .nav-buttons-row { display: flex; gap: 10px; margin-top: 15px; }
         .btn-nav { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .btn-next { background: #3498db; color: white; }
-        .btn-prev { background: #ecf0f1; color: #555; border: 1px solid #bdc3c7; }
+        
+        /* [변경] 버튼 색상 및 스타일 */
+        .btn-retry { background: #3498db; color: white; } /* 파란색 (결과변경) */
+        .btn-retry:active { background: #2980b9; transform: translateY(2px); }
+        .btn-reset { background: #95a5a6; color: white; } /* 회색 (초기화) */
+
         .action-buttons { display: flex; gap: 10px; margin-top: 25px; padding: 20px; background: #f8f9fa; border-top: 1px solid #eee; }
         .btn { flex: 1; padding: 14px; border: none; border-radius: 10px; font-weight: 700; color: white; font-size: 0.95rem; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
         .btn-save { background: #e74c3c; }
         .btn-export { background: #2ecc71; }
+
+        /* 리스트 및 푸터 */
         .list-area { padding: 0 20px 10px 20px; margin-top: 20px; }
         .list-item { background: white; padding: 12px; border-radius: 12px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid #ecf0f1; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; }
         .list-thumb { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; border: 1px solid #eee; }
         .list-right-info { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; margin-left: auto; }
         .tag { padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; color: white; font-weight: bold; }
         .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
+        
         .footer-info { text-align: center; background: #f1f2f6; padding: 30px 20px; color: #7f8c8d; font-size: 0.7rem; border-top: 1px solid #dfe4ea; line-height: 1.6; }
-        .footer-info p { margin: 4px 0; word-break: keep-all; }
         .footer-bold { font-weight: 700; color: #2c3e50; font-size: 0.75rem;}
     </style>
 </head>
@@ -54,7 +70,7 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 2.2</span>
+        <span class="version-badge">Ver 2.3</span>
     </div>
     <p class="sub-desc" id="statusMsg">구글 시트 DB 연결 시도 중...</p>
 
@@ -71,12 +87,12 @@
                 <div class="input-group">
                     <label>위치(입력)</label>
                     <select id="roomSelect">
-                        <option value="">선택</option>
+                        <option value="">전체 검색</option>
                         <option value="거실">거실</option>
                         <option value="안방">안방</option>
                         <option value="주방">주방</option>
-                        <option value="욕실1">공용 욕실</option>
-                        <option value="욕실2">부부 욕실</option>
+                        <option value="침실">침실</option>
+                        <option value="욕실">욕실</option>
                         <option value="현관">현관</option>
                         <option value="발코니">발코니</option>
                         <option value="실외기실">실외기실</option>
@@ -104,11 +120,11 @@
         </div>
 
         <div class="nav-buttons-row">
-            <button class="btn-nav btn-next" onclick="goNextStep()">
-                <span>다음 (추가입력)</span> <i class="fa-solid fa-arrow-right"></i>
+            <button class="btn-nav btn-retry" onclick="retryAnalysis()">
+                <i class="fa-solid fa-arrows-rotate"></i> <span>다른 결과 찾기</span>
             </button>
-            <button class="btn-nav btn-prev" onclick="goPrevStep()">
-                <i class="fa-solid fa-arrow-rotate-left"></i> <span>이전 (수정)</span>
+            <button class="btn-nav btn-reset" onclick="resetInputs()">
+                 <span>입력 초기화</span>
             </button>
         </div>
     </div>
@@ -129,37 +145,24 @@
     </div>
 
     <script>
-        // -----------------------------------------------------------
-        // [수정됨] 보내주신 정확한 링크 적용 완료
-        // -----------------------------------------------------------
+        // 사장님의 구글 시트 주소
         const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQAjc1TH-seT2jWi3T5iN9eoul3hia4JTbeskORX_lPhOOQjOo_KQnnth5ETHxgIhWeXRjcXGVBCImN/pub?output=csv";
         
         let defectDataList = [];
         let realDbData = []; 
         let currentImageSrc = null;
 
-        window.onload = function() {
-            fetchGoogleSheet();
-        }
+        window.onload = function() { fetchGoogleSheet(); }
 
         function fetchGoogleSheet() {
             fetch(GOOGLE_SHEET_URL)
-            .then(response => {
-                if (!response.ok) throw new Error("네트워크 응답 오류");
-                return response.text();
-            })
+            .then(res => res.text())
             .then(text => {
-                const rows = text.split('\n').slice(1); // 헤더 제외
-                
+                const rows = text.split('\n').slice(1);
                 realDbData = rows.map(row => {
-                    // CSV 파싱 (콤마 분리)
                     const cols = row.split(','); 
                     if(cols.length < 5) return null; 
-
                     const clean = (str) => str ? str.replace(/"/g, '').trim() : '';
-
-                    // [데이터 매핑]
-                    // A열:위치, B열:공종, C열:세부, D열:유형, E열:내용
                     return {
                         location: clean(cols[0]),
                         work: clean(cols[1]),
@@ -170,18 +173,13 @@
                     };
                 }).filter(item => item !== null);
 
-                // 성공 메시지
-                console.log("DB 로드 완료:", realDbData.length, "개");
                 const status = document.getElementById('statusMsg');
                 status.innerText = `✅ DB 연결 성공! (데이터 ${realDbData.length}건)`;
                 status.style.color = "#2ecc71";
                 status.style.fontWeight = "bold";
             })
             .catch(err => {
-                console.error("DB 로드 실패:", err);
-                const status = document.getElementById('statusMsg');
-                status.innerText = "❌ DB 연결 실패. 주소를 다시 확인해주세요.";
-                status.style.color = "#e74c3c";
+                document.getElementById('statusMsg').innerText = "❌ DB 연결 실패";
             });
         }
 
@@ -201,38 +199,63 @@
             }
         }
 
+        // [핵심] 분석 로직 (필터링 적용)
         function runAIAnalysis() {
             const detailBox = document.getElementById('defectDetail');
-            detailBox.value = "DB 검색 중...";
             
-            setTimeout(() => {
-                if(realDbData.length === 0) {
-                    detailBox.value = "불러올 데이터가 없습니다.";
-                    return;
-                }
+            if(realDbData.length === 0) {
+                detailBox.value = "데이터 로딩 중입니다...";
+                return;
+            }
 
-                const randomIndex = Math.floor(Math.random() * realDbData.length);
-                const matchedData = realDbData[randomIndex];
+            // 1. 현재 선택된 위치 가져오기
+            const selectedLoc = document.getElementById('roomSelect').value;
+            
+            // 2. 해당 위치가 포함된 데이터만 걸러내기 (필터링)
+            let filteredData = realDbData;
+            if(selectedLoc) {
+                // 예: '거실'이 포함된 모든 행 찾기
+                filteredData = realDbData.filter(item => item.location.includes(selectedLoc));
+            }
 
-                document.getElementById('roomSelect').value = matchedData.location || '';
-                document.getElementById('workType').value = matchedData.work;
-                document.getElementById('subWorkType').value = matchedData.sub;
-                document.getElementById('defectType').value = matchedData.type;
-                detailBox.value = matchedData.detail;
+            // 데이터가 없으면 전체에서 찾기 (안전장치)
+            if(filteredData.length === 0) {
+                filteredData = realDbData;
+                if(selectedLoc) alert("해당 위치(" + selectedLoc + ")에 대한 데이터가 없습니다. 전체에서 찾습니다.");
+            }
 
-                if(matchedData.danger) {
-                    detailBox.style.borderColor = "#e74c3c"; detailBox.style.color = "#e74c3c"; detailBox.style.fontWeight = "bold";
-                } else {
-                    detailBox.style.borderColor = "#2ecc71"; detailBox.style.color = "#333"; detailBox.style.fontWeight = "normal";
-                }
-            }, 800);
+            // 3. 필터된 것 중에서 랜덤 하나 뽑기
+            const randomIndex = Math.floor(Math.random() * filteredData.length);
+            const matchedData = filteredData[randomIndex];
+
+            // 4. 화면에 뿌리기
+            // 위치는 사용자가 선택한게 있으면 그대로 두고, 없으면 DB값 넣기
+            if(!selectedLoc) document.getElementById('roomSelect').value = matchedData.location;
+            
+            document.getElementById('workType').value = matchedData.work;
+            document.getElementById('subWorkType').value = matchedData.sub;
+            document.getElementById('defectType').value = matchedData.type;
+            detailBox.value = matchedData.detail;
+
+            // 스타일
+            if(matchedData.danger) {
+                detailBox.style.borderColor = "#e74c3c"; detailBox.style.color = "#e74c3c"; detailBox.style.fontWeight = "bold";
+            } else {
+                detailBox.style.borderColor = "#2ecc71"; detailBox.style.color = "#333"; detailBox.style.fontWeight = "normal";
+            }
         }
 
-        function goNextStep() { alert("상세 입력 단계로 이동합니다."); }
-        function goPrevStep() { 
+        // [추가] 결과가 마음에 안 들면 다시 돌리기
+        function retryAnalysis() {
+            if(!currentImageSrc) { alert("먼저 촬영을 해주세요."); return; }
+            runAIAnalysis(); // 다시 분석 실행 (다른 랜덤값 나옴)
+        }
+
+        function resetInputs() {
             document.getElementById('workType').value = ''; 
+            document.getElementById('subWorkType').value = '';
+            document.getElementById('defectType').value = '';
             document.getElementById('defectDetail').value = ''; 
-            alert("입력을 초기화했습니다."); 
         }
 
         function addToList() {
@@ -243,7 +266,7 @@
             const type = document.getElementById('defectType').value;
             const detail = document.getElementById('defectDetail').value;
             
-            if(room === "") { alert("위치를 선택해주세요."); return; }
+            if(!room) { alert("위치를 선택해주세요."); return; }
 
             const isDanger = detail.includes("심각") || type.includes("파손");
             const verdict = isDanger ? "심각" : "정상";

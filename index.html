@@ -15,38 +15,35 @@
             --bg-light: #f8f9fa; --border-color: #dfe4ea;
         }
         
-        /* 화면이 하얗게 되는 것을 방지하기 위해 html, body 높이 설정 */
         html, body {
-            height: 100%;
-            margin: 0;
-            padding: 15px;
-            box-sizing: border-box;
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #ecf0f1; 
-            color: #333; 
-            line-height: 1.4;
+            height: 100%; margin: 0; padding: 15px;
+            box-sizing: border-box; font-family: 'Noto Sans KR', sans-serif;
+            background-color: #ecf0f1; color: #333; line-height: 1.4;
         }
 
-        /* --- 헤더 --- */
+        /* [수정3] 헤더 높이 및 여백 축소 */
         .header-container {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            padding: 10px 15px; border-radius: 12px;
+            padding: 8px 15px; /* 패딩 축소 */
+            border-radius: 12px;
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            height: 60px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            height: 50px; /* 높이 60px -> 50px로 축소 */
+            margin-bottom: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             position: relative;
         }
         .header-frog-img {
-            height: 45px; width: 45px; object-fit: cover; border-radius: 10px;
+            height: 35px; width: 35px; /* 이미지 크기도 살짝 축소 */
+            object-fit: cover; border-radius: 8px;
             border: 2px solid rgba(255,255,255,0.5);
-            background-color: white; /* 이미지가 투명할 경우를 대비해 흰 배경 추가 */
+            background-color: white;
         }
-        .header-title { color: white; font-size: 1.2rem; font-weight: 700; margin: 0; }
+        .header-title { color: white; font-size: 1.1rem; font-weight: 700; margin: 0; }
         
         .version-badge {
             position: absolute; bottom: 5px; right: 10px;
-            font-size: 0.65rem; color: rgba(255,255,255,0.8); font-weight: 400;
+            font-size: 0.6rem; color: rgba(255,255,255,0.8); font-weight: 400;
         }
-        .sub-desc { font-size: 0.8rem; text-align: center; color: #666; margin-bottom: 15px; }
+        .sub-desc { font-size: 0.75rem; text-align: center; color: #666; margin-bottom: 10px; }
 
         /* --- 메인 카드 --- */
         .main-card {
@@ -55,85 +52,99 @@
             max-width: 600px; margin: 0 auto;
         }
 
-        /* 상단 영역 (사진 + 입력) */
+        /* 상단 영역 */
         .top-section {
-            display: flex; flex-direction: row; gap: 10px; margin-bottom: 5px;
-            align-items: flex-start;
+            display: flex; flex-direction: row; gap: 10px; margin-bottom: 10px;
+            align-items: stretch; /* 높이 맞춤 */
         }
 
-        /* 사진 영역 */
+        /* 사진 영역 (정사각형) */
         .photo-area {
-            flex: 0 0 50%; /* 화면 절반 */
-            aspect-ratio: 1 / 1; /* 정사각형 비율 */
+            flex: 0 0 45%; /* 너비 45% */
+            aspect-ratio: 1 / 1; 
             background: var(--bg-light); border: 2px dashed var(--primary-color);
             border-radius: 10px; position: relative; cursor: pointer;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             overflow: hidden;
         }
-        .photo-icon { font-size: 2rem; margin-bottom: 5px; opacity: 0.5; color: var(--primary-color); }
-        .photo-text { font-size: 0.8rem; color: #666; font-weight: 700; text-align: center; }
+        .photo-icon { font-size: 1.8rem; margin-bottom: 3px; opacity: 0.5; color: var(--primary-color); }
+        .photo-text { font-size: 0.75rem; color: #666; font-weight: 700; text-align: center; }
         .preview-img { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             object-fit: cover; display: none; z-index: 10;
         }
 
-        /* 우측 입력 영역 */
+        /* [수정1] 우측 입력 영역 (가로 배치 스타일) */
         .basic-inputs {
             flex: 1; 
-            display: flex; flex-direction: column; gap: 8px;
-            justify-content: center; height: 100%;
+            display: flex; flex-direction: column; 
+            justify-content: space-between; /* 위아래 균등 배치 */
+            gap: 5px;
+        }
+        .input-group {
+            display: flex; flex-direction: row; /* 가로 배치 */
+            align-items: center; gap: 5px;
         }
         .input-group label { 
             font-size: 0.75rem; color: var(--secondary-color); 
-            font-weight: 700; margin-bottom: 2px; display: block; 
+            font-weight: 700; margin: 0; 
+            width: 45px; /* 라벨 너비 고정하여 줄맞춤 */
+            flex-shrink: 0;
+            text-align: right; /* 라벨 우측 정렬 */
         }
         .input-group input, .input-group select {
-            width: 100%; padding: 8px 5px; font-size: 0.85rem;
+            flex: 1; /* 남은 공간 차지 */
+            padding: 6px; font-size: 0.8rem;
             border: 1px solid var(--border-color); border-radius: 6px;
-            box-sizing: border-box; background: #fff;
+            box-sizing: border-box; background: #fff; height: 32px;
         }
 
         /* 하단 영역 */
         .bottom-section {
             display: flex; flex-direction: column; gap: 5px;
-            margin-top: 10px;
+            margin-top: 5px;
         }
+        /* [수정2] 문구 변경 */
         .auto-input-label {
-            font-size: 0.85rem; font-weight: 700; color: var(--primary-color);
+            font-size: 0.8rem; font-weight: 700; color: var(--primary-color);
             display: flex; align-items: center; gap: 5px;
         }
+        /* [수정2] 텍스트박스 높이 절반 축소 */
         textarea {
-            width: 100%; padding: 10px; border: 1px solid var(--primary-color);
-            border-radius: 8px; min-height: 100px; font-size: 0.9rem;
+            width: 100%; padding: 8px; border: 1px solid var(--primary-color);
+            border-radius: 8px; 
+            min-height: 50px; /* 높이 100px -> 50px 축소 */
+            height: 50px;
+            font-size: 0.85rem;
             box-sizing: border-box; resize: none; background: #fdfdfd;
         }
 
         /* 버튼 및 리스트 */
-        .action-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .action-buttons { display: flex; gap: 10px; margin-top: 15px; }
         .btn {
-            flex: 1; padding: 12px; border: none; border-radius: 8px;
+            flex: 1; padding: 10px; border: none; border-radius: 8px;
             font-weight: 700; color: white; font-size: 0.9rem; cursor: pointer;
         }
         .btn-save { background: var(--danger-color); }
         .btn-export { background: var(--success-color); }
 
-        .list-area { margin-top: 30px; }
+        .list-area { margin-top: 20px; }
         .list-item {
             background: white; padding: 10px; border-radius: 8px; margin-bottom: 10px;
             display: flex; gap: 10px; border: 1px solid #eee; align-items: center;
         }
         .list-thumb { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; }
         .tag { padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; color: white; margin-left: auto;}
-    </style>
+    </script>
 </head>
 <body>
 
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 점검 AI</h2>
-        <span class="version-badge">Ver 1.1</span>
+        <span class="version-badge">Ver 1.2</span>
     </div>
-    <p class="sub-desc">사진을 누르면 AI가 자동 분석합니다.</p>
+    <p class="sub-desc">촬영하면 AI가 자동으로 진단합니다.</p>
 
     <div class="main-card">
         
@@ -148,7 +159,7 @@
 
             <div class="basic-inputs">
                 <div class="input-group">
-                    <label>📍 위치</label>
+                    <label>위치</label>
                     <select id="roomSelect">
                         <option value="거실">거실</option>
                         <option value="안방">안방</option>
@@ -159,11 +170,11 @@
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>🔨 공종</label>
+                    <label>공종</label>
                     <input type="text" id="workType" placeholder="예: 도배">
                 </div>
                 <div class="input-group">
-                    <label>⚠️ 하자유형</label>
+                    <label>하자유형</label>
                     <input type="text" id="defectType" placeholder="예: 찢김">
                 </div>
             </div>
@@ -171,9 +182,9 @@
 
         <div class="bottom-section">
             <div class="auto-input-label">
-                <i class="fa-solid fa-pen-nib"></i> 📝 AI하자내용 자동입력
+                <i class="fa-solid fa-robot"></i> AI하자입력
             </div>
-            <textarea id="defectDetail" placeholder="사진을 촬영하면 판정 결과와 상세 내용이 여기에 자동으로 입력됩니다."></textarea>
+            <textarea id="defectDetail" placeholder="촬영 시 자동입력"></textarea>
         </div>
 
     </div>
@@ -184,7 +195,7 @@
     </div>
 
     <div class="list-area">
-        <h4 style="margin-bottom:10px; color:#555;">📋 저장된 리스트 <span id="listCount">(0)</span></h4>
+        <h4 style="margin-bottom:10px; color:#555; font-size:0.9rem;">📋 저장된 리스트 <span id="listCount">(0)</span></h4>
         <div id="listBox"></div>
     </div>
 
@@ -192,12 +203,10 @@
         let defectDataList = [];
         let currentImageSrc = null;
 
-        // 카메라 실행
         function triggerCamera() {
             document.getElementById('cameraInput').click();
         }
 
-        // 사진 업로드 처리
         function handleImageUpload(event) {
             const file = event.target.files[0];
             if (file) {
@@ -207,39 +216,36 @@
                     preview.src = e.target.result;
                     preview.style.display = 'block';
                     currentImageSrc = e.target.result;
-                    
-                    // AI 분석 실행
                     runAIAnalysis();
                 }
                 reader.readAsDataURL(file);
             }
         }
 
-        // AI 분석 로직
         function runAIAnalysis() {
             const detailBox = document.getElementById('defectDetail');
-            detailBox.value = "⏳ AI가 이미지를 분석 중입니다...";
+            detailBox.value = "분석 중...";
             
             setTimeout(() => {
                 const isDefect = Math.random() < 0.6; 
                 
                 if (isDefect) {
-                    document.getElementById('workType').value = '도배공사';
+                    document.getElementById('workType').value = '도배';
                     document.getElementById('defectType').value = '오염/훼손';
-                    detailBox.value = "[판정: 심각]\n벽면 중앙부에 육안으로 식별되는 심각한 오염 및 찢김이 발견되었습니다. 보수가 필요합니다.";
+                    // [수정2] 내용도 짧게 줄임
+                    detailBox.value = "[심각] 벽면 오염 및 찢김 발견.";
                     detailBox.style.borderColor = "#e74c3c";
                 } else {
                     document.getElementById('workType').value = '';
                     document.getElementById('defectType').value = '';
-                    detailBox.value = "[판정: 정상]\n특이사항이 발견되지 않았습니다.";
+                    detailBox.value = "[정상] 특이사항 없음.";
                     detailBox.style.borderColor = "#2ecc71";
                 }
-            }, 1500);
+            }, 1000);
         }
 
-        // 리스트 추가
         function addToList() {
-            if (!currentImageSrc) { alert("사진을 먼저 촬영해주세요."); return; }
+            if (!currentImageSrc) { alert("사진을 촬영해주세요."); return; }
             const room = document.getElementById('roomSelect').value;
             const type = document.getElementById('defectType').value;
             const detail = document.getElementById('defectDetail').value;
@@ -257,8 +263,8 @@
             item.innerHTML = `
                 <img src="${currentImageSrc}" class="list-thumb">
                 <div style="flex:1;">
-                    <div style="font-weight:bold; font-size:0.9rem;">${room} - ${type || '미입력'}</div>
-                    <div style="font-size:0.8rem; color:#666;">${verdict}</div>
+                    <div style="font-weight:bold; font-size:0.85rem;">${room} - ${type || '-'}</div>
+                    <div style="font-size:0.75rem; color:#666;">${verdict}</div>
                 </div>
                 <span class="tag" style="background:${tagColor}">No.${count}</span>
             `;
@@ -266,7 +272,6 @@
             document.getElementById('listCount').innerText = `(${count})`;
         }
 
-        // 엑셀 저장
         function saveAll() {
             if(defectDataList.length === 0) return;
             let csv = "\uFEFF번호,위치,하자유형,내용,판정\n";

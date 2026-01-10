@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 스타일은 기존과 동일하게 유지 --- */
+        /* --- 기존 스타일 유지 --- */
         body { margin: 0; padding: 15px; font-family: 'Noto Sans KR', sans-serif; background-color: #ecf0f1; color: #333; line-height: 1.4; }
         .header-container { background: linear-gradient(135deg, #3498db, #2c3e50); padding: 10px 15px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; height: 50px; }
         .header-frog-img { height: 35px; width: 35px; object-fit: cover; border-radius: 8px; border: 2px solid rgba(255,255,255,0.5); background-color: white; }
@@ -48,7 +48,7 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 1.5 (DB연동)</span>
+        <span class="version-badge">Ver 1.6</span>
     </div>
     <p class="sub-desc">구글 시트 데이터를 기반으로 진단합니다.</p>
 
@@ -124,15 +124,14 @@
         let defectDataList = [];
         let currentImageSrc = null;
 
-        // --- 1. 가상의 구글 시트 데이터 (Simulation DB) ---
-        // 실제로는 구글 시트 API를 연동해야 하지만, 당장은 이 리스트에서 가져옵니다.
+        // 가상의 DB 데이터 (보여주고 싶은 시나리오를 0번에 배치)
         const sheetData = [
+            // [0번 데이터] : 보내주신 사진과 매칭되는 데이터
             { id: 1, work: "PL창호", sub: "창짝/창틀", type: "잠금불량", detail: "[심각] 핸들 잠금장치 작동 불량 및 유격 발생", location: "거실", danger: true },
-            { id: 2, work: "PL창호", sub: "유리", type: "파손/스크래치", detail: "[심각] 창호 유리 표면 5cm 이상 긁힘 확인", location: "안방", danger: true },
-            { id: 3, work: "도배공사", sub: "천장", type: "오염/훼손", detail: "천장지 부분 오염 식별됨 (경미)", location: "안방", danger: false },
-            { id: 4, work: "일반가구", sub: "싱크대", type: "찍힘", detail: "싱크대 상판 모서리 찍힘 자국", location: "주방", danger: false },
-            { id: 5, work: "타일공사", sub: "벽타일", type: "깨짐", detail: "[심각] 욕실 벽 타일 크랙 발생", location: "욕실1", danger: true },
-            { id: 6, work: "마루공사", sub: "강마루", type: "들뜸", detail: "바닥 마루 들뜸 현상 및 소음 발생", location: "거실", danger: false }
+            
+            // [나머지] : 다른 시나리오 (나중에 사용)
+            { id: 2, work: "도배공사", sub: "천장", type: "오염/훼손", detail: "천장지 부분 오염 식별됨 (경미)", location: "안방", danger: false },
+            { id: 3, work: "일반가구", sub: "싱크대", type: "찍힘", detail: "싱크대 상판 모서리 찍힘 자국", location: "주방", danger: false },
         ];
 
         function triggerCamera() {
@@ -156,38 +155,26 @@
 
         function runAIAnalysis() {
             const detailBox = document.getElementById('defectDetail');
-            detailBox.value = "데이터 분석 중...";
+            detailBox.value = "이미지 정밀 분석 중...";
             
             setTimeout(() => {
-                // --- 2. AI 분석 시뮬레이션 로직 변경 ---
-                // 기존에는 무조건 '도배'만 나왔으나, 이제는 'sheetData' 리스트 중 하나를 랜덤으로 가져옵니다.
-                // (나중에는 진짜 AI가 이미지를 보고 'PL창호'인지 판단하여 가져오게 됩니다)
+                // [수정된 부분] 랜덤을 끄고 무조건 0번(PL창호) 데이터를 가져오게 설정했습니다.
+                // 사진을 찍으면 항상 '창호 잠금불량'이 나옵니다.
                 
-                // 시연을 위해: 50% 확률로 'PL창호(잠금불량)'이 나오도록 설정 (보여주신 스크린샷 상황 재현)
-                let matchedData;
-                const demoScenario = Math.random() < 0.5;
+                const matchedData = sheetData[0]; 
 
-                if (demoScenario) {
-                     // 스크린샷과 같은 상황 (PL창호)
-                    matchedData = sheetData[0]; 
-                } else {
-                    // 그 외 랜덤 상황 (도배, 가구 등)
-                    const randomIndex = Math.floor(Math.random() * (sheetData.length - 1)) + 1;
-                    matchedData = sheetData[randomIndex];
-                }
-
-                // --- 3. 데이터 입력 ---
-                document.getElementById('roomSelect').value = matchedData.location; // 위치 자동 선택
+                // 데이터 입력
+                document.getElementById('roomSelect').value = matchedData.location;
                 document.getElementById('workType').value = matchedData.work;
                 document.getElementById('subWorkType').value = matchedData.sub;
                 document.getElementById('defectType').value = matchedData.type;
                 detailBox.value = matchedData.detail;
 
-                // 심각 여부에 따른 테두리 색상
+                // 심각 여부 색상
                 if(matchedData.danger) {
-                    detailBox.style.borderColor = "#e74c3c"; // 빨강
+                    detailBox.style.borderColor = "#e74c3c"; 
                 } else {
-                    detailBox.style.borderColor = "#2ecc71"; // 초록
+                    detailBox.style.borderColor = "#2ecc71";
                 }
 
             }, 800);
@@ -198,7 +185,6 @@
         }
 
         function goPrevStep() {
-            // 이전 버튼 누르면 다시 입력값 초기화 (예시 기능)
             document.getElementById('workType').value = '';
             document.getElementById('subWorkType').value = '';
             document.getElementById('defectType').value = '';

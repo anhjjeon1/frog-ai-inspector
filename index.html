@@ -16,14 +16,15 @@
             color: #333; line-height: 1.4;
         }
 
-        /* 헤더 */
+        /* 헤더 스타일 */
         .header-container {
             background: linear-gradient(135deg, #3498db, #2c3e50);
             padding: 15px 20px; 
-            border-radius: 0 0 20px 20px; 
+            border-radius: 0 0 20px 20px; /* 하단 둥근 모서리 */
             display: flex; align-items: center; justify-content: flex-start; gap: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             height: 50px;
+            position: relative; /* 배지 위치 기준점 */
         }
         .header-frog-img {
             height: 40px; width: 40px; 
@@ -31,10 +32,18 @@
             border: 2px solid rgba(255,255,255,0.8); background-color: white;
         }
         .header-title { color: white; font-size: 1.1rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
+        
+        /* [수정 1] 버전 배지 위치 및 스타일 개선 */
         .version-badge {
-            position: absolute; bottom: 8px; right: 15px;
-            font-size: 0.7rem; color: rgba(255,255,255,0.8); font-weight: 400;
+            position: absolute; 
+            right: 20px; /* 우측 여백 확보 */
+            bottom: 12px; /* 둥근 모서리에 잘리지 않도록 위로 올림 */
+            font-size: 0.75rem; 
+            color: #ffffff; /* 완전한 흰색 */
+            font-weight: 700; /* 굵게 */
+            opacity: 0.9;
         }
+
         .sub-desc { font-size: 0.8rem; text-align: center; color: #666; margin: 15px 0 5px 0; background: #f8f9fa; padding: 5px; }
 
         /* 메인 컨테이너 */
@@ -106,25 +115,23 @@
         }
         .list-thumb { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; border: 1px solid #eee; }
         
-        /* [추가] 리스트 우측 정보 영역 (태그 + 삭제버튼) */
         .list-right-info {
             display: flex; flex-direction: column; align-items: flex-end; gap: 5px; margin-left: auto;
         }
         .tag { padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; color: white; font-weight: bold; }
-        
-        /* [추가] 삭제 버튼 스타일 */
         .btn-delete-item {
             background: #95a5a6; color: white; border: none; border-radius: 6px;
             padding: 4px 8px; font-size: 0.7rem; cursor: pointer;
         }
 
-        /* [추가] 하단 회사 정보 (Footer) */
+        /* [수정 2] 하단 회사 정보 (Footer) 업데이트 */
         .footer-info {
             text-align: center; background: #f1f2f6; padding: 30px 20px;
-            color: #7f8c8d; font-size: 0.75rem; border-top: 1px solid #dfe4ea;
+            color: #7f8c8d; font-size: 0.7rem; border-top: 1px solid #dfe4ea;
+            line-height: 1.6; /* 줄 간격 조정 */
         }
-        .footer-info p { margin: 4px 0; }
-        .footer-bold { font-weight: 700; color: #2c3e50; }
+        .footer-info p { margin: 4px 0; word-break: keep-all; }
+        .footer-bold { font-weight: 700; color: #2c3e50; font-size: 0.75rem;}
 
     </style>
 </head>
@@ -133,7 +140,7 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 1.8</span>
+        <span class="version-badge">Ver 1.9</span>
     </div>
     <p class="sub-desc">구글 시트 데이터를 기반으로 진단합니다.</p>
 
@@ -204,8 +211,12 @@
     </div>
 
     <div class="footer-info">
-        <p><span class="footer-bold">청개구리 샷시</span> | 대표: 홍길동</p>
-        <p>고객문의: 010-1234-5678 | 경기도 군포시 번영로 123</p>
+        <p>
+            <span class="footer-bold">청개구리샤시</span> | 사업자등록번호 : 123-36-31426 | 대표 : 전영웅
+        </p>
+        <p>
+            전화 1599-7380 | COPYRIGHT ⓒ 2026 Cheong-gaeguri Corp.
+        </p>
     </div>
 
     <script>
@@ -273,14 +284,14 @@
 
             const isDanger = detail.includes("심각");
             const verdict = isDanger ? "심각" : "정상";
-            const uniqueId = Date.now(); // 삭제를 위한 고유 ID
+            const uniqueId = Date.now(); 
             const count = defectDataList.length + 1;
 
             defectDataList.push({ id: uniqueId, no: count, room, work, subWork, type, detail, verdict });
 
             const item = document.createElement('div');
             item.className = 'list-item';
-            item.id = `item-${uniqueId}`; // DOM 삭제용 ID
+            item.id = `item-${uniqueId}`; 
             const tagColor = isDanger ? '#e74c3c' : '#2ecc71';
             
             item.innerHTML = `
@@ -299,15 +310,11 @@
             document.getElementById('listCount').innerText = `(${defectDataList.length})`;
         }
 
-        // [추가] 리스트 삭제 함수
         function deleteItem(id) {
             if(confirm("정말 이 내역을 삭제하시겠습니까?")) {
-                // 배열에서 삭제
                 defectDataList = defectDataList.filter(item => item.id !== id);
-                // 화면에서 삭제
                 const element = document.getElementById(`item-${id}`);
                 if(element) element.remove();
-                // 카운트 업데이트
                 document.getElementById('listCount').innerText = `(${defectDataList.length})`;
             }
         }

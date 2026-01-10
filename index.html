@@ -8,31 +8,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 기본 스타일 --- */
-        :root {
-            --primary-color: #3498db; --secondary-color: #2c3e50;
-            --success-color: #2ecc71; --danger-color: #e74c3c;
-            --bg-light: #f8f9fa; --border-color: #dfe4ea;
-        }
-        
-        html, body {
-            height: 100%; margin: 0; padding: 15px;
-            box-sizing: border-box; font-family: 'Noto Sans KR', sans-serif;
-            background-color: #ecf0f1; color: #333; line-height: 1.4;
+        /* --- 기본 스타일 (안전 모드) --- */
+        body {
+            margin: 0;
+            padding: 15px;
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #ecf0f1; 
+            color: #333; 
+            line-height: 1.4;
+            /* 높이 100% 설정을 제거하여 오류 방지 */
         }
 
-        /* [수정3] 헤더 높이 및 여백 축소 */
+        /* 헤더 디자인 (높이 축소) */
         .header-container {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            padding: 8px 15px; /* 패딩 축소 */
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            padding: 10px 15px; 
             border-radius: 12px;
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            height: 50px; /* 높이 60px -> 50px로 축소 */
-            margin-bottom: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 15px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             position: relative;
         }
         .header-frog-img {
-            height: 35px; width: 35px; /* 이미지 크기도 살짝 축소 */
+            height: 35px; width: 35px; 
             object-fit: cover; border-radius: 8px;
             border: 2px solid rgba(255,255,255,0.5);
             background-color: white;
@@ -45,58 +43,60 @@
         }
         .sub-desc { font-size: 0.75rem; text-align: center; color: #666; margin-bottom: 10px; }
 
-        /* --- 메인 카드 --- */
+        /* 메인 카드 */
         .main-card {
             background: white; border-radius: 16px; padding: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             max-width: 600px; margin: 0 auto;
         }
 
-        /* 상단 영역 */
+        /* 상단 영역 (사진 + 입력칸 가로 배치) */
         .top-section {
             display: flex; flex-direction: row; gap: 10px; margin-bottom: 10px;
-            align-items: stretch; /* 높이 맞춤 */
         }
 
         /* 사진 영역 (정사각형) */
         .photo-area {
-            flex: 0 0 45%; /* 너비 45% */
-            aspect-ratio: 1 / 1; 
-            background: var(--bg-light); border: 2px dashed var(--primary-color);
-            border-radius: 10px; position: relative; cursor: pointer;
+            flex: 0 0 45%; /* 너비 45% 고정 */
+            aspect-ratio: 1 / 1; /* 정사각형 비율 유지 */
+            background: #f8f9fa; 
+            border: 2px dashed #3498db;
+            border-radius: 10px; 
+            position: relative; cursor: pointer;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             overflow: hidden;
+            min-height: 120px; /* 최소 높이 보장 */
         }
-        .photo-icon { font-size: 1.8rem; margin-bottom: 3px; opacity: 0.5; color: var(--primary-color); }
+        .photo-icon { font-size: 1.8rem; margin-bottom: 3px; opacity: 0.5; color: #3498db; }
         .photo-text { font-size: 0.75rem; color: #666; font-weight: 700; text-align: center; }
         .preview-img { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             object-fit: cover; display: none; z-index: 10;
         }
 
-        /* [수정1] 우측 입력 영역 (가로 배치 스타일) */
+        /* 우측 입력 영역 (가로 정렬 스타일) */
         .basic-inputs {
             flex: 1; 
             display: flex; flex-direction: column; 
-            justify-content: space-between; /* 위아래 균등 배치 */
+            justify-content: space-between; /* 위아래 간격 균등 */
             gap: 5px;
         }
         .input-group {
-            display: flex; flex-direction: row; /* 가로 배치 */
+            display: flex; flex-direction: row; /* 라벨과 입력칸을 가로로 */
             align-items: center; gap: 5px;
         }
         .input-group label { 
-            font-size: 0.75rem; color: var(--secondary-color); 
+            font-size: 0.75rem; color: #2c3e50; 
             font-weight: 700; margin: 0; 
-            width: 45px; /* 라벨 너비 고정하여 줄맞춤 */
-            flex-shrink: 0;
-            text-align: right; /* 라벨 우측 정렬 */
+            width: 45px; /* 라벨 너비 고정 */
+            flex-shrink: 0; text-align: right;
         }
         .input-group input, .input-group select {
-            flex: 1; /* 남은 공간 차지 */
-            padding: 6px; font-size: 0.8rem;
-            border: 1px solid var(--border-color); border-radius: 6px;
-            box-sizing: border-box; background: #fff; height: 32px;
+            flex: 1; /* 남은 공간 가득 채우기 */
+            padding: 0 5px; font-size: 0.8rem;
+            border: 1px solid #dfe4ea; border-radius: 6px;
+            height: 30px; /* 입력칸 높이 적절히 조절 */
+            background: #fff;
         }
 
         /* 하단 영역 */
@@ -104,17 +104,14 @@
             display: flex; flex-direction: column; gap: 5px;
             margin-top: 5px;
         }
-        /* [수정2] 문구 변경 */
         .auto-input-label {
-            font-size: 0.8rem; font-weight: 700; color: var(--primary-color);
+            font-size: 0.8rem; font-weight: 700; color: #3498db;
             display: flex; align-items: center; gap: 5px;
         }
-        /* [수정2] 텍스트박스 높이 절반 축소 */
         textarea {
-            width: 100%; padding: 8px; border: 1px solid var(--primary-color);
-            border-radius: 8px; 
-            min-height: 50px; /* 높이 100px -> 50px 축소 */
-            height: 50px;
+            width: 100%; padding: 8px; 
+            border: 1px solid #3498db; border-radius: 8px; 
+            height: 60px; /* 높이 절반으로 축소 */
             font-size: 0.85rem;
             box-sizing: border-box; resize: none; background: #fdfdfd;
         }
@@ -122,11 +119,11 @@
         /* 버튼 및 리스트 */
         .action-buttons { display: flex; gap: 10px; margin-top: 15px; }
         .btn {
-            flex: 1; padding: 10px; border: none; border-radius: 8px;
+            flex: 1; padding: 12px; border: none; border-radius: 8px;
             font-weight: 700; color: white; font-size: 0.9rem; cursor: pointer;
         }
-        .btn-save { background: var(--danger-color); }
-        .btn-export { background: var(--success-color); }
+        .btn-save { background: #e74c3c; }
+        .btn-export { background: #2ecc71; }
 
         .list-area { margin-top: 20px; }
         .list-item {
@@ -203,10 +200,12 @@
         let defectDataList = [];
         let currentImageSrc = null;
 
+        // 카메라 실행
         function triggerCamera() {
             document.getElementById('cameraInput').click();
         }
 
+        // 사진 파일 처리
         function handleImageUpload(event) {
             const file = event.target.files[0];
             if (file) {
@@ -222,6 +221,7 @@
             }
         }
 
+        // AI 분석 시뮬레이션
         function runAIAnalysis() {
             const detailBox = document.getElementById('defectDetail');
             detailBox.value = "분석 중...";
@@ -232,7 +232,6 @@
                 if (isDefect) {
                     document.getElementById('workType').value = '도배';
                     document.getElementById('defectType').value = '오염/훼손';
-                    // [수정2] 내용도 짧게 줄임
                     detailBox.value = "[심각] 벽면 오염 및 찢김 발견.";
                     detailBox.style.borderColor = "#e74c3c";
                 } else {
@@ -244,6 +243,7 @@
             }, 1000);
         }
 
+        // 리스트 추가
         function addToList() {
             if (!currentImageSrc) { alert("사진을 촬영해주세요."); return; }
             const room = document.getElementById('roomSelect').value;
@@ -272,6 +272,7 @@
             document.getElementById('listCount').innerText = `(${count})`;
         }
 
+        // 엑셀 저장
         function saveAll() {
             if(defectDataList.length === 0) return;
             let csv = "\uFEFF번호,위치,하자유형,내용,판정\n";

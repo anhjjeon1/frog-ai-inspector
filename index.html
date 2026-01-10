@@ -8,131 +8,45 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 기본 레이아웃 --- */
-        body {
-            margin: 0; padding: 0;
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #ffffff;
-            color: #333; line-height: 1.4;
-        }
-
-        /* 헤더 스타일 */
-        .header-container {
-            background: linear-gradient(135deg, #3498db, #2c3e50);
-            padding: 15px 20px; 
-            border-radius: 0 0 20px 20px; /* 하단 둥근 모서리 */
-            display: flex; align-items: center; justify-content: flex-start; gap: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            height: 50px;
-            position: relative; /* 배지 위치 기준점 */
-        }
-        .header-frog-img {
-            height: 40px; width: 40px; 
-            object-fit: cover; border-radius: 10px;
-            border: 2px solid rgba(255,255,255,0.8); background-color: white;
-        }
+        /* --- [스타일은 기존 Ver 1.9와 동일합니다] --- */
+        body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #ffffff; color: #333; line-height: 1.4; }
+        .header-container { background: linear-gradient(135deg, #3498db, #2c3e50); padding: 15px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); height: 50px; position: relative; }
+        .header-frog-img { height: 40px; width: 40px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.8); background-color: white; }
         .header-title { color: white; font-size: 1.1rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
-        
-        /* [수정 1] 버전 배지 위치 및 스타일 개선 */
-        .version-badge {
-            position: absolute; 
-            right: 20px; /* 우측 여백 확보 */
-            bottom: 12px; /* 둥근 모서리에 잘리지 않도록 위로 올림 */
-            font-size: 0.75rem; 
-            color: #ffffff; /* 완전한 흰색 */
-            font-weight: 700; /* 굵게 */
-            opacity: 0.9;
-        }
-
+        .version-badge { position: absolute; right: 20px; bottom: 12px; font-size: 0.75rem; color: #ffffff; font-weight: 700; opacity: 0.9; }
         .sub-desc { font-size: 0.8rem; text-align: center; color: #666; margin: 15px 0 5px 0; background: #f8f9fa; padding: 5px; }
-
-        /* 메인 컨테이너 */
-        .main-card {
-            background: white; padding: 0 20px; max-width: 100%; margin: 0;
-        }
-
-        /* 상단 영역 */
+        .main-card { background: white; padding: 0 20px; max-width: 100%; margin: 0; }
         .top-section { display: flex; flex-direction: row; gap: 15px; margin-bottom: 15px; margin-top: 10px; }
-        .photo-area {
-            flex: 0 0 42%; aspect-ratio: 1 / 1; 
-            background: #f1f3f5; border: 2px dashed #bdc3c7; border-radius: 12px; 
-            position: relative; cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;
-        }
+        .photo-area { flex: 0 0 42%; aspect-ratio: 1 / 1; background: #f1f3f5; border: 2px dashed #bdc3c7; border-radius: 12px; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
         .photo-icon { font-size: 2rem; margin-bottom: 5px; opacity: 0.4; color: #3498db; }
         .photo-text { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; text-align: center; }
         .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 10; }
-
-        /* 입력 영역 */
         .basic-inputs { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 10px; }
         .input-group { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
         .input-group label { font-size: 0.75rem; color: #34495e; font-weight: 700; margin: 0; }
-        .input-group input, .input-group select {
-            width: 100%; padding: 0 8px; font-size: 0.9rem;
-            border: 1px solid #dfe4ea; border-radius: 8px; height: 32px; 
-            background: #fff; box-sizing: border-box;
-        }
+        .input-group input, .input-group select { width: 100%; padding: 0 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; height: 32px; background: #fff; box-sizing: border-box; }
         .input-group input:focus, .input-group select:focus { border-color: #3498db; outline: none; }
-
-        /* 하단 영역 */
         .bottom-section { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
         .auto-input-label { font-size: 0.85rem; font-weight: 700; color: #3498db; display: flex; align-items: center; gap: 6px; }
-        textarea {
-            width: 100%; padding: 12px; border: 1px solid #dcdde1; border-radius: 12px; height: 70px; 
-            font-size: 0.9rem; box-sizing: border-box; resize: none; background: #fdfdfd;
-        }
+        textarea { width: 100%; padding: 12px; border: 1px solid #dcdde1; border-radius: 12px; height: 70px; font-size: 0.9rem; box-sizing: border-box; resize: none; background: #fdfdfd; }
         textarea:focus { border-color: #3498db; outline: none; }
-
-        /* 버튼 */
         .nav-buttons-row { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-nav {
-            flex: 1; padding: 12px; border: none; border-radius: 10px;
-            font-size: 0.9rem; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+        .btn-nav { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .btn-next { background: #3498db; color: white; }
         .btn-prev { background: #ecf0f1; color: #555; border: 1px solid #bdc3c7; }
-
-        .action-buttons { 
-            display: flex; gap: 10px; margin-top: 25px; padding: 20px; 
-            background: #f8f9fa; border-top: 1px solid #eee;
-        }
-        .btn {
-            flex: 1; padding: 14px; border: none; border-radius: 10px;
-            font-weight: 700; color: white; font-size: 0.95rem; cursor: pointer;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-        }
+        .action-buttons { display: flex; gap: 10px; margin-top: 25px; padding: 20px; background: #f8f9fa; border-top: 1px solid #eee; }
+        .btn { flex: 1; padding: 14px; border: none; border-radius: 10px; font-weight: 700; color: white; font-size: 0.95rem; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
         .btn-save { background: #e74c3c; }
         .btn-export { background: #2ecc71; }
-
-        /* 리스트 스타일 */
         .list-area { padding: 0 20px 10px 20px; margin-top: 20px; }
-        .list-item {
-            background: white; padding: 12px; border-radius: 12px; margin-bottom: 12px;
-            display: flex; gap: 12px; border: 1px solid #ecf0f1; align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative;
-        }
+        .list-item { background: white; padding: 12px; border-radius: 12px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid #ecf0f1; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; }
         .list-thumb { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; border: 1px solid #eee; }
-        
-        .list-right-info {
-            display: flex; flex-direction: column; align-items: flex-end; gap: 5px; margin-left: auto;
-        }
+        .list-right-info { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; margin-left: auto; }
         .tag { padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; color: white; font-weight: bold; }
-        .btn-delete-item {
-            background: #95a5a6; color: white; border: none; border-radius: 6px;
-            padding: 4px 8px; font-size: 0.7rem; cursor: pointer;
-        }
-
-        /* [수정 2] 하단 회사 정보 (Footer) 업데이트 */
-        .footer-info {
-            text-align: center; background: #f1f2f6; padding: 30px 20px;
-            color: #7f8c8d; font-size: 0.7rem; border-top: 1px solid #dfe4ea;
-            line-height: 1.6; /* 줄 간격 조정 */
-        }
+        .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
+        .footer-info { text-align: center; background: #f1f2f6; padding: 30px 20px; color: #7f8c8d; font-size: 0.7rem; border-top: 1px solid #dfe4ea; line-height: 1.6; }
         .footer-info p { margin: 4px 0; word-break: keep-all; }
         .footer-bold { font-weight: 700; color: #2c3e50; font-size: 0.75rem;}
-
     </style>
 </head>
 <body>
@@ -140,12 +54,11 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 1.9</span>
+        <span class="version-badge">Ver 2.0 (실전)</span>
     </div>
-    <p class="sub-desc">구글 시트 데이터를 기반으로 진단합니다.</p>
+    <p class="sub-desc" id="statusMsg">구글 시트 DB 연결 중...</p>
 
     <div class="main-card">
-        
         <div class="top-section">
             <input type="file" id="cameraInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
             <div class="photo-area" onclick="triggerCamera()">
@@ -186,7 +99,7 @@
             <div class="auto-input-label">
                 <i class="fa-solid fa-robot"></i> AI하자입력
             </div>
-            <textarea id="defectDetail" placeholder="사진을 분석하여 시트 데이터에서 가져옵니다."></textarea>
+            <textarea id="defectDetail" placeholder="사진을 촬영하면 시트 데이터에서 찾아옵니다."></textarea>
         </div>
 
         <div class="nav-buttons-row">
@@ -197,7 +110,6 @@
                 <i class="fa-solid fa-arrow-rotate-left"></i> <span>이전 (수정)</span>
             </button>
         </div>
-
     </div>
 
     <div class="action-buttons">
@@ -211,24 +123,66 @@
     </div>
 
     <div class="footer-info">
-        <p>
-            <span class="footer-bold">청개구리샤시</span> | 사업자등록번호 : 123-36-31426 | 대표 : 전영웅
-        </p>
-        <p>
-            전화 1599-7380 | COPYRIGHT ⓒ 2026 Cheong-gaeguri Corp.
-        </p>
+        <p><span class="footer-bold">청개구리샤시</span> | 사업자등록번호 : 123-36-31426 | 대표 : 전영웅</p>
+        <p>전화 1599-7380 | COPYRIGHT ⓒ 2026 Cheong-gaeguri Corp.</p>
     </div>
 
     <script>
+        // -----------------------------------------------------------
+        // [중요] 사장님의 구글 시트 주소 (웹 게시 CSV 링크)
+        // -----------------------------------------------------------
+        const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1rystIBtlh2hdqr9hFp-miOL-NqUv5gqIcwFCxxk0OwI/export?format=csv&gid=989501065";
+        
         let defectDataList = [];
+        let realDbData = []; // 구글 시트에서 가져온 데이터가 여기 저장됩니다.
         let currentImageSrc = null;
 
-        // 시연용 DB
-        const sheetData = [
-            { id: 1, work: "PL창호", sub: "창짝/창틀", type: "잠금불량", detail: "[심각] 핸들 잠금장치 작동 불량 및 유격 발생", location: "거실", danger: true },
-            { id: 2, work: "도배공사", sub: "천장", type: "오염/훼손", detail: "천장지 부분 오염 식별됨 (경미)", location: "안방", danger: false },
-        ];
+        // 1. 앱 켜지면 구글 시트 데이터 가져오기 (실행)
+        window.onload = function() {
+            fetchGoogleSheet();
+        }
 
+        function fetchGoogleSheet() {
+            fetch(GOOGLE_SHEET_URL)
+            .then(response => response.text())
+            .then(text => {
+                // CSV 텍스트를 줄 단위로 쪼개기
+                const rows = text.split('\n').slice(1); // 첫 줄(헤더) 제외
+                
+                realDbData = rows.map(row => {
+                    // 콤마(,)로 데이터 분리 (따옴표 처리 간단 대응)
+                    // 순서 가정: [0]위치, [1]공종, [2]세부공종, [3]하자유형, [4]내용
+                    const cols = row.split(','); 
+                    if(cols.length < 5) return null; // 데이터 부족하면 패스
+
+                    // 따옴표 제거 및 공백 정리
+                    const clean = (str) => str ? str.replace(/"/g, '').trim() : '';
+
+                    return {
+                        location: clean(cols[0]),
+                        work: clean(cols[1]),
+                        sub: clean(cols[2]),
+                        type: clean(cols[3]),
+                        detail: clean(cols[4]),
+                        danger: (clean(cols[4]).includes("심각") || clean(cols[4]).includes("파손"))
+                    };
+                }).filter(item => item !== null); // 빈 줄 제거
+
+                console.log("DB 로드 완료:", realDbData.length, "개");
+                document.getElementById('statusMsg').innerText = `DB 연결 성공! (데이터 ${realDbData.length}개)`;
+                document.getElementById('statusMsg').style.color = "#2ecc71";
+            })
+            .catch(err => {
+                console.error("DB 로드 실패:", err);
+                document.getElementById('statusMsg').innerText = "DB 연결 실패. (웹 게시 설정을 확인해주세요)";
+                document.getElementById('statusMsg').style.color = "#e74c3c";
+                
+                // 실패 시 비상용 샘플 데이터 하나 넣어둠
+                realDbData = [{ location:"거실", work:"PL창호", sub:"창짝", type:"샘플", detail:"DB연결 실패로 인한 샘플입니다.", danger:true }];
+            });
+        }
+
+        // 2. 카메라 및 AI 분석 로직
         function triggerCamera() { document.getElementById('cameraInput').click(); }
 
         function handleImageUpload(event) {
@@ -236,11 +190,10 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const preview = document.getElementById('previewImage');
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
+                    document.getElementById('previewImage').src = e.target.result;
+                    document.getElementById('previewImage').style.display = 'block';
                     currentImageSrc = e.target.result;
-                    runAIAnalysis();
+                    runAIAnalysis(); // 분석 시작
                 }
                 reader.readAsDataURL(file);
             }
@@ -248,15 +201,27 @@
 
         function runAIAnalysis() {
             const detailBox = document.getElementById('defectDetail');
-            detailBox.value = "이미지 정밀 분석 중...";
+            detailBox.value = "DB 검색 중...";
+            
             setTimeout(() => {
-                const matchedData = sheetData[0]; // 시연용 고정 데이터
-                document.getElementById('roomSelect').value = matchedData.location;
+                if(realDbData.length === 0) {
+                    detailBox.value = "데이터가 없습니다. 구글 시트를 확인해주세요.";
+                    return;
+                }
+
+                // [핵심] 랜덤으로 시트 데이터 중 하나를 뽑아옴
+                // (진짜 AI라면 이미지를 분석하겠지만, 지금은 DB연동 테스트이므로 랜덤)
+                const randomIndex = Math.floor(Math.random() * realDbData.length);
+                const matchedData = realDbData[randomIndex];
+
+                // 화면에 뿌려주기
+                document.getElementById('roomSelect').value = matchedData.location || ''; // 위치가 시트에 있으면 자동선택
                 document.getElementById('workType').value = matchedData.work;
                 document.getElementById('subWorkType').value = matchedData.sub;
                 document.getElementById('defectType').value = matchedData.type;
                 detailBox.value = matchedData.detail;
 
+                // 스타일 적용
                 if(matchedData.danger) {
                     detailBox.style.borderColor = "#e74c3c"; detailBox.style.color = "#e74c3c"; detailBox.style.fontWeight = "bold";
                 } else {
@@ -265,10 +230,11 @@
             }, 800);
         }
 
+        // 3. 기타 버튼 기능들
         function goNextStep() { alert("상세 입력 단계로 이동합니다."); }
         function goPrevStep() { 
-            document.getElementById('workType').value = '';
-            document.getElementById('defectDetail').value = '';
+            document.getElementById('workType').value = ''; 
+            document.getElementById('defectDetail').value = ''; 
             alert("입력을 초기화했습니다."); 
         }
 
@@ -282,7 +248,7 @@
             
             if(room === "") { alert("위치를 선택해주세요."); return; }
 
-            const isDanger = detail.includes("심각");
+            const isDanger = detail.includes("심각") || detail.includes("파손");
             const verdict = isDanger ? "심각" : "정상";
             const uniqueId = Date.now(); 
             const count = defectDataList.length + 1;
@@ -291,7 +257,7 @@
 
             const item = document.createElement('div');
             item.className = 'list-item';
-            item.id = `item-${uniqueId}`; 
+            item.id = `item-${uniqueId}`;
             const tagColor = isDanger ? '#e74c3c' : '#2ecc71';
             
             item.innerHTML = `
@@ -313,8 +279,7 @@
         function deleteItem(id) {
             if(confirm("정말 이 내역을 삭제하시겠습니까?")) {
                 defectDataList = defectDataList.filter(item => item.id !== id);
-                const element = document.getElementById(`item-${id}`);
-                if(element) element.remove();
+                document.getElementById(`item-${id}`).remove();
                 document.getElementById('listCount').innerText = `(${defectDataList.length})`;
             }
         }

@@ -78,24 +78,24 @@
         .basic-inputs {
             flex: 1; 
             display: flex; flex-direction: column; 
-            justify-content: space-between; 
-            gap: 5px;
+            justify-content: flex-start; /* 위에서부터 정렬 */
+            gap: 8px; /* 간격 조정 */
         }
         .input-group {
             display: flex; flex-direction: row; 
             align-items: center; gap: 5px;
         }
         .input-group label { 
-            font-size: 0.75rem; color: #2c3e50; 
+            font-size: 0.7rem; color: #2c3e50; 
             font-weight: 700; margin: 0; 
-            width: 45px; 
-            flex-shrink: 0; text-align: right;
+            width: 48px; /* 라벨 너비 살짝 늘림 */
+            flex-shrink: 0; text-align: right; letter-spacing: -0.5px;
         }
         .input-group input, .input-group select {
             flex: 1; 
             padding: 0 5px; font-size: 0.8rem;
             border: 1px solid #dfe4ea; border-radius: 6px;
-            height: 30px; 
+            height: 28px; 
             background: #fff;
         }
 
@@ -116,8 +116,24 @@
             box-sizing: border-box; resize: none; background: #fdfdfd;
         }
 
-        /* 버튼 */
-        .action-buttons { display: flex; gap: 10px; margin-top: 15px; }
+        /* [추가] 네비게이션 버튼 (이전/다음) */
+        .nav-buttons-row {
+            display: flex; gap: 10px; margin-top: 10px;
+        }
+        .btn-nav {
+            flex: 1; padding: 10px; border: none; border-radius: 8px;
+            font-size: 0.85rem; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+            transition: all 0.2s;
+        }
+        /* 요청하신 대로: 좌측=다음, 우측=이전 */
+        .btn-next { background: #3498db; color: white; } /* 다음 (파랑) */
+        .btn-prev { background: #95a5a6; color: white; } /* 이전 (회색) */
+        
+        .btn-nav:active { transform: translateY(2px); }
+
+        /* 저장/내보내기 버튼 */
+        .action-buttons { display: flex; gap: 10px; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; }
         .btn {
             flex: 1; padding: 12px; border: none; border-radius: 8px;
             font-weight: 700; color: white; font-size: 0.9rem; cursor: pointer;
@@ -140,7 +156,7 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 점검 AI</h2>
-        <span class="version-badge">Ver 1.2</span>
+        <span class="version-badge">Ver 1.3</span>
     </div>
     <p class="sub-desc">촬영하면 AI가 자동으로 진단합니다.</p>
 
@@ -172,6 +188,10 @@
                     <input type="text" id="workType" placeholder="예: 도배">
                 </div>
                 <div class="input-group">
+                    <label>세부공종</label>
+                    <input type="text" id="subWorkType" placeholder="예: 천장/벽체">
+                </div>
+                <div class="input-group">
                     <label>하자유형</label>
                     <input type="text" id="defectType" placeholder="예: 찢김">
                 </div>
@@ -183,6 +203,15 @@
                 <i class="fa-solid fa-robot"></i> AI하자입력
             </div>
             <textarea id="defectDetail" placeholder="촬영 시 자동입력"></textarea>
+        </div>
+
+        <div class="nav-buttons-row">
+            <button class="btn-nav btn-next" onclick="goNextStep()">
+                <span>다음 (추가입력)</span> <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <button class="btn-nav btn-prev" onclick="goPrevStep()">
+                <i class="fa-solid fa-arrow-rotate-left"></i> <span>이전 (수정)</span>
+            </button>
         </div>
 
     </div>
@@ -229,11 +258,13 @@
                 
                 if (isDefect) {
                     document.getElementById('workType').value = '도배';
+                    document.getElementById('subWorkType').value = '천장 초배지'; // 세부공종 예시 자동입력
                     document.getElementById('defectType').value = '오염/훼손';
-                    detailBox.value = "[심각] 벽면 오염 및 찢김 발견.";
+                    detailBox.value = "[심각] 천장 부위 심각한 오염 및 찢김 식별됨.";
                     detailBox.style.borderColor = "#e74c3c";
                 } else {
                     document.getElementById('workType').value = '';
+                    document.getElementById('subWorkType').value = '';
                     document.getElementById('defectType').value = '';
                     detailBox.value = "[정상] 특이사항 없음.";
                     detailBox.style.borderColor = "#2ecc71";
@@ -241,9 +272,21 @@
             }, 1000);
         }
 
+        // [추가] 다음 단계 함수 (기능 예시)
+        function goNextStep() {
+            alert("다음 단계(추가 상세 입력) 화면으로 이동합니다.\n(기능 준비 중)");
+        }
+
+        // [추가] 이전 단계 함수 (기능 예시)
+        function goPrevStep() {
+            alert("이전 입력 내용을 수정합니다.\n(마지막 입력 불러오기 등)");
+        }
+
         function addToList() {
             if (!currentImageSrc) { alert("사진을 촬영해주세요."); return; }
             const room = document.getElementById('roomSelect').value;
+            const work = document.getElementById('workType').value;
+            const subWork = document.getElementById('subWorkType').value; // 세부공종 값 가져오기
             const type = document.getElementById('defectType').value;
             const detail = document.getElementById('defectDetail').value;
             
@@ -251,16 +294,19 @@
             const verdict = isDanger ? "심각" : "정상";
 
             const count = defectDataList.length + 1;
-            defectDataList.push({ no: count, room, type, detail, verdict });
+            // 세부공종(subWork) 데이터 추가
+            defectDataList.push({ no: count, room, work, subWork, type, detail, verdict });
 
             const item = document.createElement('div');
             item.className = 'list-item';
             const tagColor = isDanger ? '#e74c3c' : '#2ecc71';
             
+            // 리스트 표시 내용에 세부공종도 살짝 보이게 수정
             item.innerHTML = `
                 <img src="${currentImageSrc}" class="list-thumb">
                 <div style="flex:1;">
-                    <div style="font-weight:bold; font-size:0.85rem;">${room} - ${type || '-'}</div>
+                    <div style="font-weight:bold; font-size:0.85rem;">${room} - ${work}</div>
+                    <div style="font-size:0.75rem; color:#555;">${subWork ? '('+subWork+') ' : ''}${type}</div>
                     <div style="font-size:0.75rem; color:#666;">${verdict}</div>
                 </div>
                 <span class="tag" style="background:${tagColor}">No.${count}</span>
@@ -271,8 +317,9 @@
 
         function saveAll() {
             if(defectDataList.length === 0) return;
-            let csv = "\uFEFF번호,위치,하자유형,내용,판정\n";
-            defectDataList.forEach(r => csv += `${r.no},"${r.room}","${r.type}","${r.detail.replace(/\n/g, ' ')}","${r.verdict}"\n`);
+            // CSV 헤더에 세부공종 추가
+            let csv = "\uFEFF번호,위치,공종,세부공종,하자유형,내용,판정\n";
+            defectDataList.forEach(r => csv += `${r.no},"${r.room}","${r.work}","${r.subWork}","${r.type}","${r.detail.replace(/\n/g, ' ')}","${r.verdict}"\n`);
             const link = document.createElement("a");
             link.href = encodeURI("data:text/csv;charset=utf-8," + csv);
             link.download = "하자리스트.csv";

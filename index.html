@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>청개구리 점검 AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         /* --- 기본 스타일 --- */
         :root {
@@ -12,9 +14,17 @@
             --success-color: #2ecc71; --danger-color: #e74c3c;
             --bg-light: #f8f9fa; --border-color: #dfe4ea;
         }
-        body {
+        
+        /* 화면이 하얗게 되는 것을 방지하기 위해 html, body 높이 설정 */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 15px;
+            box-sizing: border-box;
             font-family: 'Noto Sans KR', sans-serif;
-            margin: 15px; background-color: #ecf0f1; color: #333; line-height: 1.4;
+            background-color: #ecf0f1; 
+            color: #333; 
+            line-height: 1.4;
         }
 
         /* --- 헤더 --- */
@@ -28,10 +38,10 @@
         .header-frog-img {
             height: 45px; width: 45px; object-fit: cover; border-radius: 10px;
             border: 2px solid rgba(255,255,255,0.5);
+            background-color: white; /* 이미지가 투명할 경우를 대비해 흰 배경 추가 */
         }
         .header-title { color: white; font-size: 1.2rem; font-weight: 700; margin: 0; }
         
-        /* [수정1] 버전 2자리로 변경 */
         .version-badge {
             position: absolute; bottom: 5px; right: 10px;
             font-size: 0.65rem; color: rgba(255,255,255,0.8); font-weight: 400;
@@ -48,28 +58,28 @@
         /* 상단 영역 (사진 + 입력) */
         .top-section {
             display: flex; flex-direction: row; gap: 10px; margin-bottom: 5px;
-            align-items: flex-start; /* 위쪽 정렬 */
+            align-items: flex-start;
         }
 
-        /* [수정2] 사진 영역 1:1 비율 및 실제 카메라 연동 */
+        /* 사진 영역 */
         .photo-area {
-            flex: 0 0 50%; /* 화면 절반 차지 */
-            aspect-ratio: 1 / 1; /* 정사각형 비율 강제 고정 */
+            flex: 0 0 50%; /* 화면 절반 */
+            aspect-ratio: 1 / 1; /* 정사각형 비율 */
             background: var(--bg-light); border: 2px dashed var(--primary-color);
             border-radius: 10px; position: relative; cursor: pointer;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             overflow: hidden;
         }
-        .photo-icon { font-size: 2rem; margin-bottom: 5px; opacity: 0.5; }
+        .photo-icon { font-size: 2rem; margin-bottom: 5px; opacity: 0.5; color: var(--primary-color); }
         .photo-text { font-size: 0.8rem; color: #666; font-weight: 700; text-align: center; }
         .preview-img { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             object-fit: cover; display: none; z-index: 10;
         }
 
-        /* [수정2] 우측 입력 영역 (좁게) */
+        /* 우측 입력 영역 */
         .basic-inputs {
-            flex: 1; /* 나머지 공간 */
+            flex: 1; 
             display: flex; flex-direction: column; gap: 8px;
             justify-content: center; height: 100%;
         }
@@ -83,7 +93,7 @@
             box-sizing: border-box; background: #fff;
         }
 
-        /* [수정2] 하단 영역 통합 (판정 박스 삭제됨) */
+        /* 하단 영역 */
         .bottom-section {
             display: flex; flex-direction: column; gap: 5px;
             margin-top: 10px;
@@ -114,7 +124,7 @@
         }
         .list-thumb { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; }
         .tag { padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; color: white; margin-left: auto;}
-    </script>
+    </style>
 </head>
 <body>
 
@@ -131,14 +141,15 @@
             <input type="file" id="cameraInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
 
             <div class="photo-area" onclick="triggerCamera()">
-                <div class="photo-icon">📷</div>
+                <div class="photo-icon"><i class="fa-solid fa-camera"></i></div>
                 <div class="photo-text">터치하여<br>촬영</div>
                 <img id="previewImage" class="preview-img">
             </div>
 
             <div class="basic-inputs">
                 <div class="input-group">
-                    <label>📍 위치</label> <select id="roomSelect">
+                    <label>📍 위치</label>
+                    <select id="roomSelect">
                         <option value="거실">거실</option>
                         <option value="안방">안방</option>
                         <option value="주방">주방</option>
@@ -152,7 +163,8 @@
                     <input type="text" id="workType" placeholder="예: 도배">
                 </div>
                 <div class="input-group">
-                    <label>⚠️ 하자유형</label> <input type="text" id="defectType" placeholder="예: 찢김">
+                    <label>⚠️ 하자유형</label>
+                    <input type="text" id="defectType" placeholder="예: 찢김">
                 </div>
             </div>
         </div>
@@ -180,12 +192,12 @@
         let defectDataList = [];
         let currentImageSrc = null;
 
-        // [수정3] 카메라/갤러리 실행 함수
+        // 카메라 실행
         function triggerCamera() {
             document.getElementById('cameraInput').click();
         }
 
-        // [수정3] 사진 선택 시 동작하는 함수
+        // 사진 업로드 처리
         function handleImageUpload(event) {
             const file = event.target.files[0];
             if (file) {
@@ -196,43 +208,42 @@
                     preview.style.display = 'block';
                     currentImageSrc = e.target.result;
                     
-                    // 사진이 로드되면 AI 분석 시뮬레이션 실행
+                    // AI 분석 실행
                     runAIAnalysis();
                 }
                 reader.readAsDataURL(file);
             }
         }
 
+        // AI 분석 로직
         function runAIAnalysis() {
             const detailBox = document.getElementById('defectDetail');
             detailBox.value = "⏳ AI가 이미지를 분석 중입니다...";
             
             setTimeout(() => {
-                // 랜덤 판정 로직
                 const isDefect = Math.random() < 0.6; 
                 
                 if (isDefect) {
-                    // [수정2] 판정 결과를 텍스트 박스 안에 포함
                     document.getElementById('workType').value = '도배공사';
                     document.getElementById('defectType').value = '오염/훼손';
                     detailBox.value = "[판정: 심각]\n벽면 중앙부에 육안으로 식별되는 심각한 오염 및 찢김이 발견되었습니다. 보수가 필요합니다.";
-                    detailBox.style.borderColor = "#e74c3c"; // 테두리 빨간색
+                    detailBox.style.borderColor = "#e74c3c";
                 } else {
                     document.getElementById('workType').value = '';
                     document.getElementById('defectType').value = '';
                     detailBox.value = "[판정: 정상]\n특이사항이 발견되지 않았습니다.";
-                    detailBox.style.borderColor = "#2ecc71"; // 테두리 초록색
+                    detailBox.style.borderColor = "#2ecc71";
                 }
             }, 1500);
         }
 
+        // 리스트 추가
         function addToList() {
             if (!currentImageSrc) { alert("사진을 먼저 촬영해주세요."); return; }
             const room = document.getElementById('roomSelect').value;
             const type = document.getElementById('defectType').value;
             const detail = document.getElementById('defectDetail').value;
             
-            // 판정 결과 추출 (간단히 텍스트 앞부분으로 판단)
             const isDanger = detail.includes("심각");
             const verdict = isDanger ? "심각" : "정상";
 
@@ -255,6 +266,7 @@
             document.getElementById('listCount').innerText = `(${count})`;
         }
 
+        // 엑셀 저장
         function saveAll() {
             if(defectDataList.length === 0) return;
             let csv = "\uFEFF번호,위치,하자유형,내용,판정\n";

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (Final v3.1)</title>
+    <title>청개구리 입주자사전점검 AI (v3.2 Gemini 2.0)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -19,7 +19,6 @@
         
         .top-section { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; margin-top: 10px; }
         
-        /* 사진 입력 영역 (Label 태그로 터치 오류 방지) */
         .photo-area { 
             width: 100%; 
             aspect-ratio: 16 / 9; 
@@ -106,7 +105,7 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 3.1</span>
+        <span class="version-badge">Ver 3.2 (Gemini 2.0)</span>
     </div>
     <p class="sub-desc" id="statusMsg">AI 엔진 연결 대기중...</p>
 
@@ -215,14 +214,15 @@
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
         // =========================================================
-        // [New Key Applied] 새 API 키 적용 완료
+        // [New Key] 새 프로젝트 키 적용
         // =========================================================
         const API_KEY = "AIzaSyCzPoLVULFRCnf5zTTA9GQENkK1umllZkU"; 
 
         const genAI = new GoogleGenerativeAI(API_KEY);
+        // [Gemini 2.0 적용] 모델명을 2.0-flash-exp로 변경
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
-        // 랜덤 DB 사용 기능 제거 (오류 방지)
+        // 랜덤 DB 사용 기능 제거
         let realDbData = []; 
 
         let defectDataList = [];
@@ -303,13 +303,11 @@
             } catch (error) {
                 console.error("AI Error:", error);
                 
-                // [중요] 랜덤 데이터를 쓰지 않고, 명확한 오류 메시지 표시
                 statusMsg.innerText = "⚠️ 분석 실패";
                 statusMsg.style.color = "#e74c3c";
                 
                 detailBox.value = "분석에 실패했습니다. (내용을 직접 입력해주세요)";
                 
-                // 입력창 초기화
                 document.getElementById('workType').value = "";
                 document.getElementById('subWorkType').value = "";
                 document.getElementById('defectType').value = "";
@@ -434,4 +432,3 @@
     </script>
 </body>
 </html>
-

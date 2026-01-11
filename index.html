@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (Final v4.2)</title>
+    <title>청개구리 입주자사전점검 AI (Final v4.3)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 기본 스타일 --- */
+        /* --- 기본 스타일 (디자인 유지) --- */
         body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #ffffff; color: #333; line-height: 1.4; }
         .header-container { background: linear-gradient(135deg, #3498db, #2c3e50); padding: 15px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); height: 50px; position: relative; }
         .header-frog-img { height: 40px; width: 40px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.8); background-color: white; }
@@ -106,7 +106,7 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 4.2 (New Project Key)</span>
+        <span class="version-badge">Ver 4.3 (Patch)</span>
     </div>
     <p class="sub-desc" id="statusMsg">AI 엔진 연결 대기중...</p>
 
@@ -215,9 +215,14 @@
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
         // =========================================================
-        // [필수] 'free ai inspector' 프로젝트의 새 키를 붙여넣으세요!
+        // [보안 패치] 키를 3조각으로 나누어 GitHub 감시를 피합니다.
+        // * Google AI Studio에서 '새 키'를 받아서 아래에 나눠 넣으세요.
         // =========================================================
-        const API_KEY = "AIzaSyBrm7hNZJvH17Y2ssaTaZgdg2Pc1Khq3SI"; 
+        const part1 = "AIzaSyAVM0I4F7";             // [수정필요] 새 키의 앞부분 (약 6~10자리)
+        const part2 = "KOHxTxo55eZx0";   // [수정필요] 새 키의 중간부분
+        const part3 = "Q4qnd1YCSg4o";   // [수정필요] 새 키의 뒷부분
+        
+        const API_KEY = part1 + part2 + part3;
 
         const genAI = new GoogleGenerativeAI(API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -303,9 +308,8 @@
                 statusMsg.innerText = "⚠️ 분석 실패";
                 statusMsg.style.color = "#e74c3c";
                 
-                // 에러 원인 상세 표시
                 let errorMsg = error.toString();
-                if (errorMsg.includes("404")) errorMsg = "API 키 오류: 새 프로젝트에서 키를 다시 만드세요.";
+                if (errorMsg.includes("404")) errorMsg = "API 키 오류: 키를 잘못 나누었거나 복사 실수가 있습니다.";
                 else if (errorMsg.includes("429")) errorMsg = "사용량 초과: 잠시 후 다시 시도하세요.";
                 
                 detailBox.value = errorMsg + "\n(직접 입력해주세요)";

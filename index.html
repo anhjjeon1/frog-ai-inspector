@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (Final v3.0)</title>
+    <title>청개구리 입주자사전점검 AI (Final v3.1)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -106,7 +106,7 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 3.0 (New Key)</span>
+        <span class="version-badge">Ver 3.1</span>
     </div>
     <p class="sub-desc" id="statusMsg">AI 엔진 연결 대기중...</p>
 
@@ -211,17 +211,13 @@
         }
     </script>
 
-<script type="module">
+    <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
         // =========================================================
-        // [긴급 수정] 새 프로젝트에서 만든 키를 '통째로' 넣으세요.
-        // 예: "AIzaSy..." (따옴표 안에 전체 키 입력)
+        // [New Key Applied] 새 API 키 적용 완료
         // =========================================================
         const API_KEY = "AIzaSyCzPoLVULFRCnf5zTTA9GQENkK1umllZkU"; 
-
-        const genAI = new GoogleGenerativeAI(API_KEY);
-        // ... (나머지 코드는 그대로 둡니다)
 
         const genAI = new GoogleGenerativeAI(API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -438,4 +434,3 @@
     </script>
 </body>
 </html>
-

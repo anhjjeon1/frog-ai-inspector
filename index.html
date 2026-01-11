@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (v3.2 Gemini 2.0)</title>
+    <title>청개구리 입주자사전점검 AI (진단모드)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         /* --- 기본 스타일 --- */
         body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #ffffff; color: #333; line-height: 1.4; }
-        .header-container { background: linear-gradient(135deg, #3498db, #2c3e50); padding: 15px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); height: 50px; position: relative; }
+        .header-container { background: linear-gradient(135deg, #e74c3c, #c0392b); padding: 15px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); height: 50px; position: relative; }
         .header-frog-img { height: 40px; width: 40px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.8); background-color: white; }
         .header-title { color: white; font-size: 1.1rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
         .version-badge { position: absolute; right: 20px; bottom: 12px; font-size: 0.75rem; color: #ffffff; font-weight: 700; opacity: 0.9; }
-        .sub-desc { font-size: 0.8rem; text-align: center; color: #666; margin: 15px 0 5px 0; background: #f8f9fa; padding: 5px; }
         .main-card { background: white; padding: 0 20px; max-width: 100%; margin: 0; }
         
         .top-section { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; margin-top: 10px; }
@@ -98,23 +97,26 @@
         .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
         .footer-info { text-align: center; background: #f1f2f6; padding: 30px 20px; color: #7f8c8d; font-size: 0.7rem; border-top: 1px solid #dfe4ea; line-height: 1.6; }
         .footer-bold { font-weight: 700; color: #2c3e50; font-size: 0.75rem;}
+        
+        /* 에러 메시지 팝업 스타일 */
+        .sub-desc { font-size: 0.8rem; text-align: center; color: #e74c3c; margin: 15px 0 5px 0; background: #fff; padding: 5px; font-weight: bold; border: 1px solid #e74c3c; }
     </style>
 </head>
 <body>
 
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
-        <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 3.2 (Gemini 2.0)</span>
+        <h2 class="header-title">청개구리 AI (진단 모드)</h2>
+        <span class="version-badge">Ver DEBUG</span>
     </div>
-    <p class="sub-desc" id="statusMsg">AI 엔진 연결 대기중...</p>
+    <p class="sub-desc" id="statusMsg">준비 완료 (사진을 찍으면 에러 원인을 알려줍니다)</p>
 
     <div class="main-card">
         <div class="top-section">
             <input type="file" id="cameraInput" accept="image/*" style="display:none">
             <label class="photo-area" id="photoAreaBtn" for="cameraInput">
                 <div class="photo-icon"><i class="fa-solid fa-camera"></i></div>
-                <div class="photo-text">터치하여 촬영<br>(점선 십자선에 하자를 맞추세요)</div>
+                <div class="photo-text">터치하여 촬영<br>(에러 진단 시작)</div>
                 <img id="previewImage" class="preview-img">
                 <div class="center-crosshair"></div>
             </label>
@@ -140,23 +142,17 @@
                 <div class="input-group">
                     <label>위치(실내)</label>
                     <select id="roomSelect">
-                        <option value="">선택 (거실, 안방 등)</option>
+                        <option value="">선택</option>
                         <option value="거실">거실</option>
                         <option value="안방">안방</option>
-                        <option value="주방">주방</option>
-                        <option value="욕실1">공용 욕실</option>
-                        <option value="욕실2">부부 욕실</option>
-                        <option value="현관">현관</option>
-                        <option value="발코니">발코니</option>
-                        <option value="실외기실">실외기실</option>
                     </select>
                 </div>
                 
                 <div class="input-group">
                     <label>공종 / 세부공종</label>
                     <div class="split-row">
-                        <input type="text" id="workType" placeholder="공종 (예: 창호)">
-                        <input type="text" id="subWorkType" placeholder="세부 (예: 손잡이)">
+                        <input type="text" id="workType" placeholder="공종">
+                        <input type="text" id="subWorkType" placeholder="세부">
                     </div>
                 </div>
                 
@@ -169,37 +165,14 @@
 
         <div class="bottom-section">
             <div class="auto-input-label">
-                <i class="fa-solid fa-robot"></i> AI하자입력 (십자선 집중 분석)
+                <i class="fa-solid fa-robot"></i> AI하자입력
             </div>
-            <textarea id="defectDetail" placeholder="점선 십자선(+) 위치의 하자를 AI가 분석합니다."></textarea>
+            <textarea id="defectDetail" placeholder="결과가 여기에 표시됩니다."></textarea>
         </div>
 
         <div class="nav-buttons-row">
-            <button class="btn-nav btn-next" onclick="window.goNextStep()">
-                <span>다음 (추가입력)</span> <i class="fa-solid fa-arrow-right"></i>
-            </button>
-            <button class="btn-nav btn-prev" onclick="window.goPrevStep()">
-                <i class="fa-solid fa-arrow-rotate-left"></i> <span>이전 (수정)</span>
-            </button>
+            <button class="btn-nav btn-next" onclick="window.goNextStep()">다음</button>
         </div>
-    </div>
-
-    <div class="action-buttons">
-        <button class="btn btn-save" onclick="window.addToList()">리스트 저장</button>
-        <button class="btn btn-export" onclick="window.saveAll()">엑셀 저장</button>
-    </div>
-
-    <div class="list-area">
-        <div class="list-header-box">
-            <div class="list-title-text">📋 저장된 리스트 <span id="listCount">(0)</span></div>
-            <div id="currentAptInfo" class="list-subtitle-text"></div>
-        </div>
-        <div id="listBox"></div>
-    </div>
-
-    <div class="footer-info">
-        <p><span class="footer-bold">청개구리샤시</span> | 사업자등록번호 : 123-36-31426 | 대표 : 전영웅</p>
-        <p>전화 1599-7380 | COPYRIGHT ⓒ 2026 Cheong-gaeguri Corp.</p>
     </div>
 
     <script type="importmap">
@@ -214,31 +187,23 @@
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
         // =========================================================
-        // [New Key] 새 프로젝트 키 적용
+        // [진단용 키] 문제가 있는 키를 그대로 두세요
         // =========================================================
         const API_KEY = "AIzaSyCzPoLVULFRCnf5zTTA9GQENkK1umllZkU"; 
 
+        // 안정적인 1.5 모델로 우선 테스트
         const genAI = new GoogleGenerativeAI(API_KEY);
-        // [Gemini 2.0 적용] 모델명을 2.0-flash-exp로 변경
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
-
-        // 랜덤 DB 사용 기능 제거
-        let realDbData = []; 
-
-        let defectDataList = [];
-        let currentImageFile = null;
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         document.getElementById('cameraInput').addEventListener('change', async (event) => {
             const file = event.target.files[0];
             if (!file) return;
-            currentImageFile = file;
 
             const reader = new FileReader();
             reader.onload = (e) => {
-                const preview = document.getElementById('previewImage');
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-                runTargetedAnalysis(file);
+                document.getElementById('previewImage').src = e.target.result;
+                document.getElementById('previewImage').style.display = 'block';
+                runDebugAnalysis(file); // 진단 함수 실행
             };
             reader.readAsDataURL(file);
         });
@@ -254,181 +219,51 @@
             });
         }
 
-        async function runTargetedAnalysis(file) {
-            const detailBox = document.getElementById('defectDetail');
+        async function runDebugAnalysis(file) {
             const statusMsg = document.getElementById('statusMsg');
-            const photoBtn = document.getElementById('photoAreaBtn');
+            const detailBox = document.getElementById('defectDetail');
             
-            detailBox.value = "점선 십자선(+) 위치를 분석 중입니다...";
-            statusMsg.innerText = "🎯 타겟 정밀 분석 중...";
-            
-            photoBtn.style.opacity = '0.5';
-            photoBtn.style.pointerEvents = 'none';
+            statusMsg.innerText = "⏳ 구글 서버에 접속 중...";
+            detailBox.value = "분석을 요청했습니다. 응답 대기중...";
 
             try {
-                const prompt = `
-                    너는 건축 하자 진단 전문가야.
-                    사용자가 사진을 찍을 때 화면 중앙에 '점선 십자선(+)'을 맞추고 찍었어.
-                    
-                    [지시사항]
-                    1. 사진의 정중앙(Center Point)에 있는 물체의 하자를 분석해줘.
-                    2. 주변 배경은 철저히 무시해.
-                    3. 결과를 JSON 형식으로만 출력해.
-                    
-                    {"work": "공종", "sub": "세부공종", "type": "하자유형", "detail": "하자내용"}
-                `;
-                
+                const prompt = "이 사진에 무엇이 있는지 한글로 짧게 설명해줘.";
                 const imagePart = await fileToGenerativePart(file);
+                
+                // AI 요청
                 const result = await model.generateContent([prompt, imagePart]);
                 const response = await result.response;
                 const text = response.text();
                 
-                let data = {};
-                try {
-                    let cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
-                    const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
-                    if (jsonMatch) {
-                        data = JSON.parse(jsonMatch[0]);
-                    } else {
-                        throw new Error("JSON not found");
-                    }
-                } catch (e) {
-                    data = { detail: text, work: "기타", sub: "", type: "점검요망" };
-                }
-
-                applyDataToUI(data);
-                statusMsg.innerText = "✅ 타겟 분석 성공";
-                statusMsg.style.color = "#2ecc71";
+                // 성공 시
+                statusMsg.innerText = "✅ 연결 성공!";
+                statusMsg.style.color = "green";
+                detailBox.value = "성공! AI 응답:\n" + text;
+                alert("축하합니다! 연결에 성공했습니다.");
 
             } catch (error) {
                 console.error("AI Error:", error);
                 
-                statusMsg.innerText = "⚠️ 분석 실패";
-                statusMsg.style.color = "#e74c3c";
+                // [핵심] 에러 내용을 화면에 적나라하게 표시
+                let errorMsg = error.toString();
                 
-                detailBox.value = "분석에 실패했습니다. (내용을 직접 입력해주세요)";
-                
-                document.getElementById('workType').value = "";
-                document.getElementById('subWorkType').value = "";
-                document.getElementById('defectType').value = "";
-            } finally {
-                photoBtn.style.opacity = '1';
-                photoBtn.style.pointerEvents = 'auto';
+                if (errorMsg.includes("404")) {
+                    errorMsg = "❌ [404 오류] : API 키가 잘못되었거나, 모델을 찾을 수 없습니다.\n해결책: 새 프로젝트에서 키를 다시 만드세요.";
+                } else if (errorMsg.includes("403")) {
+                    errorMsg = "❌ [403 오류] : API 키 권한이 없거나, 구글 클라우드 결제 설정 문제일 수 있습니다.";
+                } else if (errorMsg.includes("400")) {
+                    errorMsg = "❌ [400 오류] : 요청 형식이 잘못되었습니다.";
+                } else if (errorMsg.includes("429")) {
+                    errorMsg = "❌ [429 오류] : 사용량 초과 (잠시 후 다시 시도하세요).";
+                } else {
+                    errorMsg = "❌ [알 수 없는 오류] : " + errorMsg;
+                }
+
+                statusMsg.innerText = "⚠️ 연결 실패";
+                detailBox.value = errorMsg;
+                alert(errorMsg); // 팝업으로도 띄움
             }
         }
-
-        function applyDataToUI(data) {
-            document.getElementById('workType').value = data.work || "";
-            document.getElementById('subWorkType').value = data.sub || ""; 
-            document.getElementById('defectType').value = data.type || "";
-            
-            if(data.location) document.getElementById('roomSelect').value = data.location;
-            
-            const detailBox = document.getElementById('defectDetail');
-            const detailText = data.detail || "";
-            detailBox.value = detailText;
-            
-            const isDanger = (detailText.includes("파손") || detailText.includes("누수") || detailText.includes("균열"));
-            if(isDanger) {
-                detailBox.style.color = "#e74c3c";
-                detailBox.style.borderColor = "#e74c3c";
-            } else {
-                detailBox.style.color = "#333";
-                detailBox.style.borderColor = "#2ecc71";
-            }
-        }
-
-        window.goNextStep = function() { alert("다음 단계로 이동 (기능 준비중)"); };
-        window.goPrevStep = function() { 
-            document.getElementById('workType').value = ''; 
-            document.getElementById('subWorkType').value = ''; 
-            document.getElementById('defectType').value = ''; 
-            document.getElementById('defectDetail').value = ''; 
-        };
-
-        window.addToList = function() {
-            const previewSrc = document.getElementById('previewImage').src;
-            if (!currentImageFile && !previewSrc) { alert("사진이 없습니다."); return; }
-            
-            const aptName = document.getElementById('aptName').value;
-            const aptDong = document.getElementById('aptDong').value;
-            const aptHo = document.getElementById('aptHo').value;
-            
-            const room = document.getElementById('roomSelect').value;
-            const work = document.getElementById('workType').value;
-            const sub = document.getElementById('subWorkType').value;
-            const type = document.getElementById('defectType').value;
-            const detail = document.getElementById('defectDetail').value;
-
-            if(!room) { alert("위치(실내)를 선택해주세요."); return; }
-            
-            const aptInfoText = `${aptName || "OO아파트"} ${aptDong || "000"}동 ${aptHo || "0000"}호`;
-            document.getElementById('currentAptInfo').innerText = aptInfoText;
-
-            const uniqueId = Date.now();
-            const count = defectDataList.length + 1;
-            
-            const safeDetail = detail || "";
-            const verdict = (safeDetail.includes("파손") || safeDetail.includes("누수") || safeDetail.includes("균열")) ? "심각" : "정상";
-            const tagColor = verdict === "심각" ? "#e74c3c" : "#2ecc71";
-
-            defectDataList.push({ 
-                id: uniqueId, no: count, 
-                apt: aptInfoText, 
-                room, work, sub, type, detail: safeDetail, verdict 
-            });
-
-            const item = document.createElement('div');
-            item.className = 'list-item';
-            item.id = `item-${uniqueId}`;
-            item.innerHTML = `
-                <img src="${previewSrc}" class="list-thumb">
-                <div style="flex:1;">
-                    <div style="font-weight:bold; font-size:0.9rem;">${room} - ${work}</div>
-                    <div style="font-size:0.8rem; color:#555;">${sub} | ${type}</div>
-                    <div style="font-size:0.8rem; color:#666;">${verdict}</div>
-                </div>
-                <div class="list-right-info">
-                    <span class="tag" style="background:${tagColor}">No.${count}</span>
-                    <button class="btn-delete-item" onclick="window.deleteItem(${uniqueId})">삭제</button>
-                </div>
-            `;
-            document.getElementById('listBox').prepend(item);
-            document.getElementById('listCount').innerText = `(${defectDataList.length})`;
-            
-            document.getElementById('cameraInput').value = "";
-            currentImageFile = null;
-        };
-
-        window.deleteItem = function(id) {
-            if(confirm("삭제하시겠습니까?")) {
-                defectDataList = defectDataList.filter(i => i.id !== id);
-                document.getElementById(`item-${id}`).remove();
-                document.getElementById('listCount').innerText = `(${defectDataList.length})`;
-            }
-        };
-
-        window.saveAll = function() {
-            if(defectDataList.length === 0) { alert("저장할 데이터가 없습니다."); return; }
-            
-            const aptName = document.getElementById('aptName').value || "현장";
-            const aptDong = document.getElementById('aptDong').value || "동";
-            const aptHo = document.getElementById('aptHo').value || "호";
-            const fileName = `${aptName}_${aptDong}동_${aptHo}호_점검리스트.csv`;
-
-            let csv = `\uFEFF[${aptName} ${aptDong}동 ${aptHo}호 점검 리스트]\n`; 
-            csv += "번호,아파트정보,위치,공종,세부,유형,내용,판정\n";
-            
-            defectDataList.forEach(r => {
-                const cleanDetail = r.detail.replace(/,/g, " ");
-                csv += `${r.no},"${r.apt}","${r.room}","${r.work}","${r.sub}","${r.type}","${cleanDetail}","${r.verdict}"\n`;
-            });
-
-            const link = document.createElement("a");
-            link.href = encodeURI("data:text/csv;charset=utf-8," + csv);
-            link.download = fileName;
-            link.click();
-        };
     </script>
 </body>
 </html>

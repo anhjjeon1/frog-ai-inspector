@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (Final v4.1)</title>
+    <title>청개구리 입주자사전점검 AI (Final v4.2)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -106,7 +106,7 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 4.1 (Complete)</span>
+        <span class="version-badge">Ver 4.2 (New Project Key)</span>
     </div>
     <p class="sub-desc" id="statusMsg">AI 엔진 연결 대기중...</p>
 
@@ -215,11 +215,10 @@
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
         // =========================================================
-        // [필수] 방금 만든 "새 키"를 여기에 붙여넣으세요!
+        // [필수] 'free ai inspector' 프로젝트의 새 키를 붙여넣으세요!
         // =========================================================
         const API_KEY = "AIzaSyBrm7hNZJvH17Y2ssaTaZgdg2Pc1Khq3SI"; 
 
-        // [안전] 가장 확실한 1.5 모델 사용 (연결 성공 후 2.0으로 바꾸셔도 됩니다)
         const genAI = new GoogleGenerativeAI(API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 

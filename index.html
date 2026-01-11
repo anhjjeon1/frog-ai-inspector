@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (Targeting)</title>
+    <title>청개구리 입주자사전점검 AI (Final)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -19,14 +19,13 @@
         
         .top-section { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; margin-top: 10px; }
         
-        /* [수정] 사진 영역 및 십자선 스타일 */
         .photo-area { 
             width: 100%; 
             aspect-ratio: 16 / 9; 
             background: #f1f3f5; 
             border: 2px dashed #bdc3c7; 
             border-radius: 12px; 
-            position: relative; /* 중요: 자식 요소 위치 기준 */
+            position: relative; 
             cursor: pointer; 
             display: flex; 
             flex-direction: column; 
@@ -36,25 +35,38 @@
             min-height: 200px; 
         }
         
-        /* 십자선 (+) 스타일 추가 */
+        /* [수정 1] 점선 십자선 스타일 */
         .center-crosshair {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
-            pointer-events: none; /* 클릭 통과 */
+            width: 60px;
+            height: 60px;
+            pointer-events: none;
             z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .center-crosshair::before, .center-crosshair::after {
+        /* 가로 점선 */
+        .center-crosshair::before {
             content: '';
             position: absolute;
-            background-color: rgba(255, 0, 0, 0.8); /* 붉은색 */
-            box-shadow: 0 0 3px rgba(255, 255, 255, 0.8); /* 흰색 테두리 효과 */
+            width: 100%;
+            height: 0;
+            border-top: 3px dashed rgba(255, 0, 0, 0.9); /* 빨간색 점선 */
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); /* 흰색 그림자로 잘 보이게 */
         }
-        .center-crosshair::before { top: 18px; left: 0; width: 40px; height: 4px; border-radius: 2px; } /* 가로선 */
-        .center-crosshair::after { top: 0; left: 18px; width: 4px; height: 40px; border-radius: 2px; } /* 세로선 */
+        /* 세로 점선 */
+        .center-crosshair::after {
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: 0;
+            border-left: 3px dashed rgba(255, 0, 0, 0.9); /* 빨간색 점선 */
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.8));
+        }
 
         .photo-icon { font-size: 2rem; margin-bottom: 5px; opacity: 0.4; color: #3498db; }
         .photo-text { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; text-align: center; }
@@ -63,8 +75,20 @@
         .basic-inputs { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 10px; }
         .input-group { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
         .input-group label { font-size: 0.75rem; color: #34495e; font-weight: 700; margin: 0; }
-        .input-group input, .input-group select { width: 100%; padding: 0 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; height: 32px; background: #fff; box-sizing: border-box; }
+        .input-group input, .input-group select { width: 100%; padding: 0 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; height: 35px; background: #fff; box-sizing: border-box; }
         .input-group input:focus, .input-group select:focus { border-color: #3498db; outline: none; }
+        
+        /* [수정 2] 공종/세부공종 입력칸 스타일 */
+        .split-row {
+            display: flex;
+            gap: 10px; /* 두 칸 사이 간격 벌리기 */
+            width: 100%;
+        }
+        .split-row input {
+            flex: 1; /* 1:1 비율로 꽉 채우기 */
+            text-align: center; /* 텍스트 중앙 정렬 */
+        }
+
         .bottom-section { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
         .auto-input-label { font-size: 0.85rem; font-weight: 700; color: #3498db; display: flex; align-items: center; gap: 6px; }
         textarea { width: 100%; padding: 12px; border: 1px solid #dcdde1; border-radius: 12px; height: 70px; font-size: 0.9rem; box-sizing: border-box; resize: none; background: #fdfdfd; }
@@ -92,7 +116,7 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 2.5 Targeting</span>
+        <span class="version-badge">Ver 2.6 Final</span>
     </div>
     <p class="sub-desc" id="statusMsg">AI 엔진 및 DB 연결 대기중...</p>
 
@@ -102,7 +126,7 @@
             
             <div class="photo-area" id="photoAreaBtn">
                 <div class="photo-icon"><i class="fa-solid fa-camera"></i></div>
-                <div class="photo-text">이곳을 터치하여 촬영<br>(붉은 십자선에 하자를 맞추세요)</div>
+                <div class="photo-text">터치하여 촬영<br>(점선 십자선에 하자를 맞추세요)</div>
                 <img id="previewImage" class="preview-img">
                 
                 <div class="center-crosshair"></div>
@@ -123,13 +147,15 @@
                         <option value="실외기실">실외기실</option>
                     </select>
                 </div>
+                
                 <div class="input-group">
                     <label>공종 / 세부공종</label>
-                    <div style="display:flex; gap:5px; width:100%;">
-                        <input type="text" id="workType" placeholder="공종" style="flex:1;">
-                        <input type="text" id="subWorkType" placeholder="세부" style="flex:1;">
+                    <div class="split-row">
+                        <input type="text" id="workType" placeholder="공종 (예: 창호)">
+                        <input type="text" id="subWorkType" placeholder="세부 (예: 손잡이)">
                     </div>
                 </div>
+                
                 <div class="input-group">
                     <label>하자유형</label>
                     <input type="text" id="defectType" placeholder="자동 입력">
@@ -139,9 +165,9 @@
 
         <div class="bottom-section">
             <div class="auto-input-label">
-                <i class="fa-solid fa-robot"></i> AI하자입력 (중앙집중 분석)
+                <i class="fa-solid fa-robot"></i> AI하자입력 (십자선 집중 분석)
             </div>
-            <textarea id="defectDetail" placeholder="사진의 붉은 십자선(+) 부분에 있는 하자를 AI가 집중 분석합니다."></textarea>
+            <textarea id="defectDetail" placeholder="점선 십자선(+) 위치의 하자를 AI가 분석합니다."></textarea>
         </div>
 
         <div class="nav-buttons-row">
@@ -180,19 +206,25 @@
     <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
-        // ==========================================
-        // [1] AI 설정
-        // ==========================================
-        const keyPart1 = "AIzaSyCsJt6Ow";
-        const keyPart2 = "JAYK_NuQr9G-B";
+        // =================================================================
+        // [필수] "AI 연결 불안정" 해결을 위해 본인의 API 키를 입력하세요!
+        // =================================================================
+        // 아래 키는 예시이며, 반드시 본인이 구글 AI 스튜디오에서 발급받은 키를 넣어야 합니다.
+        // 현재 이 예시 키는 작동하지 않습니다.
+        
+        const keyPart1 = "AIzaSyCsJt6Ow"; // <-- 여기를 본인 키로 바꾸거나
+        const keyPart2 = "JAYK_NuQr9G-B"; // <-- 변수 하나에 키 전체를 넣으셔도 됩니다.
         const keyPart3 = "9_Q8XNawqiSNA";
+        
+        // 실제 사용할 때는 아래처럼 본인 키를 직접 넣는 것이 가장 확실합니다.
+        // 예: const API_KEY = "AIzaSy..."; 
         const API_KEY = keyPart1 + keyPart2 + keyPart3;
 
         const genAI = new GoogleGenerativeAI(API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         // ==========================================
-        // [2] 구글 시트 DB 설정 (백업용)
+        // 구글 시트 DB 설정 (백업용)
         // ==========================================
         const SHEET_ID = "2PACX-1vQAjc1TH-seT2jWi3T5iN9eoul3hia4JTbeskORX_lPhOOQjOo_KQnnth5ETHxgIhWeXRjcXGVBCImN";
         const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`;
@@ -231,9 +263,6 @@
             });
         }
 
-        // ==========================================
-        // [3] 메인 로직: 십자선 타겟팅 분석
-        // ==========================================
         let defectDataList = [];
         let currentImageFile = null;
 
@@ -245,13 +274,11 @@
             if (!file) return;
             currentImageFile = file;
 
-            // 미리보기
             const reader = new FileReader();
             reader.onload = (e) => {
                 const preview = document.getElementById('previewImage');
                 preview.src = e.target.result;
                 preview.style.display = 'block';
-                // 분석 시작
                 runTargetedAnalysis(file);
             };
             reader.readAsDataURL(file);
@@ -272,22 +299,23 @@
             const detailBox = document.getElementById('defectDetail');
             const statusMsg = document.getElementById('statusMsg');
             
-            detailBox.value = "붉은 십자선(+) 위치를 분석 중입니다...";
+            detailBox.value = "점선 십자선(+) 위치를 분석 중입니다...";
             statusMsg.innerText = "🎯 타겟 정밀 분석 중...";
 
             try {
-                // [핵심 변경 사항] 프롬프트에 '중앙 십자선' 개념 주입
+                // [프롬프트 수정] 점선 십자선 강조
                 const prompt = `
-                    너는 건축 하자 진단 전문가야. 이 사진의 **정중앙(Center)**에는 사용자가 지적한 구체적인 하자가 있어.
+                    너는 건축 하자 진단 전문가야.
+                    사용자가 사진을 찍을 때 화면 중앙에 '점선 십자선(+)'을 맞추고 찍었어.
                     
                     [지시사항]
-                    1. 사진의 배경이나 주변 사물(화분, 소화기 등)은 무시해.
-                    2. 오직 사진의 **가운데(십자선 위치)**에 있는 창호 부속, 유리, 혹은 마감재를 집중해서 봐줘.
+                    1. 사진의 정중앙(Center Point)에 있는 물체의 하자를 분석해줘.
+                    2. 주변 배경(화분, 바닥 등)은 무시해.
                     3. 결과를 다음 JSON 형식으로만 출력해.
                     
-                    Format: {"work": "공종", "sub": "세부공종", "type": "하자유형", "detail": "하자내용"}
+                    {"work": "공종", "sub": "세부공종", "type": "하자유형", "detail": "하자내용"}
                     
-                    예시: 중앙에 창호 잠금장치가 고장났다면 -> {"work": "창호공사", "sub": "잠금장치", "type": "작동불량", "detail": "크리센트 잠금장치가 파손되어 작동하지 않음"}
+                    예: 중앙에 창호 손잡이가 있다면 -> {"work": "창호공사", "sub": "손잡이", "type": "작동불량", "detail": "손잡이 고정 나사가 풀려 덜거덕거림"}
                 `;
                 
                 const imagePart = await fileToGenerativePart(file);
@@ -295,7 +323,6 @@
                 const response = await result.response;
                 const text = response.text();
                 
-                // JSON 파싱 시도
                 let data = {};
                 try {
                     const jsonStr = text.match(/\{[\s\S]*\}/)[0];
@@ -304,14 +331,13 @@
                     data = { detail: text, work: "기타", sub: "", type: "점검요망" };
                 }
 
-                // UI 적용
                 applyDataToUI(data);
                 statusMsg.innerText = "✅ 타겟 분석 성공";
                 statusMsg.style.color = "#2ecc71";
 
             } catch (error) {
                 console.error("AI Error:", error);
-                // 실패 시 DB 사용
+                // AI 키 오류 시 여기서 DB로 넘어감
                 useFallbackDB();
             }
         }
@@ -321,14 +347,14 @@
             const statusMsg = document.getElementById('statusMsg');
 
             if(realDbData.length === 0) {
-                detailBox.value = "분석 실패. 직접 입력해주세요.";
-                statusMsg.innerText = "❌ 분석 실패";
+                detailBox.value = "분석 실패. API 키를 확인해주세요.";
+                statusMsg.innerText = "❌ 분석 실패 (키 확인 필요)";
                 return;
             }
 
-            // 랜덤 데이터 (AI 실패시 어쩔 수 없음)
             const randomData = realDbData[Math.floor(Math.random() * realDbData.length)];
             
+            // [중요] 여기가 "연결 불안정" 메시지 띄우는 곳입니다.
             statusMsg.innerText = "⚠️ AI 연결 불안정 -> DB 데이터 사용";
             statusMsg.style.color = "#e67e22"; 
             
@@ -337,7 +363,7 @@
 
         function applyDataToUI(data) {
             document.getElementById('workType').value = data.work || "";
-            document.getElementById('subWorkType').value = data.sub || "";
+            document.getElementById('subWorkType').value = data.sub || ""; // 세부공종 칸에 정확히 입력
             document.getElementById('defectType').value = data.type || "";
             
             if(data.location) document.getElementById('roomSelect').value = data.location;
@@ -355,9 +381,6 @@
             }
         }
 
-        // ==========================================
-        // [4] 기타 버튼 기능
-        // ==========================================
         window.goNextStep = function() { alert("다음 단계로 이동"); };
         window.goPrevStep = function() { 
             document.getElementById('workType').value = ''; 

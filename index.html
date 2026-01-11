@@ -15,11 +15,11 @@
             height: 100vh;
         }
 
-        /* [수정] 헤더 세로 크기 축소 */
+        /* 3. 상단 헤더: 세로 크기 축소 요청 반영 */
         header {
             background-color: #2c3e50;
             color: white;
-            padding: 10px 20px;
+            padding: 10px 20px; /* 패딩을 줄여 높이 축소 */
             text-align: center;
             font-size: 1.2rem;
             font-weight: bold;
@@ -32,10 +32,10 @@
             padding: 20px;
             gap: 20px;
             box-sizing: border-box;
-            overflow: hidden;
+            overflow: hidden; /* 스크롤 방지 */
         }
 
-        /* 왼쪽: 사진 입력창 */
+        /* 왼쪽: 사진 입력창 (화면 크기에 맞춤) */
         .image-section {
             flex: 1;
             background-color: #e0e0e0;
@@ -52,7 +52,7 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            display: none;
+            display: none; /* 이미지 업로드 전 숨김 */
         }
 
         .image-placeholder {
@@ -68,6 +68,7 @@
             gap: 15px;
         }
 
+        /* 1. 위치 입력칸 */
         .input-group {
             display: flex;
             flex-direction: column;
@@ -86,7 +87,7 @@
             font-size: 1rem;
         }
 
-        /* [수정] 공종, 하자유형 한 줄 배치 */
+        /* 1. 공종, 하자유형 한 줄 배치 */
         .row-group {
             display: flex;
             gap: 15px;
@@ -96,7 +97,7 @@
             flex: 1;
         }
 
-        /* [수정] 버튼 이름: AI하자입력 */
+        /* 2. 버튼 이름 변경: AI하자입력 */
         #analyzeBtn {
             background-color: #3498db;
             color: white;
@@ -113,16 +114,16 @@
             background-color: #2980b9;
         }
 
-        /* [수정] 하단 결과창 높이 절반 축소 */
+        /* 2. 하단 결과창 세로 크기 절반 축소 */
         .result-area {
-            flex: 1;
+            flex: 1; /* 남은 공간 차지하되 */
             display: flex;
             flex-direction: column;
         }
 
         .result-area textarea {
             width: 100%;
-            height: 150px; /* 높이 고정으로 축소 효과 */
+            height: 150px; /* 높이를 적절히 고정하여 축소 효과 */
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -196,17 +197,19 @@
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
         // ==========================================
-        // [API 키 분할 적용]
+        // [요청하신 부분] API 키 분할 적용 (오류 방지)
         // ==========================================
         const keyPart1 = "AIzaSyCsJt6Ow";
         const keyPart2 = "JAYK_NuQr9G-B";
         const keyPart3 = "9_Q8XNawqiSNA";
         
+        // 키 합치기
         const API_KEY = keyPart1 + keyPart2 + keyPart3;
         // ==========================================
 
         const genAI = new GoogleGenerativeAI(API_KEY);
 
+        // UI 요소 참조
         const fileInput = document.getElementById('fileInput');
         const imageDropZone = document.getElementById('imageDropZone');
         const previewImg = document.getElementById('previewImg');
@@ -216,6 +219,7 @@
 
         let selectedFile = null;
 
+        // 1. 이미지 업로드 처리 (클릭)
         imageDropZone.addEventListener('click', () => fileInput.click());
 
         fileInput.addEventListener('change', (e) => {
@@ -223,6 +227,7 @@
             handleFile(file);
         });
 
+        // 2. 이미지 미리보기 함수
         function handleFile(file) {
             if (!file) return;
             selectedFile = file;
@@ -236,6 +241,7 @@
             reader.readAsDataURL(file);
         }
 
+        // 3. 파일을 GenerativePart로 변환하는 헬퍼 함수
         async function fileToGenerativePart(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -252,26 +258,28 @@
             });
         }
 
+        // 4. AI 분석 버튼 클릭 핸들러
         analyzeBtn.addEventListener('click', async () => {
             if (!selectedFile) {
                 alert("사진을 먼저 등록해주세요.");
                 return;
             }
 
-            resultBox.value = "Gemini 2.0 모델이 사진을 분석 중입니다...";
+            resultBox.value = "Gemini 2.0 모델이 사진을 분석 중입니다... 잠시만 기다려주세요.";
             analyzeBtn.disabled = true;
             analyzeBtn.textContent = "분석 중...";
 
             try {
-                // ==========================================
-                // [모델 변경] Gemini 2.0 Flash Experimental
-                // ==========================================
+                // ====================================================
+                // [수정 완료] 모델을 Gemini 2.0 Flash Experimental로 변경
+                // ====================================================
                 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
                 const location = document.getElementById('locationInput').value || "알 수 없음";
                 const workType = document.getElementById('workType').value;
                 const defectType = document.getElementById('defectType').value;
 
+                // 프롬프트 구성
                 const prompt = `
                     너는 창호 및 건축 하자 전문가야.
                     사용자가 업로드한 사진을 분석해서 전문가스러운 하자 보고서 내용을 작성해줘.
@@ -282,7 +290,7 @@
                     - 예상 하자 유형: ${defectType}
                     
                     [요청 사항]
-                    - 사진에 보이는 구체적인 손상 상태를 정확히 묘사할 것.
+                    - 사진에 보이는 구체적인 손상 상태를 묘사할 것.
                     - 보수 방법이나 조치 사항을 간단히 제안할 것.
                     - 말투는 "~함", "~상태임" 등의 간결한 보고서체로 작성해줘.
                     - 전체 길이는 3~4문장으로 요약해줘.
@@ -298,7 +306,7 @@
 
             } catch (error) {
                 console.error("Error:", error);
-                resultBox.value = "오류가 발생했습니다.\n" + error.message;
+                resultBox.value = "오류가 발생했습니다. API 키나 네트워크 상태를 확인해주세요.\n" + error.message;
             } finally {
                 analyzeBtn.disabled = false;
                 analyzeBtn.textContent = "AI하자입력";

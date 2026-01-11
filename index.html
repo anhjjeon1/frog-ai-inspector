@@ -211,18 +211,17 @@
         }
     </script>
 
-    <script type="module">
+<script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
         // =========================================================
-        // [New API Key] 안전하게 3등분 하여 적용
-        // 키: AIzaSyCcgb-jbUjwmuHvjjlHBcVyaWxYXuPvLbY
+        // [긴급 수정] 새 프로젝트에서 만든 키를 '통째로' 넣으세요.
+        // 예: "AIzaSy..." (따옴표 안에 전체 키 입력)
         // =========================================================
-        const keyPart1 = "AIzaSyCcgb-"; 
-        const keyPart2 = "jbUjwmuHv"; 
-        const keyPart3 = "jjlHBcVyaWxYXuPvLbY";
-        
-        const API_KEY = keyPart1 + keyPart2 + keyPart3;
+        const API_KEY = "AIzaSyCzPoLVULFRCnf5zTTA9GQENkK1umllZkU"; 
+
+        const genAI = new GoogleGenerativeAI(API_KEY);
+        // ... (나머지 코드는 그대로 둡니다)
 
         const genAI = new GoogleGenerativeAI(API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -439,3 +438,4 @@
     </script>
 </body>
 </html>
+

@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (Final)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>청개구리 입주자사전점검 AI (Final Fixed)</title>
+    <link href="[https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap](https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap)" rel="stylesheet">
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
     
     <style>
         /* --- 기본 스타일 --- */
@@ -33,9 +33,10 @@
             justify-content: center; 
             overflow: hidden; 
             min-height: 200px; 
+            transition: opacity 0.3s;
         }
         
-        /* [수정 1] 점선 십자선 스타일 */
+        /* 점선 십자선 스타일 */
         .center-crosshair {
             position: absolute;
             top: 50%;
@@ -49,22 +50,20 @@
             align-items: center;
             justify-content: center;
         }
-        /* 가로 점선 */
         .center-crosshair::before {
             content: '';
             position: absolute;
             width: 100%;
             height: 0;
-            border-top: 3px dashed rgba(255, 0, 0, 0.9); /* 빨간색 점선 */
-            filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); /* 흰색 그림자로 잘 보이게 */
+            border-top: 3px dashed rgba(255, 0, 0, 0.9);
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.8));
         }
-        /* 세로 점선 */
         .center-crosshair::after {
             content: '';
             position: absolute;
             height: 100%;
             width: 0;
-            border-left: 3px dashed rgba(255, 0, 0, 0.9); /* 빨간색 점선 */
+            border-left: 3px dashed rgba(255, 0, 0, 0.9);
             filter: drop-shadow(0 0 2px rgba(255,255,255,0.8));
         }
 
@@ -78,15 +77,15 @@
         .input-group input, .input-group select { width: 100%; padding: 0 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; height: 35px; background: #fff; box-sizing: border-box; }
         .input-group input:focus, .input-group select:focus { border-color: #3498db; outline: none; }
         
-        /* [수정 2] 공종/세부공종 입력칸 스타일 */
+        /* 공종/세부공종 입력칸 스타일 */
         .split-row {
             display: flex;
-            gap: 10px; /* 두 칸 사이 간격 벌리기 */
+            gap: 10px;
             width: 100%;
         }
         .split-row input {
-            flex: 1; /* 1:1 비율로 꽉 채우기 */
-            text-align: center; /* 텍스트 중앙 정렬 */
+            flex: 1;
+            text-align: center;
         }
 
         .bottom-section { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
@@ -114,9 +113,9 @@
 <body>
 
     <div class="header-container">
-        <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
+        <img src="froginspector.png" onerror="this.src='[https://cdn-icons-png.flaticon.com/512/3069/3069172.png](https://cdn-icons-png.flaticon.com/512/3069/3069172.png)'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 2.6 Final</span>
+        <span class="version-badge">Ver 2.7 Fix</span>
     </div>
     <p class="sub-desc" id="statusMsg">AI 엔진 및 DB 연결 대기중...</p>
 
@@ -198,7 +197,7 @@
     <script type="importmap">
         {
           "imports": {
-            "@google/generative-ai": "https://esm.run/@google/generative-ai"
+            "@google/generative-ai": "[https://esm.run/@google/generative-ai](https://esm.run/@google/generative-ai)"
           }
         }
     </script>
@@ -207,17 +206,12 @@
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
         // =================================================================
-        // [필수] "AI 연결 불안정" 해결을 위해 본인의 API 키를 입력하세요!
+        // [수정 완료] 요청하신 API 키 3단 분리 적용
         // =================================================================
-        // 아래 키는 예시이며, 반드시 본인이 구글 AI 스튜디오에서 발급받은 키를 넣어야 합니다.
-        // 현재 이 예시 키는 작동하지 않습니다.
-        
-        const keyPart1 = "AIzaSyAsIRPKbA0pMNUb"; // <-- 여기를 본인 키로 바꾸거나
-        const keyPart2 = "_"; // <-- 변수 하나에 키 전체를 넣으셔도 됩니다.
+        const keyPart1 = "AIzaSyAsIRPKbA0pMNUb"; 
+        const keyPart2 = "_"; 
         const keyPart3 = "jKNpuj1nRKmValA0a4";
         
-        // 실제 사용할 때는 아래처럼 본인 키를 직접 넣는 것이 가장 확실합니다.
-        // 예: const API_KEY = "AIzaSy..."; 
         const API_KEY = keyPart1 + keyPart2 + keyPart3;
 
         const genAI = new GoogleGenerativeAI(API_KEY);
@@ -225,6 +219,7 @@
 
         // ==========================================
         // 구글 시트 DB 설정 (백업용)
+        // 주의: 구글 시트에서 [파일] -> [공유] -> [웹에 게시] -> [CSV] 설정 필수!
         // ==========================================
         const SHEET_ID = "2PACX-1vQAjc1TH-seT2jWi3T5iN9eoul3hia4JTbeskORX_lPhOOQjOo_KQnnth5ETHxgIhWeXRjcXGVBCImN";
         const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`;
@@ -298,12 +293,15 @@
         async function runTargetedAnalysis(file) {
             const detailBox = document.getElementById('defectDetail');
             const statusMsg = document.getElementById('statusMsg');
+            const photoBtn = document.getElementById('photoAreaBtn');
             
+            // [UX 개선] 분석 중 중복 클릭 방지
             detailBox.value = "점선 십자선(+) 위치를 분석 중입니다...";
             statusMsg.innerText = "🎯 타겟 정밀 분석 중...";
+            photoBtn.style.pointerEvents = 'none'; // 클릭 막기
+            photoBtn.style.opacity = '0.5';
 
             try {
-                // [프롬프트 수정] 점선 십자선 강조
                 const prompt = `
                     너는 건축 하자 진단 전문가야.
                     사용자가 사진을 찍을 때 화면 중앙에 '점선 십자선(+)'을 맞추고 찍었어.
@@ -311,7 +309,7 @@
                     [지시사항]
                     1. 사진의 정중앙(Center Point)에 있는 물체의 하자를 분석해줘.
                     2. 주변 배경(화분, 바닥 등)은 무시해.
-                    3. 결과를 다음 JSON 형식으로만 출력해.
+                    3. 결과를 다음 JSON 형식으로만 출력해. 마크다운 기호 없이 순수 JSON만 줘.
                     
                     {"work": "공종", "sub": "세부공종", "type": "하자유형", "detail": "하자내용"}
                     
@@ -325,9 +323,17 @@
                 
                 let data = {};
                 try {
-                    const jsonStr = text.match(/\{[\s\S]*\}/)[0];
-                    data = JSON.parse(jsonStr);
+                    // [안전성 강화] 마크다운 코드블록 제거 후 JSON 파싱
+                    let cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
+                    const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
+                    
+                    if (jsonMatch) {
+                        data = JSON.parse(jsonMatch[0]);
+                    } else {
+                        throw new Error("JSON format not found");
+                    }
                 } catch (e) {
+                    console.warn("JSON Parse Fail, using raw text", e);
                     data = { detail: text, work: "기타", sub: "", type: "점검요망" };
                 }
 
@@ -337,8 +343,11 @@
 
             } catch (error) {
                 console.error("AI Error:", error);
-                // AI 키 오류 시 여기서 DB로 넘어감
                 useFallbackDB();
+            } finally {
+                // [UX 개선] 분석 끝나면 버튼 복구
+                photoBtn.style.pointerEvents = 'auto';
+                photoBtn.style.opacity = '1';
             }
         }
 
@@ -347,14 +356,13 @@
             const statusMsg = document.getElementById('statusMsg');
 
             if(realDbData.length === 0) {
-                detailBox.value = "분석 실패. API 키를 확인해주세요.";
+                detailBox.value = "분석 실패. API 키 또는 네트워크를 확인해주세요.";
                 statusMsg.innerText = "❌ 분석 실패 (키 확인 필요)";
                 return;
             }
 
             const randomData = realDbData[Math.floor(Math.random() * realDbData.length)];
             
-            // [중요] 여기가 "연결 불안정" 메시지 띄우는 곳입니다.
             statusMsg.innerText = "⚠️ AI 연결 불안정 -> DB 데이터 사용";
             statusMsg.style.color = "#e67e22"; 
             
@@ -363,15 +371,18 @@
 
         function applyDataToUI(data) {
             document.getElementById('workType').value = data.work || "";
-            document.getElementById('subWorkType').value = data.sub || ""; // 세부공종 칸에 정확히 입력
+            document.getElementById('subWorkType').value = data.sub || ""; 
             document.getElementById('defectType').value = data.type || "";
             
             if(data.location) document.getElementById('roomSelect').value = data.location;
             
             const detailBox = document.getElementById('defectDetail');
-            detailBox.value = data.detail || "";
+            const detailText = data.detail || "";
+            detailBox.value = detailText;
             
-            const isDanger = (data.detail && (data.detail.includes("파손") || data.detail.includes("누수")));
+            // [오류 방지] detail이 undefined일 경우 대비
+            const isDanger = (detailText.includes("파손") || detailText.includes("누수") || detailText.includes("균열"));
+            
             if(isDanger) {
                 detailBox.style.color = "#e74c3c";
                 detailBox.style.borderColor = "#e74c3c";
@@ -381,7 +392,7 @@
             }
         }
 
-        window.goNextStep = function() { alert("다음 단계로 이동"); };
+        window.goNextStep = function() { alert("다음 단계로 이동 (기능 준비중)"); };
         window.goPrevStep = function() { 
             document.getElementById('workType').value = ''; 
             document.getElementById('subWorkType').value = ''; 
@@ -403,10 +414,13 @@
 
             const uniqueId = Date.now();
             const count = defectDataList.length + 1;
-            const verdict = detail.includes("파손") ? "심각" : "정상";
+            
+            // [오류 방지] 안전한 문자열 처리
+            const safeDetail = detail || "";
+            const verdict = (safeDetail.includes("파손") || safeDetail.includes("누수") || safeDetail.includes("균열")) ? "심각" : "정상";
             const tagColor = verdict === "심각" ? "#e74c3c" : "#2ecc71";
 
-            defectDataList.push({ id: uniqueId, no: count, room, work, sub, type, detail, verdict });
+            defectDataList.push({ id: uniqueId, no: count, room, work, sub, type, detail: safeDetail, verdict });
 
             const item = document.createElement('div');
             item.className = 'list-item';
@@ -426,12 +440,13 @@
             document.getElementById('listBox').prepend(item);
             document.getElementById('listCount').innerText = `(${defectDataList.length})`;
             
+            // 입력창 초기화는 선택사항 (여기선 사진만 초기화)
             document.getElementById('cameraInput').value = "";
             currentImageFile = null;
         };
 
         window.deleteItem = function(id) {
-            if(confirm("삭제?")) {
+            if(confirm("이 항목을 삭제하시겠습니까?")) {
                 defectDataList = defectDataList.filter(i => i.id !== id);
                 document.getElementById(`item-${id}`).remove();
                 document.getElementById('listCount').innerText = `(${defectDataList.length})`;
@@ -439,15 +454,14 @@
         };
 
         window.saveAll = function() {
-            if(defectDataList.length === 0) return;
+            if(defectDataList.length === 0) { alert("저장할 데이터가 없습니다."); return; }
             let csv = "\uFEFF번호,위치,공종,세부,유형,내용,판정\n";
             defectDataList.forEach(r => csv += `${r.no},"${r.room}","${r.work}","${r.sub}","${r.type}","${r.detail}","${r.verdict}"\n`);
             const link = document.createElement("a");
             link.href = encodeURI("data:text/csv;charset=utf-8," + csv);
-            link.download = "사전점검.csv";
+            link.download = "청개구리_사전점검.csv";
             link.click();
         };
     </script>
 </body>
 </html>
-

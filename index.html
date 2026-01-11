@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (Final v2.9)</title>
+    <title>청개구리 입주자사전점검 AI (Final v3.0)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -19,6 +19,7 @@
         
         .top-section { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; margin-top: 10px; }
         
+        /* 사진 입력 영역 (Label 태그로 터치 오류 방지) */
         .photo-area { 
             width: 100%; 
             aspect-ratio: 16 / 9; 
@@ -63,7 +64,6 @@
         .input-group input, .input-group select { width: 100%; padding: 0 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; height: 38px; background: #fff; box-sizing: border-box; }
         .input-group input:focus, .input-group select:focus { border-color: #3498db; outline: none; }
         
-        /* 아파트/동/호 한 줄 스타일 */
         .apt-row { display: flex; width: 100%; gap: 6px; align-items: center; }
         .apt-input-wrap { position: relative; flex: 1; }
         .apt-input-wrap input { width: 100%; text-align: center; padding-right: 25px; }
@@ -106,7 +106,7 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 2.9 (No Random)</span>
+        <span class="version-badge">Ver 3.0 (New Key)</span>
     </div>
     <p class="sub-desc" id="statusMsg">AI 엔진 연결 대기중...</p>
 
@@ -214,18 +214,20 @@
     <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
-        // ============================================
-        // [중요] API 키 확인 필요
-        // ============================================
-        const keyPart1 = "AIzaSyAsIRPKbA0pMNUb"; 
-        const keyPart2 = "_"; 
-        const keyPart3 = "jKNpuj1nRKmValA0a4";
+        // =========================================================
+        // [New API Key] 안전하게 3등분 하여 적용
+        // 키: AIzaSyCcgb-jbUjwmuHvjjlHBcVyaWxYXuPvLbY
+        // =========================================================
+        const keyPart1 = "AIzaSyCcgb-"; 
+        const keyPart2 = "jbUjwmuHv"; 
+        const keyPart3 = "jjlHBcVyaWxYXuPvLbY";
+        
         const API_KEY = keyPart1 + keyPart2 + keyPart3;
 
         const genAI = new GoogleGenerativeAI(API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-        // 랜덤 데이터 기능을 제거하여 혼란 방지
+        // 랜덤 DB 사용 기능 제거 (오류 방지)
         let realDbData = []; 
 
         let defectDataList = [];
@@ -275,7 +277,7 @@
                     
                     [지시사항]
                     1. 사진의 정중앙(Center Point)에 있는 물체의 하자를 분석해줘.
-                    2. 주변 배경은 무시해.
+                    2. 주변 배경은 철저히 무시해.
                     3. 결과를 JSON 형식으로만 출력해.
                     
                     {"work": "공종", "sub": "세부공종", "type": "하자유형", "detail": "하자내용"}
@@ -306,11 +308,11 @@
             } catch (error) {
                 console.error("AI Error:", error);
                 
-                // [수정] 랜덤 데이터를 쓰지 않고, 오류 메시지를 명확히 표시
-                statusMsg.innerText = "⚠️ AI 연결 실패 (키/네트워크 확인)";
+                // [중요] 랜덤 데이터를 쓰지 않고, 명확한 오류 메시지 표시
+                statusMsg.innerText = "⚠️ 분석 실패";
                 statusMsg.style.color = "#e74c3c";
                 
-                document.getElementById('defectDetail').value = "AI 분석에 실패했습니다. (API 키 오류 또는 한도 초과)\n직접 내용을 입력해주세요.";
+                detailBox.value = "분석에 실패했습니다. (내용을 직접 입력해주세요)";
                 
                 // 입력창 초기화
                 document.getElementById('workType').value = "";

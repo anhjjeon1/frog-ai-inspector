@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (Final v2.8)</title>
+    <title>청개구리 입주자사전점검 AI (Final v2.9)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -19,7 +19,6 @@
         
         .top-section { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; margin-top: 10px; }
         
-        /* [수정 1] label 태그로 변경하여 터치 오류 원천 차단 */
         .photo-area { 
             width: 100%; 
             aspect-ratio: 16 / 9; 
@@ -35,7 +34,7 @@
             overflow: hidden; 
             min-height: 200px; 
             transition: opacity 0.3s;
-            box-sizing: border-box; /* 테두리 포함 크기 계산 */
+            box-sizing: border-box;
         }
         
         .center-crosshair {
@@ -64,32 +63,11 @@
         .input-group input, .input-group select { width: 100%; padding: 0 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; height: 38px; background: #fff; box-sizing: border-box; }
         .input-group input:focus, .input-group select:focus { border-color: #3498db; outline: none; }
         
-        /* [수정 2] 아파트/동/호 한 줄 스타일 */
-        .apt-row {
-            display: flex;
-            width: 100%;
-            gap: 6px;
-            align-items: center;
-        }
-        .apt-input-wrap {
-            position: relative;
-            flex: 1; /* 비율대로 늘어남 */
-        }
-        .apt-input-wrap input {
-            width: 100%;
-            text-align: center;
-            padding-right: 25px; /* 단위 글자 공간 확보 */
-        }
-        .unit-text {
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.8rem;
-            color: #7f8c8d;
-            font-weight: bold;
-            pointer-events: none;
-        }
+        /* 아파트/동/호 한 줄 스타일 */
+        .apt-row { display: flex; width: 100%; gap: 6px; align-items: center; }
+        .apt-input-wrap { position: relative; flex: 1; }
+        .apt-input-wrap input { width: 100%; text-align: center; padding-right: 25px; }
+        .unit-text { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: #7f8c8d; font-weight: bold; pointer-events: none; }
 
         .split-row { display: flex; gap: 10px; width: 100%; }
         .split-row input { flex: 1; text-align: center; }
@@ -128,9 +106,9 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 2.8 Layout</span>
+        <span class="version-badge">Ver 2.9 (No Random)</span>
     </div>
-    <p class="sub-desc" id="statusMsg">AI 엔진 및 DB 연결 대기중...</p>
+    <p class="sub-desc" id="statusMsg">AI 엔진 연결 대기중...</p>
 
     <div class="main-card">
         <div class="top-section">
@@ -237,7 +215,7 @@
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
         // ============================================
-        // [API 키 설정] 본인 키 사용 필수
+        // [중요] API 키 확인 필요
         // ============================================
         const keyPart1 = "AIzaSyAsIRPKbA0pMNUb"; 
         const keyPart2 = "_"; 
@@ -247,51 +225,12 @@
         const genAI = new GoogleGenerativeAI(API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-        // ============================================
-        // [구글 시트 백업 설정]
-        // ============================================
-        const SHEET_ID = "2PACX-1vQAjc1TH-seT2jWi3T5iN9eoul3hia4JTbeskORX_lPhOOQjOo_KQnnth5ETHxgIhWeXRjcXGVBCImN";
-        const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`;
-
+        // 랜덤 데이터 기능을 제거하여 혼란 방지
         let realDbData = []; 
-
-        window.onload = function() {
-            fetchGoogleSheet();
-        }
-
-        function fetchGoogleSheet() {
-            const status = document.getElementById('statusMsg');
-            fetch(GOOGLE_SHEET_URL)
-            .then(response => {
-                if (!response.ok) throw new Error("Network response");
-                return response.text();
-            })
-            .then(text => {
-                const rows = text.split('\n').slice(1);
-                realDbData = rows.map(row => {
-                    const cols = row.split(',');
-                    if(cols.length < 5) return null;
-                    const clean = (str) => str ? str.replace(/"/g, '').trim() : '';
-                    return {
-                        location: clean(cols[0]), work: clean(cols[1]), sub: clean(cols[2]),
-                        type: clean(cols[3]), detail: clean(cols[4])
-                    };
-                }).filter(item => item !== null);
-                
-                status.innerText = `✅ 시스템 준비 완료 (DB: ${realDbData.length}건)`;
-                status.style.color = "#2ecc71";
-            })
-            .catch(err => {
-                console.error("DB Load Error:", err);
-                status.innerText = "⚠️ DB 연결 실패 (AI만 작동합니다)";
-            });
-        }
 
         let defectDataList = [];
         let currentImageFile = null;
 
-        // [수정 완료] label 태그 사용으로 click 이벤트 리스너 제거 (자동 동작)
-        
         document.getElementById('cameraInput').addEventListener('change', async (event) => {
             const file = event.target.files[0];
             if (!file) return;
@@ -326,7 +265,6 @@
             detailBox.value = "점선 십자선(+) 위치를 분석 중입니다...";
             statusMsg.innerText = "🎯 타겟 정밀 분석 중...";
             
-            // 분석 중 클릭 방지 스타일
             photoBtn.style.opacity = '0.5';
             photoBtn.style.pointerEvents = 'none';
 
@@ -337,7 +275,7 @@
                     
                     [지시사항]
                     1. 사진의 정중앙(Center Point)에 있는 물체의 하자를 분석해줘.
-                    2. 주변 배경(화분, 바닥 등)은 무시해.
+                    2. 주변 배경은 무시해.
                     3. 결과를 JSON 형식으로만 출력해.
                     
                     {"work": "공종", "sub": "세부공종", "type": "하자유형", "detail": "하자내용"}
@@ -367,27 +305,21 @@
 
             } catch (error) {
                 console.error("AI Error:", error);
-                useFallbackDB();
+                
+                // [수정] 랜덤 데이터를 쓰지 않고, 오류 메시지를 명확히 표시
+                statusMsg.innerText = "⚠️ AI 연결 실패 (키/네트워크 확인)";
+                statusMsg.style.color = "#e74c3c";
+                
+                document.getElementById('defectDetail').value = "AI 분석에 실패했습니다. (API 키 오류 또는 한도 초과)\n직접 내용을 입력해주세요.";
+                
+                // 입력창 초기화
+                document.getElementById('workType').value = "";
+                document.getElementById('subWorkType').value = "";
+                document.getElementById('defectType').value = "";
             } finally {
                 photoBtn.style.opacity = '1';
                 photoBtn.style.pointerEvents = 'auto';
             }
-        }
-
-        function useFallbackDB() {
-            const detailBox = document.getElementById('defectDetail');
-            const statusMsg = document.getElementById('statusMsg');
-
-            if(realDbData.length === 0) {
-                detailBox.value = "분석 실패. API 키를 확인해주세요.";
-                statusMsg.innerText = "❌ 분석 실패";
-                return;
-            }
-
-            const randomData = realDbData[Math.floor(Math.random() * realDbData.length)];
-            statusMsg.innerText = "⚠️ AI 연결 불안정 -> DB 데이터 사용";
-            statusMsg.style.color = "#e67e22"; 
-            applyDataToUI(randomData);
         }
 
         function applyDataToUI(data) {
@@ -419,7 +351,6 @@
             document.getElementById('defectDetail').value = ''; 
         };
 
-        // [수정 3] 리스트 저장 시 상단 아파트 정보 갱신
         window.addToList = function() {
             const previewSrc = document.getElementById('previewImage').src;
             if (!currentImageFile && !previewSrc) { alert("사진이 없습니다."); return; }
@@ -436,7 +367,6 @@
 
             if(!room) { alert("위치(실내)를 선택해주세요."); return; }
             
-            // 아파트 정보 업데이트
             const aptInfoText = `${aptName || "OO아파트"} ${aptDong || "000"}동 ${aptHo || "0000"}호`;
             document.getElementById('currentAptInfo').innerText = aptInfoText;
 
@@ -449,7 +379,7 @@
 
             defectDataList.push({ 
                 id: uniqueId, no: count, 
-                apt: aptInfoText, // 데이터에 아파트 정보 추가
+                apt: aptInfoText, 
                 room, work, sub, type, detail: safeDetail, verdict 
             });
 
@@ -483,22 +413,18 @@
             }
         };
 
-        // [수정 4] 엑셀 저장 시 아파트 정보를 파일명과 상단에 포함
         window.saveAll = function() {
             if(defectDataList.length === 0) { alert("저장할 데이터가 없습니다."); return; }
             
-            // 현재 입력된 아파트 정보 가져오기 (파일명용)
             const aptName = document.getElementById('aptName').value || "현장";
             const aptDong = document.getElementById('aptDong').value || "동";
             const aptHo = document.getElementById('aptHo').value || "호";
             const fileName = `${aptName}_${aptDong}동_${aptHo}호_점검리스트.csv`;
 
-            // CSV 내용 생성
-            let csv = `\uFEFF[${aptName} ${aptDong}동 ${aptHo}호 점검 리스트]\n`; // 첫 줄에 제목
+            let csv = `\uFEFF[${aptName} ${aptDong}동 ${aptHo}호 점검 리스트]\n`; 
             csv += "번호,아파트정보,위치,공종,세부,유형,내용,판정\n";
             
             defectDataList.forEach(r => {
-                // CSV 쉼표 오류 방지를 위해 내용의 쉼표 제거
                 const cleanDetail = r.detail.replace(/,/g, " ");
                 csv += `${r.no},"${r.apt}","${r.room}","${r.work}","${r.sub}","${r.type}","${cleanDetail}","${r.verdict}"\n`;
             });

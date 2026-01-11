@@ -2,316 +2,294 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 하자 진단 시스템 (Gemini 2.0)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>청개구리 입주자사전점검 AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        /* 3. 상단 헤더: 세로 크기 축소 요청 반영 */
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 10px 20px; /* 패딩을 줄여 높이 축소 */
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-
-        .container {
-            display: flex;
-            flex: 1;
-            padding: 20px;
-            gap: 20px;
-            box-sizing: border-box;
-            overflow: hidden; /* 스크롤 방지 */
-        }
-
-        /* 왼쪽: 사진 입력창 (화면 크기에 맞춤) */
-        .image-section {
-            flex: 1;
-            background-color: #e0e0e0;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px dashed #aaa;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .image-section img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            display: none; /* 이미지 업로드 전 숨김 */
-        }
-
-        .image-placeholder {
-            text-align: center;
-            color: #666;
-        }
-
-        /* 오른쪽: 입력 필드 영역 */
-        .input-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        /* 1. 위치 입력칸 */
-        .input-group {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .input-group label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-        }
-
-        .input-group input, .input-group select {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-
-        /* 1. 공종, 하자유형 한 줄 배치 */
-        .row-group {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .row-group .input-group {
-            flex: 1;
-        }
-
-        /* 2. 버튼 이름 변경: AI하자입력 */
-        #analyzeBtn {
-            background-color: #3498db;
-            color: white;
-            padding: 15px;
-            border: none;
-            border-radius: 4px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-
-        #analyzeBtn:hover {
-            background-color: #2980b9;
-        }
-
-        /* 2. 하단 결과창 세로 크기 절반 축소 */
-        .result-area {
-            flex: 1; /* 남은 공간 차지하되 */
-            display: flex;
-            flex-direction: column;
-        }
-
-        .result-area textarea {
-            width: 100%;
-            height: 150px; /* 높이를 적절히 고정하여 축소 효과 */
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            resize: none;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-
+        /* --- 스타일 (기존 Ver 1.9/2.1 과 동일) --- */
+        body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #ffffff; color: #333; line-height: 1.4; }
+        .header-container { background: linear-gradient(135deg, #3498db, #2c3e50); padding: 15px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); height: 50px; position: relative; }
+        .header-frog-img { height: 40px; width: 40px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.8); background-color: white; }
+        .header-title { color: white; font-size: 1.1rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
+        .version-badge { position: absolute; right: 20px; bottom: 12px; font-size: 0.75rem; color: #ffffff; font-weight: 700; opacity: 0.9; }
+        .sub-desc { font-size: 0.8rem; text-align: center; color: #666; margin: 15px 0 5px 0; background: #f8f9fa; padding: 5px; }
+        .main-card { background: white; padding: 0 20px; max-width: 100%; margin: 0; }
+        .top-section { display: flex; flex-direction: row; gap: 15px; margin-bottom: 15px; margin-top: 10px; }
+        .photo-area { flex: 0 0 42%; aspect-ratio: 1 / 1; background: #f1f3f5; border: 2px dashed #bdc3c7; border-radius: 12px; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+        .photo-icon { font-size: 2rem; margin-bottom: 5px; opacity: 0.4; color: #3498db; }
+        .photo-text { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; text-align: center; }
+        .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 10; }
+        .basic-inputs { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 10px; }
+        .input-group { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+        .input-group label { font-size: 0.75rem; color: #34495e; font-weight: 700; margin: 0; }
+        .input-group input, .input-group select { width: 100%; padding: 0 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; height: 32px; background: #fff; box-sizing: border-box; }
+        .input-group input:focus, .input-group select:focus { border-color: #3498db; outline: none; }
+        .bottom-section { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
+        .auto-input-label { font-size: 0.85rem; font-weight: 700; color: #3498db; display: flex; align-items: center; gap: 6px; }
+        textarea { width: 100%; padding: 12px; border: 1px solid #dcdde1; border-radius: 12px; height: 70px; font-size: 0.9rem; box-sizing: border-box; resize: none; background: #fdfdfd; }
+        textarea:focus { border-color: #3498db; outline: none; }
+        .nav-buttons-row { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-nav { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .btn-next { background: #3498db; color: white; }
+        .btn-prev { background: #ecf0f1; color: #555; border: 1px solid #bdc3c7; }
+        .action-buttons { display: flex; gap: 10px; margin-top: 25px; padding: 20px; background: #f8f9fa; border-top: 1px solid #eee; }
+        .btn { flex: 1; padding: 14px; border: none; border-radius: 10px; font-weight: 700; color: white; font-size: 0.95rem; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+        .btn-save { background: #e74c3c; }
+        .btn-export { background: #2ecc71; }
+        .list-area { padding: 0 20px 10px 20px; margin-top: 20px; }
+        .list-item { background: white; padding: 12px; border-radius: 12px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid #ecf0f1; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; }
+        .list-thumb { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; border: 1px solid #eee; }
+        .list-right-info { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; margin-left: auto; }
+        .tag { padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; color: white; font-weight: bold; }
+        .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
+        .footer-info { text-align: center; background: #f1f2f6; padding: 30px 20px; color: #7f8c8d; font-size: 0.7rem; border-top: 1px solid #dfe4ea; line-height: 1.6; }
+        .footer-info p { margin: 4px 0; word-break: keep-all; }
+        .footer-bold { font-weight: 700; color: #2c3e50; font-size: 0.75rem;}
     </style>
 </head>
 <body>
 
-    <header>
-        AI 하자 진단 시스템 (Gemini 2.0)
-    </header>
+    <div class="header-container">
+        <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
+        <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
+        <span class="version-badge">Ver 2.2</span>
+    </div>
+    <p class="sub-desc" id="statusMsg">구글 시트 DB 연결 시도 중...</p>
 
-    <div class="container">
-        <div class="image-section" id="imageDropZone">
-            <div class="image-placeholder">
-                <p>사진을 드래그하거나 클릭하여 업로드</p>
-            </div>
-            <img id="previewImg" src="" alt="하자 사진 미리보기">
-            <input type="file" id="fileInput" accept="image/*" style="display: none;">
-        </div>
-
-        <div class="input-section">
-            
-            <div class="input-group">
-                <label>위치</label>
-                <input type="text" id="locationInput" placeholder="예: 거실 창호, 베란다 등">
+    <div class="main-card">
+        <div class="top-section">
+            <input type="file" id="cameraInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+            <div class="photo-area" onclick="triggerCamera()">
+                <div class="photo-icon"><i class="fa-solid fa-camera"></i></div>
+                <div class="photo-text">촬영</div>
+                <img id="previewImage" class="preview-img">
             </div>
 
-            <div class="row-group">
+            <div class="basic-inputs">
                 <div class="input-group">
-                    <label>공종</label>
-                    <select id="workType">
-                        <option value="창호">창호공사</option>
-                        <option value="유리">유리공사</option>
-                        <option value="마감">실리콘/마감</option>
+                    <label>위치(입력)</label>
+                    <select id="roomSelect">
+                        <option value="">선택</option>
+                        <option value="거실">거실</option>
+                        <option value="안방">안방</option>
+                        <option value="주방">주방</option>
+                        <option value="욕실1">공용 욕실</option>
+                        <option value="욕실2">부부 욕실</option>
+                        <option value="현관">현관</option>
+                        <option value="발코니">발코니</option>
+                        <option value="실외기실">실외기실</option>
                     </select>
+                </div>
+                <div class="input-group">
+                    <label>공종 / 세부공종</label>
+                    <div style="display:flex; gap:5px; width:100%;">
+                        <input type="text" id="workType" placeholder="공종" style="flex:1;">
+                        <input type="text" id="subWorkType" placeholder="세부" style="flex:1;">
+                    </div>
                 </div>
                 <div class="input-group">
                     <label>하자유형</label>
-                    <select id="defectType">
-                        <option value="파손">파손/깨짐</option>
-                        <option value="작동불량">작동불량</option>
-                        <option value="결로">결로/곰팡이</option>
-                        <option value="누수">누수</option>
-                    </select>
+                    <input type="text" id="defectType" placeholder="자동 입력">
                 </div>
             </div>
+        </div>
 
-            <button id="analyzeBtn">AI하자입력</button>
-
-            <div class="input-group result-area">
-                <label>하자 내용 (AI 자동생성)</label>
-                <textarea id="resultBox" placeholder="AI가 분석한 하자 내용이 여기에 입력됩니다."></textarea>
+        <div class="bottom-section">
+            <div class="auto-input-label">
+                <i class="fa-solid fa-robot"></i> AI하자입력
             </div>
+            <textarea id="defectDetail" placeholder="촬영하면 사장님의 시트 데이터가 입력됩니다."></textarea>
+        </div>
+
+        <div class="nav-buttons-row">
+            <button class="btn-nav btn-next" onclick="goNextStep()">
+                <span>다음 (추가입력)</span> <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <button class="btn-nav btn-prev" onclick="goPrevStep()">
+                <i class="fa-solid fa-arrow-rotate-left"></i> <span>이전 (수정)</span>
+            </button>
         </div>
     </div>
 
-    <script type="importmap">
-        {
-          "imports": {
-            "@google/generative-ai": "https://esm.run/@google/generative-ai"
-          }
-        }
-    </script>
+    <div class="action-buttons">
+        <button class="btn btn-save" onclick="addToList()">리스트 저장</button>
+        <button class="btn btn-export" onclick="saveAll()">엑셀 저장</button>
+    </div>
 
-    <script type="module">
-        import { GoogleGenerativeAI } from "@google/generative-ai";
+    <div class="list-area">
+        <h4 style="margin-bottom:10px; color:#555; font-size:0.95rem; padding-left:5px; border-left: 4px solid #3498db;"> 📋 저장된 리스트 <span id="listCount">(0)</span></h4>
+        <div id="listBox"></div>
+    </div>
 
-        // ==========================================
-        // [요청하신 부분] API 키 분할 적용 (오류 방지)
-        // ==========================================
-        const keyPart1 = "AIzaSyCsJt6Ow";
-        const keyPart2 = "JAYK_NuQr9G-B";
-        const keyPart3 = "9_Q8XNawqiSNA";
+    <div class="footer-info">
+        <p><span class="footer-bold">청개구리샤시</span> | 사업자등록번호 : 123-36-31426 | 대표 : 전영웅</p>
+        <p>전화 1599-7380 | COPYRIGHT ⓒ 2026 Cheong-gaeguri Corp.</p>
+    </div>
+
+    <script>
+        // -----------------------------------------------------------
+        // [수정됨] 보내주신 정확한 링크 적용 완료
+        // -----------------------------------------------------------
+        const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQAjc1TH-seT2jWi3T5iN9eoul3hia4JTbeskORX_lPhOOQjOo_KQnnth5ETHxgIhWeXRjcXGVBCImN/pub?output=csv";
         
-        // 키 합치기
-        const API_KEY = keyPart1 + keyPart2 + keyPart3;
-        // ==========================================
+        let defectDataList = [];
+        let realDbData = []; 
+        let currentImageSrc = null;
 
-        const genAI = new GoogleGenerativeAI(API_KEY);
-
-        // UI 요소 참조
-        const fileInput = document.getElementById('fileInput');
-        const imageDropZone = document.getElementById('imageDropZone');
-        const previewImg = document.getElementById('previewImg');
-        const placeholder = document.querySelector('.image-placeholder');
-        const analyzeBtn = document.getElementById('analyzeBtn');
-        const resultBox = document.getElementById('resultBox');
-
-        let selectedFile = null;
-
-        // 1. 이미지 업로드 처리 (클릭)
-        imageDropZone.addEventListener('click', () => fileInput.click());
-
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            handleFile(file);
-        });
-
-        // 2. 이미지 미리보기 함수
-        function handleFile(file) {
-            if (!file) return;
-            selectedFile = file;
-            
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                previewImg.src = e.target.result;
-                previewImg.style.display = 'block';
-                placeholder.style.display = 'none';
-            };
-            reader.readAsDataURL(file);
+        window.onload = function() {
+            fetchGoogleSheet();
         }
 
-        // 3. 파일을 GenerativePart로 변환하는 헬퍼 함수
-        async function fileToGenerativePart(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    const base64Data = reader.result.split(',')[1];
-                    resolve({
-                        inlineData: {
-                            data: base64Data,
-                            mimeType: file.type
-                        },
-                    });
-                };
-                reader.readAsDataURL(file);
+        function fetchGoogleSheet() {
+            fetch(GOOGLE_SHEET_URL)
+            .then(response => {
+                if (!response.ok) throw new Error("네트워크 응답 오류");
+                return response.text();
+            })
+            .then(text => {
+                const rows = text.split('\n').slice(1); // 헤더 제외
+                
+                realDbData = rows.map(row => {
+                    // CSV 파싱 (콤마 분리)
+                    const cols = row.split(','); 
+                    if(cols.length < 5) return null; 
+
+                    const clean = (str) => str ? str.replace(/"/g, '').trim() : '';
+
+                    // [데이터 매핑]
+                    // A열:위치, B열:공종, C열:세부, D열:유형, E열:내용
+                    return {
+                        location: clean(cols[0]),
+                        work: clean(cols[1]),
+                        sub: clean(cols[2]),
+                        type: clean(cols[3]),
+                        detail: clean(cols[4]),
+                        danger: (clean(cols[4]).includes("심각") || clean(cols[3]).includes("파손"))
+                    };
+                }).filter(item => item !== null);
+
+                // 성공 메시지
+                console.log("DB 로드 완료:", realDbData.length, "개");
+                const status = document.getElementById('statusMsg');
+                status.innerText = `✅ DB 연결 성공! (데이터 ${realDbData.length}건)`;
+                status.style.color = "#2ecc71";
+                status.style.fontWeight = "bold";
+            })
+            .catch(err => {
+                console.error("DB 로드 실패:", err);
+                const status = document.getElementById('statusMsg');
+                status.innerText = "❌ DB 연결 실패. 주소를 다시 확인해주세요.";
+                status.style.color = "#e74c3c";
             });
         }
 
-        // 4. AI 분석 버튼 클릭 핸들러
-        analyzeBtn.addEventListener('click', async () => {
-            if (!selectedFile) {
-                alert("사진을 먼저 등록해주세요.");
-                return;
+        function triggerCamera() { document.getElementById('cameraInput').click(); }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImage').src = e.target.result;
+                    document.getElementById('previewImage').style.display = 'block';
+                    currentImageSrc = e.target.result;
+                    runAIAnalysis();
+                }
+                reader.readAsDataURL(file);
             }
+        }
 
-            resultBox.value = "Gemini 2.0 모델이 사진을 분석 중입니다... 잠시만 기다려주세요.";
-            analyzeBtn.disabled = true;
-            analyzeBtn.textContent = "분석 중...";
+        function runAIAnalysis() {
+            const detailBox = document.getElementById('defectDetail');
+            detailBox.value = "DB 검색 중...";
+            
+            setTimeout(() => {
+                if(realDbData.length === 0) {
+                    detailBox.value = "불러올 데이터가 없습니다.";
+                    return;
+                }
 
-            try {
-                // ====================================================
-                // [수정 완료] 모델을 Gemini 2.0 Flash Experimental로 변경
-                // ====================================================
-                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+                const randomIndex = Math.floor(Math.random() * realDbData.length);
+                const matchedData = realDbData[randomIndex];
 
-                const location = document.getElementById('locationInput').value || "알 수 없음";
-                const workType = document.getElementById('workType').value;
-                const defectType = document.getElementById('defectType').value;
+                document.getElementById('roomSelect').value = matchedData.location || '';
+                document.getElementById('workType').value = matchedData.work;
+                document.getElementById('subWorkType').value = matchedData.sub;
+                document.getElementById('defectType').value = matchedData.type;
+                detailBox.value = matchedData.detail;
 
-                // 프롬프트 구성
-                const prompt = `
-                    너는 창호 및 건축 하자 전문가야.
-                    사용자가 업로드한 사진을 분석해서 전문가스러운 하자 보고서 내용을 작성해줘.
-                    
-                    [입력 정보]
-                    - 위치: ${location}
-                    - 공종: ${workType}
-                    - 예상 하자 유형: ${defectType}
-                    
-                    [요청 사항]
-                    - 사진에 보이는 구체적인 손상 상태를 묘사할 것.
-                    - 보수 방법이나 조치 사항을 간단히 제안할 것.
-                    - 말투는 "~함", "~상태임" 등의 간결한 보고서체로 작성해줘.
-                    - 전체 길이는 3~4문장으로 요약해줘.
-                `;
+                if(matchedData.danger) {
+                    detailBox.style.borderColor = "#e74c3c"; detailBox.style.color = "#e74c3c"; detailBox.style.fontWeight = "bold";
+                } else {
+                    detailBox.style.borderColor = "#2ecc71"; detailBox.style.color = "#333"; detailBox.style.fontWeight = "normal";
+                }
+            }, 800);
+        }
 
-                const imagePart = await fileToGenerativePart(selectedFile);
+        function goNextStep() { alert("상세 입력 단계로 이동합니다."); }
+        function goPrevStep() { 
+            document.getElementById('workType').value = ''; 
+            document.getElementById('defectDetail').value = ''; 
+            alert("입력을 초기화했습니다."); 
+        }
 
-                const result = await model.generateContent([prompt, imagePart]);
-                const response = await result.response;
-                const text = response.text();
+        function addToList() {
+            if (!currentImageSrc) { alert("사진을 촬영해주세요."); return; }
+            const room = document.getElementById('roomSelect').value;
+            const work = document.getElementById('workType').value;
+            const subWork = document.getElementById('subWorkType').value; 
+            const type = document.getElementById('defectType').value;
+            const detail = document.getElementById('defectDetail').value;
+            
+            if(room === "") { alert("위치를 선택해주세요."); return; }
 
-                resultBox.value = text;
+            const isDanger = detail.includes("심각") || type.includes("파손");
+            const verdict = isDanger ? "심각" : "정상";
+            const uniqueId = Date.now(); 
+            const count = defectDataList.length + 1;
 
-            } catch (error) {
-                console.error("Error:", error);
-                resultBox.value = "오류가 발생했습니다. API 키나 네트워크 상태를 확인해주세요.\n" + error.message;
-            } finally {
-                analyzeBtn.disabled = false;
-                analyzeBtn.textContent = "AI하자입력";
+            defectDataList.push({ id: uniqueId, no: count, room, work, subWork, type, detail, verdict });
+
+            const item = document.createElement('div');
+            item.className = 'list-item';
+            item.id = `item-${uniqueId}`;
+            const tagColor = isDanger ? '#e74c3c' : '#2ecc71';
+            
+            item.innerHTML = `
+                <img src="${currentImageSrc}" class="list-thumb">
+                <div style="flex:1;">
+                    <div style="font-weight:bold; font-size:0.9rem;">${room} - ${work}</div>
+                    <div style="font-size:0.8rem; color:#555;">${subWork ? subWork : ''} | ${type}</div>
+                    <div style="font-size:0.8rem; color:#666;">${verdict}</div>
+                </div>
+                <div class="list-right-info">
+                    <span class="tag" style="background:${tagColor}">No.${count}</span>
+                    <button class="btn-delete-item" onclick="deleteItem(${uniqueId})">삭제</button>
+                </div>
+            `;
+            document.getElementById('listBox').prepend(item);
+            document.getElementById('listCount').innerText = `(${defectDataList.length})`;
+        }
+
+        function deleteItem(id) {
+            if(confirm("삭제하시겠습니까?")) {
+                defectDataList = defectDataList.filter(item => item.id !== id);
+                document.getElementById(`item-${id}`).remove();
+                document.getElementById('listCount').innerText = `(${defectDataList.length})`;
             }
-        });
+        }
+
+        function saveAll() {
+            if(defectDataList.length === 0) return;
+            let csv = "\uFEFF번호,위치,공종,세부공종,하자유형,내용,판정\n";
+            defectDataList.forEach(r => csv += `${r.no},"${r.room}","${r.work}","${r.subWork}","${r.type}","${r.detail.replace(/\n/g, ' ')}","${r.verdict}"\n`);
+            const link = document.createElement("a");
+            link.href = encodeURI("data:text/csv;charset=utf-8," + csv);
+            link.download = "사전점검_리스트.csv";
+            link.click();
+        }
     </script>
 </body>
 </html>

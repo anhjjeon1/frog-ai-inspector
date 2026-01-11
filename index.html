@@ -220,7 +220,7 @@
         const API_KEY = "AIzaSyCzPoLVULFRCnf5zTTA9GQENkK1umllZkU"; 
 
         const genAI = new GoogleGenerativeAI(API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
         // 랜덤 DB 사용 기능 제거 (오류 방지)
         let realDbData = []; 
@@ -434,3 +434,4 @@
     </script>
 </body>
 </html>
+

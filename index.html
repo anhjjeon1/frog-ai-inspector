@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (Gemini 2.0)</title>
+    <title>청개구리 입주자사전점검 AI (Hybrid)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 스타일 (기존 Ver 2.2 원본 유지) --- */
+        /* --- 스타일 (기존 유지) --- */
         body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #ffffff; color: #333; line-height: 1.4; }
         .header-container { background: linear-gradient(135deg, #3498db, #2c3e50); padding: 15px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); height: 50px; position: relative; }
         .header-frog-img { height: 40px; width: 40px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.8); background-color: white; }
@@ -16,11 +16,16 @@
         .version-badge { position: absolute; right: 20px; bottom: 12px; font-size: 0.75rem; color: #ffffff; font-weight: 700; opacity: 0.9; }
         .sub-desc { font-size: 0.8rem; text-align: center; color: #666; margin: 15px 0 5px 0; background: #f8f9fa; padding: 5px; }
         .main-card { background: white; padding: 0 20px; max-width: 100%; margin: 0; }
-        .top-section { display: flex; flex-direction: row; gap: 15px; margin-bottom: 15px; margin-top: 10px; }
-        .photo-area { flex: 0 0 42%; aspect-ratio: 1 / 1; background: #f1f3f5; border: 2px dashed #bdc3c7; border-radius: 12px; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+        
+        /* 모바일 레이아웃 수정 (상하 배치) */
+        .top-section { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; margin-top: 10px; }
+        
+        /* 사진 영역 높이 확보 */
+        .photo-area { width: 100%; aspect-ratio: 16 / 9; background: #f1f3f5; border: 2px dashed #bdc3c7; border-radius: 12px; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; min-height: 200px; }
         .photo-icon { font-size: 2rem; margin-bottom: 5px; opacity: 0.4; color: #3498db; }
         .photo-text { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; text-align: center; }
-        .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 10; }
+        .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 10; background-color: #000; }
+        
         .basic-inputs { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 10px; }
         .input-group { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
         .input-group label { font-size: 0.75rem; color: #34495e; font-weight: 700; margin: 0; }
@@ -45,7 +50,6 @@
         .tag { padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; color: white; font-weight: bold; }
         .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
         .footer-info { text-align: center; background: #f1f2f6; padding: 30px 20px; color: #7f8c8d; font-size: 0.7rem; border-top: 1px solid #dfe4ea; line-height: 1.6; }
-        .footer-info p { margin: 4px 0; word-break: keep-all; }
         .footer-bold { font-weight: 700; color: #2c3e50; font-size: 0.75rem;}
     </style>
 </head>
@@ -54,9 +58,9 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 2.3 EXP</span>
+        <span class="version-badge">Ver 2.4 Hybrid</span>
     </div>
-    <p class="sub-desc" id="statusMsg">Gemini 2.0 AI 엔진 준비 완료</p>
+    <p class="sub-desc" id="statusMsg">AI 엔진 및 DB 연결 대기중...</p>
 
     <div class="main-card">
         <div class="top-section">
@@ -86,8 +90,8 @@
                 <div class="input-group">
                     <label>공종 / 세부공종</label>
                     <div style="display:flex; gap:5px; width:100%;">
-                        <input type="text" id="workType" placeholder="공종 (AI)" style="flex:1;">
-                        <input type="text" id="subWorkType" placeholder="세부 (AI)" style="flex:1;">
+                        <input type="text" id="workType" placeholder="공종" style="flex:1;">
+                        <input type="text" id="subWorkType" placeholder="세부" style="flex:1;">
                     </div>
                 </div>
                 <div class="input-group">
@@ -99,9 +103,9 @@
 
         <div class="bottom-section">
             <div class="auto-input-label">
-                <i class="fa-solid fa-robot"></i> AI하자입력 (Gemini 2.0)
+                <i class="fa-solid fa-robot"></i> AI하자입력
             </div>
-            <textarea id="defectDetail" placeholder="사진을 등록하면 Gemini 2.0이 자동으로 분석합니다."></textarea>
+            <textarea id="defectDetail" placeholder="사진을 등록하면 AI가 분석합니다. (실패시 DB 데이터 사용)"></textarea>
         </div>
 
         <div class="nav-buttons-row">
@@ -141,179 +145,218 @@
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
         // ==========================================
-        // [설정] API 키 분할 및 모델 설정
+        // [1] AI 설정 (오류 발생 시 DB로 자동 전환)
         // ==========================================
         const keyPart1 = "AIzaSyCsJt6Ow";
         const keyPart2 = "JAYK_NuQr9G-B";
         const keyPart3 = "9_Q8XNawqiSNA";
         const API_KEY = keyPart1 + keyPart2 + keyPart3;
 
-        // [핵심] Gemini 2.0 Experimental 모델 사용
         const genAI = new GoogleGenerativeAI(API_KEY);
-        const model = genAI.getGenerativeModel({ 
-            model: "gemini-2.0-flash-exp",
-            generationConfig: { responseMimeType: "application/json" } // JSON 응답 강제
-        });
+        // 안정성을 위해 Gemini 1.5 Flash 사용 (Experimental 오류 방지)
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         // ==========================================
-        // [변수]
+        // [2] 구글 시트 DB 설정 (백업용) - 주소 수정 완료 (CSV)
+        // ==========================================
+        // 사용자 제공 ID 적용, pubhtml -> pub?output=csv 로 변경
+        const SHEET_ID = "2PACX-1vQAjc1TH-seT2jWi3T5iN9eoul3hia4JTbeskORX_lPhOOQjOo_KQnnth5ETHxgIhWeXRjcXGVBCImN";
+        const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`;
+
+        let realDbData = []; 
+
+        // ==========================================
+        // [3] 초기화 및 DB 로드
+        // ==========================================
+        window.onload = function() {
+            fetchGoogleSheet();
+        }
+
+        function fetchGoogleSheet() {
+            const status = document.getElementById('statusMsg');
+            fetch(GOOGLE_SHEET_URL)
+            .then(response => {
+                if (!response.ok) throw new Error("Network response was not ok");
+                return response.text();
+            })
+            .then(text => {
+                const rows = text.split('\n').slice(1);
+                realDbData = rows.map(row => {
+                    const cols = row.split(',');
+                    if(cols.length < 5) return null;
+                    const clean = (str) => str ? str.replace(/"/g, '').trim() : '';
+                    return {
+                        location: clean(cols[0]), work: clean(cols[1]), sub: clean(cols[2]),
+                        type: clean(cols[3]), detail: clean(cols[4])
+                    };
+                }).filter(item => item !== null);
+                
+                status.innerText = `✅ 시스템 준비 완료 (DB: ${realDbData.length}건)`;
+                status.style.color = "#2ecc71";
+            })
+            .catch(err => {
+                console.error("DB Load Error:", err);
+                status.innerText = "⚠️ DB 연결 실패 (AI만 작동합니다)";
+            });
+        }
+
+        // ==========================================
+        // [4] 메인 로직: 사진 업로드 -> AI 시도 -> 실패시 DB
         // ==========================================
         let defectDataList = [];
-        let currentImageFile = null; // 실제 파일 객체
+        let currentImageFile = null;
 
-        // ==========================================
-        // [함수] 전역 스코프 등록 (HTML onclick 호환용)
-        // ==========================================
-        
-        // 1. 카메라 트리거
-        window.triggerCamera = function() {
-            document.getElementById('cameraInput').click();
-        };
+        window.triggerCamera = function() { document.getElementById('cameraInput').click(); };
 
-        // DOM 이벤트 리스너 연결
         document.getElementById('photoAreaBtn').addEventListener('click', window.triggerCamera);
-        document.getElementById('cameraInput').addEventListener('change', handleImageUpload);
-
-        // 2. 이미지 업로드 핸들러
-        async function handleImageUpload(event) {
+        document.getElementById('cameraInput').addEventListener('change', async (event) => {
             const file = event.target.files[0];
             if (!file) return;
-
             currentImageFile = file;
 
-            // 미리보기 표시
+            // 미리보기
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = (e) => {
                 const preview = document.getElementById('previewImage');
                 preview.src = e.target.result;
                 preview.style.display = 'block';
-                
-                // [AI 분석 시작]
-                runAIAnalysis(file);
-            }
+                // 분석 시작
+                runHybridAnalysis(file);
+            };
             reader.readAsDataURL(file);
-        }
+        });
 
-        // 3. 파일 -> Gemini 포맷 변환
         async function fileToGenerativePart(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.onloadend = () => {
                     const base64Data = reader.result.split(',')[1];
-                    resolve({
-                        inlineData: {
-                            data: base64Data,
-                            mimeType: file.type
-                        },
-                    });
+                    resolve({ inlineData: { data: base64Data, mimeType: file.type } });
                 };
                 reader.readAsDataURL(file);
             });
         }
 
-        // 4. [핵심] Gemini 2.0 분석 실행
-        async function runAIAnalysis(file) {
+        async function runHybridAnalysis(file) {
             const detailBox = document.getElementById('defectDetail');
             const statusMsg = document.getElementById('statusMsg');
-
-            // UI 상태 변경
-            detailBox.value = "Gemini 2.0이 사진을 정밀 분석 중입니다... 🔍";
-            statusMsg.innerText = "🔄 AI 분석 중...";
-            statusMsg.style.color = "#3498db";
+            
+            detailBox.value = "AI 분석 중입니다...";
+            statusMsg.innerText = "🔄 AI 분석 시도 중...";
 
             try {
-                // 프롬프트 작성
+                // 1차 시도: Real AI (Gemini)
                 const prompt = `
-                    당신은 아파트 사전점검 전문가입니다. 사진을 분석하여 다음 정보를 JSON 형식으로 출력하세요.
-                    
-                    1. work: 공종 (예: 창호공사, 도배공사, 가구공사, 타일공사, 마루공사 등)
-                    2. sub: 세부공종 (예: 창짝, 실크벽지, 붙박이장, 바닥타일, 걸레받이 등)
-                    3. type: 하자유형 (예: 파손, 찍힘, 오염, 곰팡이, 틈새과다, 작동불량 등)
-                    4. detail: 하자 내용에 대한 전문적인 설명 (2~3문장, "~상태임", "~요망" 등 간결한 보고서체)
-                    5. isDanger: 심각한 하자 여부 (true/false) - 파손이 심하거나 누수 등은 true
-
-                    응답은 오직 JSON 데이터만 보내주세요.
+                    건축 전문가로서 사진을 분석해 JSON으로 답해줘.
+                    형식: {"work": "공종", "sub": "세부공종", "type": "하자유형", "detail": "하자내용 1문장"}
+                    하자내용은 "~상태임"으로 끝내줘.
                 `;
-
                 const imagePart = await fileToGenerativePart(file);
-
-                // Gemini 호출
                 const result = await model.generateContent([prompt, imagePart]);
                 const response = await result.response;
-                const jsonText = response.text();
+                const text = response.text();
                 
-                // JSON 파싱
-                const data = JSON.parse(jsonText);
-
-                // 결과 UI 반영
-                document.getElementById('workType').value = data.work || "";
-                document.getElementById('subWorkType').value = data.sub || "";
-                document.getElementById('defectType').value = data.type || "";
-                detailBox.value = data.detail || "";
-
-                // 위험도에 따른 스타일링
-                if (data.isDanger) {
-                    detailBox.style.borderColor = "#e74c3c"; 
-                    detailBox.style.color = "#e74c3c";
-                    statusMsg.innerText = "⚠️ 심각한 하자가 감지되었습니다.";
-                    statusMsg.style.color = "#e74c3c";
-                } else {
-                    detailBox.style.borderColor = "#2ecc71"; 
-                    detailBox.style.color = "#333";
-                    statusMsg.innerText = "✅ AI 분석 완료 (Gemini 2.0)";
-                    statusMsg.style.color = "#2ecc71";
+                // JSON 파싱 시도
+                let data = {};
+                try {
+                    const jsonStr = text.match(/\{[\s\S]*\}/)[0];
+                    data = JSON.parse(jsonStr);
+                } catch (e) {
+                    // JSON 파싱 실패시 텍스트라도 넣음
+                    data = { detail: text, work: "기타", sub: "", type: "점검요망" };
                 }
 
+                // UI 적용
+                applyDataToUI(data);
+                statusMsg.innerText = "✅ AI 분석 성공";
+                statusMsg.style.color = "#2ecc71";
+
             } catch (error) {
-                console.error("AI Error:", error);
-                detailBox.value = "분석 중 오류가 발생했습니다. 다시 시도해주세요.\n" + error.message;
-                statusMsg.innerText = "❌ 분석 실패";
-                statusMsg.style.color = "#e74c3c";
+                console.error("AI Error, Switching to DB:", error);
+                // 2차 시도: 실패 시 DB(구글 시트) 데이터 사용
+                useFallbackDB();
             }
         }
 
-        // 5. 기타 버튼 동작들 (window 객체에 할당)
-        window.goNextStep = function() { alert("상세 입력 단계로 이동합니다."); };
-        
+        function useFallbackDB() {
+            const detailBox = document.getElementById('defectDetail');
+            const statusMsg = document.getElementById('statusMsg');
+
+            if(realDbData.length === 0) {
+                detailBox.value = "AI 분석 실패 및 DB 데이터 없음.\n직접 입력해주세요.";
+                statusMsg.innerText = "❌ 분석 실패";
+                return;
+            }
+
+            // 랜덤 데이터 추출 (Fake AI)
+            const randomData = realDbData[Math.floor(Math.random() * realDbData.length)];
+            
+            statusMsg.innerText = "⚠️ AI 연결 불안정 -> DB 데이터 사용";
+            statusMsg.style.color = "#e67e22"; // 주황색 경고
+            
+            applyDataToUI(randomData);
+        }
+
+        function applyDataToUI(data) {
+            document.getElementById('workType').value = data.work || "";
+            document.getElementById('subWorkType').value = data.sub || "";
+            document.getElementById('defectType').value = data.type || "";
+            
+            // 위치 정보가 DB에 있으면 적용 (AI는 위치를 잘 모르므로)
+            if(data.location) document.getElementById('roomSelect').value = data.location;
+            
+            const detailBox = document.getElementById('defectDetail');
+            detailBox.value = data.detail || "";
+            
+            // 위험도 표시 로직
+            const isDanger = (data.detail && (data.detail.includes("파손") || data.detail.includes("누수")));
+            if(isDanger) {
+                detailBox.style.color = "#e74c3c";
+                detailBox.style.borderColor = "#e74c3c";
+            } else {
+                detailBox.style.color = "#333";
+                detailBox.style.borderColor = "#2ecc71";
+            }
+        }
+
+        // ==========================================
+        // [5] 기타 버튼 기능 (기존 동일)
+        // ==========================================
+        window.goNextStep = function() { alert("다음 단계로 이동"); };
         window.goPrevStep = function() { 
             document.getElementById('workType').value = ''; 
             document.getElementById('subWorkType').value = ''; 
             document.getElementById('defectType').value = ''; 
             document.getElementById('defectDetail').value = ''; 
-            alert("입력을 초기화했습니다."); 
         };
 
         window.addToList = function() {
             const previewSrc = document.getElementById('previewImage').src;
-            if (!currentImageFile && (!previewSrc || previewSrc === location.href)) { 
-                alert("사진을 촬영해주세요."); return; 
-            }
+            if (!currentImageFile && !previewSrc) { alert("사진이 없습니다."); return; }
             
             const room = document.getElementById('roomSelect').value;
             const work = document.getElementById('workType').value;
-            const subWork = document.getElementById('subWorkType').value; 
+            const sub = document.getElementById('subWorkType').value;
             const type = document.getElementById('defectType').value;
             const detail = document.getElementById('defectDetail').value;
-            
-            if(room === "") { alert("위치를 선택해주세요."); return; }
 
-            const isDanger = detail.includes("심각") || detail.includes("파손") || type.includes("파손");
-            const verdict = isDanger ? "심각" : "정상";
-            const uniqueId = Date.now(); 
+            if(!room) { alert("위치를 선택해주세요."); return; }
+
+            const uniqueId = Date.now();
             const count = defectDataList.length + 1;
+            const verdict = detail.includes("파손") ? "심각" : "정상";
+            const tagColor = verdict === "심각" ? "#e74c3c" : "#2ecc71";
 
-            defectDataList.push({ id: uniqueId, no: count, room, work, subWork, type, detail, verdict });
+            defectDataList.push({ id: uniqueId, no: count, room, work, sub, type, detail, verdict });
 
             const item = document.createElement('div');
             item.className = 'list-item';
             item.id = `item-${uniqueId}`;
-            const tagColor = isDanger ? '#e74c3c' : '#2ecc71';
-            
             item.innerHTML = `
                 <img src="${previewSrc}" class="list-thumb">
                 <div style="flex:1;">
                     <div style="font-weight:bold; font-size:0.9rem;">${room} - ${work}</div>
-                    <div style="font-size:0.8rem; color:#555;">${subWork ? subWork : ''} | ${type}</div>
+                    <div style="font-size:0.8rem; color:#555;">${sub} | ${type}</div>
                     <div style="font-size:0.8rem; color:#666;">${verdict}</div>
                 </div>
                 <div class="list-right-info">
@@ -324,38 +367,28 @@
             document.getElementById('listBox').prepend(item);
             document.getElementById('listCount').innerText = `(${defectDataList.length})`;
             
-            // 입력창 초기화
+            // 초기화
             document.getElementById('cameraInput').value = "";
             currentImageFile = null;
         };
 
         window.deleteItem = function(id) {
-            if(confirm("삭제하시겠습니까?")) {
-                defectDataList = defectDataList.filter(item => item.id !== id);
+            if(confirm("삭제?")) {
+                defectDataList = defectDataList.filter(i => i.id !== id);
                 document.getElementById(`item-${id}`).remove();
                 document.getElementById('listCount').innerText = `(${defectDataList.length})`;
             }
         };
 
         window.saveAll = function() {
-            if(defectDataList.length === 0) {
-                alert("저장할 데이터가 없습니다.");
-                return;
-            }
-            let csv = "\uFEFF번호,위치,공종,세부공종,하자유형,내용,판정\n";
-            defectDataList.forEach(r => csv += `${r.no},"${r.room}","${r.work}","${r.subWork}","${r.type}","${r.detail.replace(/\n/g, ' ')}","${r.verdict}"\n`);
-            
+            if(defectDataList.length === 0) return;
+            let csv = "\uFEFF번호,위치,공종,세부,유형,내용,판정\n";
+            defectDataList.forEach(r => csv += `${r.no},"${r.room}","${r.work}","${r.sub}","${r.type}","${r.detail}","${r.verdict}"\n`);
             const link = document.createElement("a");
             link.href = encodeURI("data:text/csv;charset=utf-8," + csv);
-            
-            // 날짜 기반 파일명 생성
-            const date = new Date();
-            const fileName = `사전점검_리스트_${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2,'0')}${date.getDate().toString().padStart(2,'0')}.csv`;
-            
-            link.download = fileName;
+            link.download = "사전점검.csv";
             link.click();
         };
-
     </script>
 </body>
 </html>

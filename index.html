@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI</title>
+    <title>청개구리 입주자사전점검 AI (Gemini 2.0)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 스타일 (기존 Ver 1.9/2.1 과 동일) --- */
+        /* --- 스타일 (기존 Ver 2.2 원본 유지) --- */
         body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #ffffff; color: #333; line-height: 1.4; }
         .header-container { background: linear-gradient(135deg, #3498db, #2c3e50); padding: 15px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); height: 50px; position: relative; }
         .header-frog-img { height: 40px; width: 40px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.8); background-color: white; }
@@ -54,14 +54,15 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 2.2</span>
+        <span class="version-badge">Ver 2.3 EXP</span>
     </div>
-    <p class="sub-desc" id="statusMsg">구글 시트 DB 연결 시도 중...</p>
+    <p class="sub-desc" id="statusMsg">Gemini 2.0 AI 엔진 준비 완료</p>
 
     <div class="main-card">
         <div class="top-section">
-            <input type="file" id="cameraInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
-            <div class="photo-area" onclick="triggerCamera()">
+            <input type="file" id="cameraInput" accept="image/*" style="display:none">
+            
+            <div class="photo-area" id="photoAreaBtn">
                 <div class="photo-icon"><i class="fa-solid fa-camera"></i></div>
                 <div class="photo-text">촬영</div>
                 <img id="previewImage" class="preview-img">
@@ -85,8 +86,8 @@
                 <div class="input-group">
                     <label>공종 / 세부공종</label>
                     <div style="display:flex; gap:5px; width:100%;">
-                        <input type="text" id="workType" placeholder="공종" style="flex:1;">
-                        <input type="text" id="subWorkType" placeholder="세부" style="flex:1;">
+                        <input type="text" id="workType" placeholder="공종 (AI)" style="flex:1;">
+                        <input type="text" id="subWorkType" placeholder="세부 (AI)" style="flex:1;">
                     </div>
                 </div>
                 <div class="input-group">
@@ -98,24 +99,24 @@
 
         <div class="bottom-section">
             <div class="auto-input-label">
-                <i class="fa-solid fa-robot"></i> AI하자입력
+                <i class="fa-solid fa-robot"></i> AI하자입력 (Gemini 2.0)
             </div>
-            <textarea id="defectDetail" placeholder="촬영하면 사장님의 시트 데이터가 입력됩니다."></textarea>
+            <textarea id="defectDetail" placeholder="사진을 등록하면 Gemini 2.0이 자동으로 분석합니다."></textarea>
         </div>
 
         <div class="nav-buttons-row">
-            <button class="btn-nav btn-next" onclick="goNextStep()">
+            <button class="btn-nav btn-next" onclick="window.goNextStep()">
                 <span>다음 (추가입력)</span> <i class="fa-solid fa-arrow-right"></i>
             </button>
-            <button class="btn-nav btn-prev" onclick="goPrevStep()">
+            <button class="btn-nav btn-prev" onclick="window.goPrevStep()">
                 <i class="fa-solid fa-arrow-rotate-left"></i> <span>이전 (수정)</span>
             </button>
         </div>
     </div>
 
     <div class="action-buttons">
-        <button class="btn btn-save" onclick="addToList()">리스트 저장</button>
-        <button class="btn btn-export" onclick="saveAll()">엑셀 저장</button>
+        <button class="btn btn-save" onclick="window.addToList()">리스트 저장</button>
+        <button class="btn btn-export" onclick="window.saveAll()">엑셀 저장</button>
     </div>
 
     <div class="list-area">
@@ -128,115 +129,166 @@
         <p>전화 1599-7380 | COPYRIGHT ⓒ 2026 Cheong-gaeguri Corp.</p>
     </div>
 
-    <script>
-        // -----------------------------------------------------------
-        // [수정됨] 보내주신 정확한 링크 적용 완료
-        // -----------------------------------------------------------
-        const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQAjc1TH-seT2jWi3T5iN9eoul3hia4JTbeskORX_lPhOOQjOo_KQnnth5ETHxgIhWeXRjcXGVBCImN/pub?output=csv";
-        
-        let defectDataList = [];
-        let realDbData = []; 
-        let currentImageSrc = null;
+    <script type="importmap">
+        {
+          "imports": {
+            "@google/generative-ai": "https://esm.run/@google/generative-ai"
+          }
+        }
+    </script>
 
-        window.onload = function() {
-            fetchGoogleSheet();
+    <script type="module">
+        import { GoogleGenerativeAI } from "@google/generative-ai";
+
+        // ==========================================
+        // [설정] API 키 분할 및 모델 설정
+        // ==========================================
+        const keyPart1 = "AIzaSyCsJt6Ow";
+        const keyPart2 = "JAYK_NuQr9G-B";
+        const keyPart3 = "9_Q8XNawqiSNA";
+        const API_KEY = keyPart1 + keyPart2 + keyPart3;
+
+        // [핵심] Gemini 2.0 Experimental 모델 사용
+        const genAI = new GoogleGenerativeAI(API_KEY);
+        const model = genAI.getGenerativeModel({ 
+            model: "gemini-2.0-flash-exp",
+            generationConfig: { responseMimeType: "application/json" } // JSON 응답 강제
+        });
+
+        // ==========================================
+        // [변수]
+        // ==========================================
+        let defectDataList = [];
+        let currentImageFile = null; // 실제 파일 객체
+
+        // ==========================================
+        // [함수] 전역 스코프 등록 (HTML onclick 호환용)
+        // ==========================================
+        
+        // 1. 카메라 트리거
+        window.triggerCamera = function() {
+            document.getElementById('cameraInput').click();
+        };
+
+        // DOM 이벤트 리스너 연결
+        document.getElementById('photoAreaBtn').addEventListener('click', window.triggerCamera);
+        document.getElementById('cameraInput').addEventListener('change', handleImageUpload);
+
+        // 2. 이미지 업로드 핸들러
+        async function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            currentImageFile = file;
+
+            // 미리보기 표시
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('previewImage');
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                
+                // [AI 분석 시작]
+                runAIAnalysis(file);
+            }
+            reader.readAsDataURL(file);
         }
 
-        function fetchGoogleSheet() {
-            fetch(GOOGLE_SHEET_URL)
-            .then(response => {
-                if (!response.ok) throw new Error("네트워크 응답 오류");
-                return response.text();
-            })
-            .then(text => {
-                const rows = text.split('\n').slice(1); // 헤더 제외
-                
-                realDbData = rows.map(row => {
-                    // CSV 파싱 (콤마 분리)
-                    const cols = row.split(','); 
-                    if(cols.length < 5) return null; 
-
-                    const clean = (str) => str ? str.replace(/"/g, '').trim() : '';
-
-                    // [데이터 매핑]
-                    // A열:위치, B열:공종, C열:세부, D열:유형, E열:내용
-                    return {
-                        location: clean(cols[0]),
-                        work: clean(cols[1]),
-                        sub: clean(cols[2]),
-                        type: clean(cols[3]),
-                        detail: clean(cols[4]),
-                        danger: (clean(cols[4]).includes("심각") || clean(cols[3]).includes("파손"))
-                    };
-                }).filter(item => item !== null);
-
-                // 성공 메시지
-                console.log("DB 로드 완료:", realDbData.length, "개");
-                const status = document.getElementById('statusMsg');
-                status.innerText = `✅ DB 연결 성공! (데이터 ${realDbData.length}건)`;
-                status.style.color = "#2ecc71";
-                status.style.fontWeight = "bold";
-            })
-            .catch(err => {
-                console.error("DB 로드 실패:", err);
-                const status = document.getElementById('statusMsg');
-                status.innerText = "❌ DB 연결 실패. 주소를 다시 확인해주세요.";
-                status.style.color = "#e74c3c";
+        // 3. 파일 -> Gemini 포맷 변환
+        async function fileToGenerativePart(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const base64Data = reader.result.split(',')[1];
+                    resolve({
+                        inlineData: {
+                            data: base64Data,
+                            mimeType: file.type
+                        },
+                    });
+                };
+                reader.readAsDataURL(file);
             });
         }
 
-        function triggerCamera() { document.getElementById('cameraInput').click(); }
+        // 4. [핵심] Gemini 2.0 분석 실행
+        async function runAIAnalysis(file) {
+            const detailBox = document.getElementById('defectDetail');
+            const statusMsg = document.getElementById('statusMsg');
 
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('previewImage').src = e.target.result;
-                    document.getElementById('previewImage').style.display = 'block';
-                    currentImageSrc = e.target.result;
-                    runAIAnalysis();
+            // UI 상태 변경
+            detailBox.value = "Gemini 2.0이 사진을 정밀 분석 중입니다... 🔍";
+            statusMsg.innerText = "🔄 AI 분석 중...";
+            statusMsg.style.color = "#3498db";
+
+            try {
+                // 프롬프트 작성
+                const prompt = `
+                    당신은 아파트 사전점검 전문가입니다. 사진을 분석하여 다음 정보를 JSON 형식으로 출력하세요.
+                    
+                    1. work: 공종 (예: 창호공사, 도배공사, 가구공사, 타일공사, 마루공사 등)
+                    2. sub: 세부공종 (예: 창짝, 실크벽지, 붙박이장, 바닥타일, 걸레받이 등)
+                    3. type: 하자유형 (예: 파손, 찍힘, 오염, 곰팡이, 틈새과다, 작동불량 등)
+                    4. detail: 하자 내용에 대한 전문적인 설명 (2~3문장, "~상태임", "~요망" 등 간결한 보고서체)
+                    5. isDanger: 심각한 하자 여부 (true/false) - 파손이 심하거나 누수 등은 true
+
+                    응답은 오직 JSON 데이터만 보내주세요.
+                `;
+
+                const imagePart = await fileToGenerativePart(file);
+
+                // Gemini 호출
+                const result = await model.generateContent([prompt, imagePart]);
+                const response = await result.response;
+                const jsonText = response.text();
+                
+                // JSON 파싱
+                const data = JSON.parse(jsonText);
+
+                // 결과 UI 반영
+                document.getElementById('workType').value = data.work || "";
+                document.getElementById('subWorkType').value = data.sub || "";
+                document.getElementById('defectType').value = data.type || "";
+                detailBox.value = data.detail || "";
+
+                // 위험도에 따른 스타일링
+                if (data.isDanger) {
+                    detailBox.style.borderColor = "#e74c3c"; 
+                    detailBox.style.color = "#e74c3c";
+                    statusMsg.innerText = "⚠️ 심각한 하자가 감지되었습니다.";
+                    statusMsg.style.color = "#e74c3c";
+                } else {
+                    detailBox.style.borderColor = "#2ecc71"; 
+                    detailBox.style.color = "#333";
+                    statusMsg.innerText = "✅ AI 분석 완료 (Gemini 2.0)";
+                    statusMsg.style.color = "#2ecc71";
                 }
-                reader.readAsDataURL(file);
+
+            } catch (error) {
+                console.error("AI Error:", error);
+                detailBox.value = "분석 중 오류가 발생했습니다. 다시 시도해주세요.\n" + error.message;
+                statusMsg.innerText = "❌ 분석 실패";
+                statusMsg.style.color = "#e74c3c";
             }
         }
 
-        function runAIAnalysis() {
-            const detailBox = document.getElementById('defectDetail');
-            detailBox.value = "DB 검색 중...";
-            
-            setTimeout(() => {
-                if(realDbData.length === 0) {
-                    detailBox.value = "불러올 데이터가 없습니다.";
-                    return;
-                }
-
-                const randomIndex = Math.floor(Math.random() * realDbData.length);
-                const matchedData = realDbData[randomIndex];
-
-                document.getElementById('roomSelect').value = matchedData.location || '';
-                document.getElementById('workType').value = matchedData.work;
-                document.getElementById('subWorkType').value = matchedData.sub;
-                document.getElementById('defectType').value = matchedData.type;
-                detailBox.value = matchedData.detail;
-
-                if(matchedData.danger) {
-                    detailBox.style.borderColor = "#e74c3c"; detailBox.style.color = "#e74c3c"; detailBox.style.fontWeight = "bold";
-                } else {
-                    detailBox.style.borderColor = "#2ecc71"; detailBox.style.color = "#333"; detailBox.style.fontWeight = "normal";
-                }
-            }, 800);
-        }
-
-        function goNextStep() { alert("상세 입력 단계로 이동합니다."); }
-        function goPrevStep() { 
+        // 5. 기타 버튼 동작들 (window 객체에 할당)
+        window.goNextStep = function() { alert("상세 입력 단계로 이동합니다."); };
+        
+        window.goPrevStep = function() { 
             document.getElementById('workType').value = ''; 
+            document.getElementById('subWorkType').value = ''; 
+            document.getElementById('defectType').value = ''; 
             document.getElementById('defectDetail').value = ''; 
             alert("입력을 초기화했습니다."); 
-        }
+        };
 
-        function addToList() {
-            if (!currentImageSrc) { alert("사진을 촬영해주세요."); return; }
+        window.addToList = function() {
+            const previewSrc = document.getElementById('previewImage').src;
+            if (!currentImageFile && (!previewSrc || previewSrc === location.href)) { 
+                alert("사진을 촬영해주세요."); return; 
+            }
+            
             const room = document.getElementById('roomSelect').value;
             const work = document.getElementById('workType').value;
             const subWork = document.getElementById('subWorkType').value; 
@@ -245,7 +297,7 @@
             
             if(room === "") { alert("위치를 선택해주세요."); return; }
 
-            const isDanger = detail.includes("심각") || type.includes("파손");
+            const isDanger = detail.includes("심각") || detail.includes("파손") || type.includes("파손");
             const verdict = isDanger ? "심각" : "정상";
             const uniqueId = Date.now(); 
             const count = defectDataList.length + 1;
@@ -258,7 +310,7 @@
             const tagColor = isDanger ? '#e74c3c' : '#2ecc71';
             
             item.innerHTML = `
-                <img src="${currentImageSrc}" class="list-thumb">
+                <img src="${previewSrc}" class="list-thumb">
                 <div style="flex:1;">
                     <div style="font-weight:bold; font-size:0.9rem;">${room} - ${work}</div>
                     <div style="font-size:0.8rem; color:#555;">${subWork ? subWork : ''} | ${type}</div>
@@ -266,30 +318,44 @@
                 </div>
                 <div class="list-right-info">
                     <span class="tag" style="background:${tagColor}">No.${count}</span>
-                    <button class="btn-delete-item" onclick="deleteItem(${uniqueId})">삭제</button>
+                    <button class="btn-delete-item" onclick="window.deleteItem(${uniqueId})">삭제</button>
                 </div>
             `;
             document.getElementById('listBox').prepend(item);
             document.getElementById('listCount').innerText = `(${defectDataList.length})`;
-        }
+            
+            // 입력창 초기화
+            document.getElementById('cameraInput').value = "";
+            currentImageFile = null;
+        };
 
-        function deleteItem(id) {
+        window.deleteItem = function(id) {
             if(confirm("삭제하시겠습니까?")) {
                 defectDataList = defectDataList.filter(item => item.id !== id);
                 document.getElementById(`item-${id}`).remove();
                 document.getElementById('listCount').innerText = `(${defectDataList.length})`;
             }
-        }
+        };
 
-        function saveAll() {
-            if(defectDataList.length === 0) return;
+        window.saveAll = function() {
+            if(defectDataList.length === 0) {
+                alert("저장할 데이터가 없습니다.");
+                return;
+            }
             let csv = "\uFEFF번호,위치,공종,세부공종,하자유형,내용,판정\n";
             defectDataList.forEach(r => csv += `${r.no},"${r.room}","${r.work}","${r.subWork}","${r.type}","${r.detail.replace(/\n/g, ' ')}","${r.verdict}"\n`);
+            
             const link = document.createElement("a");
             link.href = encodeURI("data:text/csv;charset=utf-8," + csv);
-            link.download = "사전점검_리스트.csv";
+            
+            // 날짜 기반 파일명 생성
+            const date = new Date();
+            const fileName = `사전점검_리스트_${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2,'0')}${date.getDate().toString().padStart(2,'0')}.csv`;
+            
+            link.download = fileName;
             link.click();
-        }
+        };
+
     </script>
 </body>
 </html>

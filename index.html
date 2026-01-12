@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (Final v5.3)</title>
+    <title>청개구리 입주자사전점검 AI (Final v5.4)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -87,7 +87,7 @@
     <div id="keyModal" class="key-modal" style="display:none;">
         <div class="key-box">
             <h3 style="margin-top:0;">🔑 관리자 인증</h3>
-            <p style="font-size:13px; color:#666;">Google AI Studio 키를 입력하세요.<br>(Base64 아님! 원본 키 입력)</p>
+            <p style="font-size:13px; color:#666;">Google AI Studio 키를 입력하세요.<br>(원본 키 입력)</p>
             <input type="password" id="apiKeyInput" class="key-input" placeholder="AIzaSy...">
             <button class="key-btn" onclick="saveApiKey()">인증 및 시작</button>
         </div>
@@ -96,7 +96,7 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 5.3 (Gemini 2.0)</span>
+        <span class="version-badge">Ver 5.4 (Stable)</span>
     </div>
     
     <div style="text-align:center; margin-top:5px;">
@@ -282,8 +282,8 @@
 
             try {
                 const genAI = new GoogleGenerativeAI(API_KEY);
-                // [대폭 업그레이드] 최신 모델 2.0-flash-exp 적용!
-                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+                // [대폭 업그레이드] 정식 버전(Stable)인 gemini-2.0-flash 사용!
+                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
                 const prompt = `
                     너는 건축 하자 진단 전문가야.
@@ -327,13 +327,12 @@
                 
                 let errorMsg = error.toString();
                 
-                // 에러 메시지 덮어쓰기
                 if (errorMsg.includes("404")) {
-                    errorMsg = "모델 오류: gemini-2.0-flash-exp를 찾을 수 없습니다. (키 문제일 수 있습니다)";
+                    errorMsg = "모델 오류: gemini-2.0-flash 모델을 찾을 수 없습니다. (키 문제일 수 있습니다)";
                 } else if (errorMsg.includes("403")) {
                     errorMsg = "API 키 오류: 키 권한이 없거나 차단되었습니다. 새 키를 발급받으세요.";
                 } else if (errorMsg.includes("429")) {
-                    errorMsg = "사용량 초과: 잠시 후 다시 시도하세요.";
+                    errorMsg = "사용량 초과: 서버가 바쁩니다. 1분 뒤에 다시 시도해주세요.";
                 }
                 
                 detailBox.value = errorMsg + "\n(직접 입력해주세요)";

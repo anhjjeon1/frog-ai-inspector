@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (v8.1)</title>
+    <title>청개구리 입주자사전점검 AI (v9.0 Web-Sync)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -29,11 +29,11 @@
         .photo-text { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; text-align: center; pointer-events: none; }
         .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 10; background-color: #000; pointer-events: none; }
 
-        /* 입력 폼 레이아웃 */
+        /* 입력 폼 */
         .input-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: stretch; }
         .input-col { display: flex; flex-direction: column; gap: 4px; }
         .input-label { font-size: 0.75rem; font-weight: 800; color: #34495e; letter-spacing: -0.3px; }
-        input, select, textarea { width: 100%; padding: 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; background: #fff; box-sizing: border-box; height: 38px; transition: border 0.2s; }
+        input, select, textarea { width: 100%; padding: 8px; font-size: 0.85rem; border: 1px solid #dfe4ea; border-radius: 8px; background: #fff; box-sizing: border-box; height: 38px; transition: border 0.2s; }
         input:focus, select:focus, textarea:focus { border-color: #27ae60; outline: none; box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.1); }
         textarea { height: 80px; resize: none; line-height: 1.5; } 
         
@@ -43,51 +43,8 @@
         .site-inputs input { text-align: center; padding: 8px 2px; font-weight: bold; color: #2c3e50; } 
         .triple-col { flex: 1; }
 
-        /* [수정] 네비게이션 버튼 (비율 조정 및 높이 축소) */
-        .nav-buttons-row { display: flex; gap: 8px; margin-top: 12px; }
-        .btn-nav { 
-            padding: 12px 0; /* 세로 크기 축소 */
-            border: none; border-radius: 10px; 
-            font-size: 0.9rem; font-weight: 700; cursor: pointer; 
-            display: flex; align-items: center; justify-content: center; gap: 6px; 
-            box-shadow: 0 3px 5px rgba(0,0,0,0.05); transition: transform 0.1s; 
-        }
-        .btn-nav:active { transform: scale(0.98); }
-        .btn-next { background: #27ae60; color: white; flex: 1.6; } /* 너비 60% */
-        .btn-prev { background: #ecf0f1; color: #7f8c8d; border: 1px solid #bdc3c7; flex: 1; } /* 너비 40% */
-
-        /* [수정] 3D 그라데이션 버튼 (높이 축소) */
-        .action-buttons { display: flex; gap: 6px; padding: 12px; margin: 12px 10px; }
-        .btn-3d {
-            flex: 1;
-            padding: 12px 4px; /* 세로 크기 축소 */
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 0.8rem;
-            font-weight: 800;
-            cursor: pointer;
-            text-shadow: 0 1px 1px rgba(0,0,0,0.3);
-            position: relative;
-            transform: translateY(0);
-            transition: all 0.1s;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-            line-height: 1.2;
-        }
-        
-        .btn-save-3d { background: linear-gradient(to bottom, #e74c3c, #c0392b); box-shadow: 0 4px 0 #962d22, 0 5px 10px rgba(0,0,0,0.15); }
-        .btn-save-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #962d22; }
-
-        .btn-pdf-3d { background: linear-gradient(to bottom, #2ecc71, #27ae60); box-shadow: 0 4px 0 #1e8449, 0 5px 10px rgba(0,0,0,0.15); }
-        .btn-pdf-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #1e8449; }
-
-        .btn-call-3d { background: linear-gradient(to bottom, #3498db, #2980b9); box-shadow: 0 4px 0 #21618c, 0 5px 10px rgba(0,0,0,0.15); }
-        .btn-call-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #21618c; }
-        
-        .btn-3d i { font-size: 1.1rem; }
-
         /* 리스트 영역 */
-        .list-area { padding: 0 15px 30px 15px; }
+        .list-area { padding: 0 15px 10px 15px; }
         .list-header-box { margin-bottom: 12px; border-left: 5px solid #27ae60; background: #fff; padding: 10px 15px; border-radius: 0 8px 8px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .list-title-text { font-size: 0.95rem; font-weight: 800; color: #2c3e50; }
         .list-subtitle-text { font-size: 0.8rem; color: #e67e22; font-weight: 700; margin-top: 2px; }
@@ -103,13 +60,38 @@
         .tag { padding: 3px 6px; border-radius: 4px; font-size: 0.7rem; color: white; font-weight: bold; }
         .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
 
+        /* 하단 버튼 2종 세트 (PDF, 수리문의) */
+        .bottom-actions { display: flex; gap: 8px; padding: 0 15px 20px 15px; margin-top: 10px; }
+        .btn-3d {
+            flex: 1;
+            padding: 12px 4px;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+            position: relative;
+            transform: translateY(0);
+            transition: all 0.1s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+            line-height: 1.2;
+        }
+        .btn-pdf-3d { background: linear-gradient(to bottom, #2ecc71, #27ae60); box-shadow: 0 4px 0 #1e8449, 0 5px 10px rgba(0,0,0,0.15); }
+        .btn-pdf-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #1e8449; }
+
+        .btn-call-3d { background: linear-gradient(to bottom, #3498db, #2980b9); box-shadow: 0 4px 0 #21618c, 0 5px 10px rgba(0,0,0,0.15); }
+        .btn-call-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #21618c; }
+        .btn-3d i { font-size: 1.2rem; }
+
         .footer-info { text-align: center; padding: 20px; color: #95a5a6; font-size: 0.7rem; line-height: 1.6; border-top: 1px solid #eee; margin-top: 10px; }
         .footer-bold { font-weight: 800; color: #555; }
         .sub-desc { font-size: 0.8rem; text-align: center; color: #7f8c8d; margin-top: 10px; font-weight: 500; }
 
         @media print {
             body { background: white; padding: 0; }
-            .header-container, .main-card, .action-buttons, .footer-info, .sub-desc, .btn-delete-item { display: none !important; } 
+            .header-container, .main-card, .bottom-actions, .footer-info, .sub-desc, .btn-delete-item { display: none !important; } 
             .list-area { padding: 0; margin: 0; }
             .list-header-box { border: none; padding: 0; margin-bottom: 20px; border-bottom: 2px solid #333; border-radius: 0; }
             .list-title-text { font-size: 1.5rem; color: #000; text-align: center; margin-bottom: 10px; }
@@ -125,18 +107,18 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">v8.1</span>
+        <span class="version-badge">v9.0 Web-Sync</span>
     </div>
     
     <div style="text-align:center;">
-        <p class="sub-desc" id="statusMsg">AI 엔진 준비 완료</p>
+        <p class="sub-desc" id="statusMsg">AI 엔진(2.0 Exp) 준비 완료</p>
     </div>
 
     <div class="main-card">
         <input type="file" id="cameraInput" accept="image/*" style="display:none">
         <label class="photo-area" id="photoAreaBtn" for="cameraInput">
             <div class="photo-icon"><i class="fa-solid fa-camera"></i></div>
-            <div class="photo-text">터치하여 촬영<br>(점선 십자선에 하자를 맞추세요)</div>
+            <div class="photo-text">터치하여 촬영 (자동 저장됨)<br>(점선 십자선에 하자를 맞추세요)</div>
             <img id="previewImage" class="preview-img">
             <div class="center-crosshair"></div>
         </label>
@@ -155,13 +137,25 @@
                 <select id="roomSelect">
                     <option value="">선택</option>
                     <option value="거실">거실</option>
-                    <option value="안방">안방</option>
                     <option value="주방">주방</option>
-                    <option value="욕실1">공용욕실</option>
-                    <option value="욕실2">부부욕실</option>
+                    <option value="침실1">침실1</option>
+                    <option value="침실2">침실2</option>
+                    <option value="침실3">침실3</option>
+                    <option value="안방">안방</option>
+                    <option value="욕실1">욕실1(공용)</option>
+                    <option value="욕실2">욕실2(부부)</option>
                     <option value="현관">현관</option>
-                    <option value="발코니">발코니</option>
-                    <option value="실외기">실외기</option>
+                    <option value="드레스룸">드레스룸</option>
+                    <option value="파우더룸">파우더룸</option>
+                    <option value="다용도실">다용도실</option>
+                    <option value="실외기실">실외기실</option>
+                    <option value="대피공간">대피공간</option>
+                    <option value="안방발코니">안방발코니</option>
+                    <option value="복도팬트리">복도팬트리</option>
+                    <option value="주방팬트리">주방팬트리</option>
+                    <option value="현관팬트리">현관팬트리</option>
+                    <option value="다목적실">다목적실</option>
+                    <option value="테라스">테라스</option>
                 </select>
             </div>
         </div>
@@ -169,11 +163,140 @@
         <div class="input-row">
             <div class="input-col triple-col">
                 <label class="input-label">C. 공종분류</label>
-                <input type="text" id="workType" placeholder="자동입력">
+                <select id="workType">
+                    <option value="">선택/자동</option>
+                    <option value="타일공사">타일공사</option>
+                    <option value="일반가구공사">일반가구공사</option>
+                    <option value="준공청소공사">준공청소공사</option>
+                    <option value="PL창호공사">PL창호공사</option>
+                    <option value="도배공사">도배공사</option>
+                    <option value="마루공사">마루공사</option>
+                    <option value="전기공사">전기공사</option>
+                    <option value="조명공사">조명공사</option>
+                    <option value="중문공사">중문공사</option>
+                    <option value="방화문공사">방화문공사</option>
+                    <option value="가스설비공사">가스설비공사</option>
+                    <option value="내장목공사">내장목공사</option>
+                    <option value="시스템가구공사">시스템가구공사</option>
+                    <option value="소방공사">소방공사</option>
+                    <option value="도장공사">도장공사</option>
+                    <option value="기계설비공사">기계설비공사</option>
+                    <option value="홈네트워크공사">홈네트워크공사</option>
+                    <option value="렌지후드공사">렌지후드공사</option>
+                    <option value="주방가구공사">주방가구공사</option>
+                    <option value="주방상판공사">주방상판공사</option>
+                    <option value="유리공사">유리공사</option>
+                    <option value="환기유니트공사">환기유니트공사</option>
+                    <option value="에어컨공사">에어컨공사</option>
+                    <option value="자동제어공사">자동제어공사</option>
+                    <option value="욕실장공사">욕실장공사</option>
+                    <option value="욕실천정공사">욕실천정공사</option>
+                    <option value="욕실환풍기공사">욕실환풍기공사</option>
+                    <option value="샤워부스공사">샤워부스공사</option>
+                    <option value="디지털도어록공사">디지털도어록공사</option>
+                    <option value="미장공사">미장공사</option>
+                    <option value="형틀공사">형틀공사</option>
+                    <option value="코킹공사">코킹공사</option>
+                    <option value="잡철공사">잡철공사</option>
+                    <option value="위생기구납품설치공사">위생기구납품설치공사</option>
+                    <option value="주방가전공사(오븐)">주방가전공사(오븐)</option>
+                    <option value="직영공사">직영공사</option>
+                </select>
             </div>
             <div class="input-col triple-col">
                 <label class="input-label">D. 세부공종</label>
-                <input type="text" id="subWorkType" placeholder="자동입력">
+                <select id="subWorkType">
+                    <option value="">선택/자동</option>
+                    <option value="폴리싱타일">폴리싱타일</option>
+                    <option value="화장대">화장대</option>
+                    <option value="3연동도어">3연동도어</option>
+                    <option value="준공청소">준공청소</option>
+                    <option value="실외기">실외기</option>
+                    <option value="등기구">등기구</option>
+                    <option value="도장">도장</option>
+                    <option value="PL창호">PL창호</option>
+                    <option value="붙박이장">붙박이장</option>
+                    <option value="복도팬트리도어/틀">복도팬트리도어/틀</option>
+                    <option value="문짝">문짝</option>
+                    <option value="터닝도어">터닝도어</option>
+                    <option value="스윙도어">스윙도어</option>
+                    <option value="콘센트">콘센트</option>
+                    <option value="코킹">코킹</option>
+                    <option value="강마루">강마루</option>
+                    <option value="욕실장">욕실장</option>
+                    <option value="유리">유리</option>
+                    <option value="타일">타일</option>
+                    <option value="바닥">바닥</option>
+                    <option value="환기디퓨져">환기디퓨져</option>
+                    <option value="아트월타일">아트월타일</option>
+                    <option value="목문틀">목문틀</option>
+                    <option value="슬라이딩도어/틀">슬라이딩도어/틀</option>
+                    <option value="타일코킹">타일코킹</option>
+                    <option value="도배">도배</option>
+                    <option value="골조">골조</option>
+                    <option value="시스템가구">시스템가구</option>
+                    <option value="분합창">분합창</option>
+                    <option value="냉장고장">냉장고장</option>
+                    <option value="난방분배기">난방분배기</option>
+                    <option value="하부장">하부장</option>
+                    <option value="렌지후드">렌지후드</option>
+                    <option value="석재걸레받이">석재걸레받이</option>
+                    <option value="현관문">현관문</option>
+                    <option value="젠다이/코킹">젠다이/코킹</option>
+                    <option value="아트월판넬">아트월판넬</option>
+                    <option value="화장대상판">화장대상판</option>
+                    <option value="스위치">스위치</option>
+                    <option value="천정몰딩">천정몰딩</option>
+                    <option value="마루코킹">마루코킹</option>
+                    <option value="가스감지기">가스감지기</option>
+                    <option value="주방상/하부장">주방상/하부장</option>
+                    <option value="세대등기구">세대등기구</option>
+                    <option value="스프링클러">스프링클러</option>
+                    <option value="그릴창">그릴창</option>
+                    <option value="욕실휀">욕실휀</option>
+                    <option value="엔지니어드상판">엔지니어드상판</option>
+                    <option value="픽스판넬">픽스판넬</option>
+                    <option value="배수드레인">배수드레인</option>
+                    <option value="환기스위치">환기스위치</option>
+                    <option value="주방상판/코킹">주방상판/코킹</option>
+                    <option value="월패드">월패드</option>
+                    <option value="외벽도장">외벽도장</option>
+                    <option value="현관문틀도장">현관문틀도장</option>
+                    <option value="설비">설비</option>
+                    <option value="가스배관">가스배관</option>
+                    <option value="주방TV">주방TV</option>
+                    <option value="현관팬트리도어/틀">현관팬트리도어/틀</option>
+                    <option value="다목적실도어/틀">다목적실도어/틀</option>
+                    <option value="씽크볼">씽크볼</option>
+                    <option value="욕실천정재/코킹">욕실천정재/코킹</option>
+                    <option value="오븐">오븐</option>
+                    <option value="드레스룸도어/틀">드레스룸도어/틀</option>
+                    <option value="대피공간방화문">대피공간방화문</option>
+                    <option value="도어체크">도어체크</option>
+                    <option value="현관카메라">현관카메라</option>
+                    <option value="걸레받이">걸레받이</option>
+                    <option value="아일랜드장">아일랜드장</option>
+                    <option value="발코니선반">발코니선반</option>
+                    <option value="실외기실문짝">실외기실문짝</option>
+                    <option value="위생도기류">위생도기류</option>
+                    <option value="비데">비데</option>
+                    <option value="디지털도어록">디지털도어록</option>
+                    <option value="무선충전기">무선충전기</option>
+                    <option value="에어컨배관">에어컨배관</option>
+                    <option value="욕실액세서리">욕실액세서리</option>
+                    <option value="대피창">대피창</option>
+                    <option value="아일랜드상판">아일랜드상판</option>
+                    <option value="석고보드">석고보드</option>
+                    <option value="주방팬트리도어/틀">주방팬트리도어/틀</option>
+                    <option value="샤워부스/코킹">샤워부스/코킹</option>
+                    <option value="일괄소등스위치">일괄소등스위치</option>
+                    <option value="마블씰">마블씰</option>
+                    <option value="배수육가(트렌치포함)">배수육가</option>
+                    <option value="욕조">욕조</option>
+                    <option value="수전류">수전류</option>
+                    <option value="하부씰">하부씰</option>
+                    <option value="완강기">완강기</option>
+                </select>
             </div>
             <div class="input-col triple-col">
                 <label class="input-label">E. 하자유형</label>
@@ -187,27 +310,6 @@
             </div>
             <textarea id="defectDetail" placeholder="AI가 하자 내용과 함께 분쟁조정위원회 기준에 따른 판단을 제공합니다."></textarea>
         </div>
-
-        <div class="nav-buttons-row">
-            <button class="btn-nav btn-next" onclick="window.goNextStep()">
-                <span>다음 (추가입력)</span> <i class="fa-solid fa-arrow-right"></i>
-            </button>
-            <button class="btn-nav btn-prev" onclick="window.goPrevStep()">
-                <i class="fa-solid fa-arrow-rotate-left"></i> <span>이전 (수정)</span>
-            </button>
-        </div>
-    </div>
-
-    <div class="action-buttons">
-        <button class="btn-3d btn-save-3d" onclick="window.addToList()">
-            <i class="fa-solid fa-download"></i> 점검저장(필수)
-        </button>
-        <button class="btn-3d btn-pdf-3d" onclick="window.savePDF()">
-            <i class="fa-solid fa-file-pdf"></i> PDF저장
-        </button>
-        <button class="btn-3d btn-call-3d" onclick="window.callCenter()">
-            <i class="fa-solid fa-phone-volume"></i> 수리문의
-        </button>
     </div>
 
     <div id="pdf-header-title" style="display:none;"></div>
@@ -218,6 +320,15 @@
             <div id="currentAptInfo" class="list-subtitle-text">현장 정보를 입력하세요</div>
         </div>
         <div id="listBox"></div>
+    </div>
+
+    <div class="bottom-actions">
+        <button class="btn-3d btn-pdf-3d" onclick="window.savePDF()">
+            <i class="fa-solid fa-file-pdf"></i> PDF저장
+        </button>
+        <button class="btn-3d btn-call-3d" onclick="window.callCenter()">
+            <i class="fa-solid fa-phone-volume"></i> 수리문의
+        </button>
     </div>
 
     <div class="footer-info">
@@ -233,10 +344,10 @@
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
         // =========================================================
-        // [중요] 여기에 API 키를 나누어 입력하세요. (GitHub 보안 우회용)
+        // [중요] API 키 입력
         // =========================================================
-        const part1 = "AIzaSyAP_9dcbRPRdP4";  // [수정 필요] 키 앞부분
-        const part2 = "GD6WniQsWixFUFYRhfig";      // [수정 필요] 키 뒷부분
+        const part1 = "AIzaSyAP_9dcbRPRdP4";  // [수정] 키 앞부분
+        const part2 = "GD6WniQsWixFUFYRhfig";      // [수정] 키 뒷부분
         
         const API_KEY = part1 + part2;
         // =========================================================
@@ -254,6 +365,7 @@
                 const preview = document.getElementById('previewImage');
                 preview.src = e.target.result;
                 preview.style.display = 'block';
+                // 사진 로드 즉시 분석 -> 분석 후 자동 저장
                 runTargetedAnalysis(file);
             };
             reader.readAsDataURL(file);
@@ -288,7 +400,6 @@
                 const genAI = new GoogleGenerativeAI(API_KEY);
                 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
-                // [수정] 프롬프트에 '입주자 사전점검' 상황과 '미관상 하자도 보수 대상'임을 명시!
                 const prompt = `
                     당신은 '국토교통부 하자심사·분쟁조정위원회'의 전문 심사관입니다.
                     사진 속 중앙 십자선 위치의 하자를 분석해주세요.
@@ -323,8 +434,11 @@
                 }
 
                 applyDataToUI(data);
-                statusMsg.innerText = "✅ 법적 분석 완료";
+                statusMsg.innerText = "✅ 법적 분석 및 저장 완료";
                 statusMsg.style.color = "#2ecc71";
+                
+                // [자동 저장] 분석 완료 즉시 리스트에 추가
+                window.addToList();
 
             } catch (error) {
                 console.error("AI Error:", error);
@@ -345,32 +459,17 @@
             detailBox.value = data.detail || "";
         }
 
-        window.goNextStep = function() {
-            const aptName = document.getElementById('aptName').value;
-            if(!aptName) { alert("아파트명을 입력하세요."); return; }
-            alert("다음 항목을 촬영하세요.");
-            document.getElementById('cameraInput').click();
-        };
-        
-        window.goPrevStep = function() { 
-            document.getElementById('workType').value = ''; 
-            document.getElementById('subWorkType').value = ''; 
-            document.getElementById('defectType').value = ''; 
-            document.getElementById('defectDetail').value = ''; 
-        };
-
         window.addToList = function() {
             const previewSrc = document.getElementById('previewImage').src;
-            if (!currentImageFile && !previewSrc) { alert("사진이 없습니다."); return; }
+            // 이미지가 없거나 플레이스홀더인 경우 저장 방지
+            if (!currentImageFile && (!previewSrc || previewSrc.includes('data:image/svg+xml'))) { return; }
             
             const aptName = document.getElementById('aptName').value || "OO아파트";
             const aptDong = document.getElementById('aptDong').value || "000";
             const aptHo = document.getElementById('aptHo').value || "0000";
-            const room = document.getElementById('roomSelect').value;
-            
-            if(!room) { alert("B. 위치를 선택해주세요."); return; }
+            let room = document.getElementById('roomSelect').value;
+            if(!room) room = "위치미지정";
 
-            // 현장 정보 업데이트
             const fullAptInfo = `${aptName} ${aptDong}동 ${aptHo}호 점검 리포트`;
             document.getElementById('currentAptInfo').innerText = fullAptInfo;
             document.getElementById('pdf-header-title').innerText = fullAptInfo;
@@ -398,9 +497,13 @@
             
             defectDataList.push(uniqueId);
 
+            // 입력창 초기화 (현장 정보 제외)
             document.getElementById('cameraInput').value = "";
             currentImageFile = null;
-            window.goPrevStep(); 
+            document.getElementById('workType').value = ""; 
+            document.getElementById('subWorkType').value = ""; 
+            document.getElementById('defectType').value = ""; 
+            document.getElementById('defectDetail').value = ""; 
             
             window.scrollTo(0, document.body.scrollHeight);
         };

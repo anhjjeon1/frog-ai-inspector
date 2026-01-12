@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (Final v5.0)</title>
+    <title>청개구리 입주자사전점검 AI (Final v5.1 Debug)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -100,7 +100,6 @@
 
         .sub-desc { font-size: 0.8rem; text-align: center; color: #666; margin: 15px 0 5px 0; background: #f8f9fa; padding: 5px; }
         
-        /* 키 입력 모달 스타일 */
         .key-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 9999;
@@ -118,6 +117,10 @@
             background: #2ecc71; color: white; border: none; padding: 10px 20px;
             border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%;
         }
+        .reset-btn {
+            background: #95a5a6; color: white; border: none; padding: 8px 12px;
+            border-radius: 6px; font-size: 0.75rem; cursor: pointer; margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -125,7 +128,7 @@
     <div id="keyModal" class="key-modal" style="display:none;">
         <div class="key-box">
             <h3 style="margin-top:0;">🔑 관리자 인증</h3>
-            <p style="font-size:13px; color:#666;">발급받은 Google API Key를 입력하세요.<br>(기기에 안전하게 저장됩니다)</p>
+            <p style="font-size:13px; color:#666;">Google AI Studio 키를 입력하세요.<br>(Base64 암호화 키 아님!)</p>
             <input type="password" id="apiKeyInput" class="key-input" placeholder="AIzaSy...">
             <button class="key-btn" onclick="saveApiKey()">인증 및 시작</button>
         </div>
@@ -134,9 +137,13 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 5.0 (Security)</span>
+        <span class="version-badge">Ver 5.1 (Debug)</span>
     </div>
-    <p class="sub-desc" id="statusMsg">AI 엔진 연결 대기중...</p>
+    
+    <div style="text-align:center; margin-top:5px;">
+        <p class="sub-desc" id="statusMsg" style="display:inline-block; margin:0;">AI 엔진 연결 대기중...</p>
+        <button class="reset-btn" onclick="resetKey()">키 재설정</button>
+    </div>
 
     <div class="main-card">
         <div class="top-section">
@@ -242,7 +249,7 @@
     <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
-        let API_KEY = localStorage.getItem("frog_ai_key"); // 저장된 키 불러오기
+        let API_KEY = localStorage.getItem("frog_ai_key"); 
         let defectDataList = [];
         let currentImageFile = null;
 
@@ -259,10 +266,17 @@
                 localStorage.setItem("frog_ai_key", inputKey);
                 API_KEY = inputKey;
                 document.getElementById('keyModal').style.display = 'none';
-                alert("인증되었습니다!");
-                location.reload(); // 새로고침해서 적용
+                alert("인증되었습니다! (AIza... 키 저장됨)");
+                location.reload(); 
             } else {
-                alert("올바른 Google API Key가 아닙니다.");
+                alert("올바른 Google API Key가 아닙니다.\n(AIza...로 시작해야 합니다)");
+            }
+        };
+
+        window.resetKey = function() {
+            if(confirm("저장된 API 키를 삭제하고 다시 입력하시겠습니까?")) {
+                localStorage.removeItem("frog_ai_key");
+                location.reload();
             }
         };
 
@@ -294,7 +308,7 @@
 
         async function runTargetedAnalysis(file) {
             if (!API_KEY) {
-                alert("API 키가 없습니다. 새로고침하여 키를 입력해주세요.");
+                alert("API 키가 없습니다. 키 재설정을 눌러 입력해주세요.");
                 return;
             }
 
@@ -353,13 +367,18 @@
                 statusMsg.style.color = "#e74c3c";
                 
                 let errorMsg = error.toString();
-                if (errorMsg.includes("404") || errorMsg.includes("403")) {
-                    errorMsg = "API 키 오류: 키가 만료되었거나 잘못되었습니다. 키를 다시 입력하세요.";
-                    localStorage.removeItem("frog_ai_key"); // 잘못된 키 삭제
-                    setTimeout(() => location.reload(), 2000);
+                // [중요 수정] 이제 에러가 나도 키를 자동 삭제하지 않고, 에러 내용을 보여줍니다.
+                let displayMsg = "[에러 상세 내용]\n" + errorMsg;
+
+                if (errorMsg.includes("404") || errorMsg.includes("400")) {
+                    displayMsg += "\n\n👉 [원인] API 키가 잘못되었습니다. '키 재설정' 버튼을 눌러 정확한 키(AIzaSy...)를 다시 입력하세요.";
+                } else if (errorMsg.includes("403")) {
+                    displayMsg += "\n\n👉 [원인] 키 권한이 없거나 차단되었습니다. 새 키를 발급받으세요.";
+                } else if (errorMsg.includes("429")) {
+                    displayMsg += "\n\n👉 [원인] 사용량 초과. 잠시 후 다시 시도하세요.";
                 }
                 
-                detailBox.value = errorMsg + "\n(직접 입력해주세요)";
+                detailBox.value = displayMsg;
                 
                 document.getElementById('workType').value = "";
                 document.getElementById('subWorkType').value = "";

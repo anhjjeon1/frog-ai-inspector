@@ -3,24 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (v10.0 Perfect)</title>
+    <title>청개구리 입주자사전점검 AI (v10.1 Priority)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 기본 스타일 --- */
+        /* --- 기본 스타일 (기존 유지) --- */
         body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #f4f6f9; color: #333; line-height: 1.4; padding-bottom: 30px; }
-        
-        /* 헤더 */
         .header-container { background: linear-gradient(135deg, #27ae60, #2c3e50); padding: 12px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); height: 45px; position: relative; z-index: 100; }
         .header-frog-img { height: 35px; width: 35px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.9); background-color: white; }
         .header-title { color: white; font-size: 1.05rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
         .version-badge { position: absolute; right: 20px; bottom: 12px; font-size: 0.7rem; color: #ecf0f1; font-weight: 700; opacity: 0.8; }
-        
-        /* 메인 카드 */
         .main-card { background: white; padding: 15px; margin: 12px; border-radius: 18px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-        
-        /* 사진 영역 */
         .photo-area { width: 100%; aspect-ratio: 16 / 9; background: #eef2f3; border: 2px dashed #bdc3c7; border-radius: 12px; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 10px; margin-top: 10px; box-sizing: border-box; }
         .center-crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 20; display: flex; align-items: center; justify-content: center; }
         .center-crosshair::before { content: ''; position: absolute; width: 100%; height: 0; border-top: 3px dashed rgba(231, 76, 60, 0.9); filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
@@ -28,67 +22,44 @@
         .photo-icon { font-size: 2rem; margin-bottom: 8px; opacity: 0.3; color: #27ae60; pointer-events: none; }
         .photo-text { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; text-align: center; pointer-events: none; }
         .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 10; background-color: #000; pointer-events: none; }
-
-        /* 입력 폼 */
         .input-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: stretch; }
         .input-col { display: flex; flex-direction: column; gap: 4px; }
         .input-label { font-size: 0.75rem; font-weight: 800; color: #34495e; letter-spacing: -0.3px; }
-        input, select, textarea { width: 100%; padding: 8px; font-size: 0.85rem; border: 1px solid #dfe4ea; border-radius: 8px; background: #fff; box-sizing: border-box; height: 38px; transition: border 0.2s; }
+        input, select, textarea { width: 100%; padding: 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; background: #fff; box-sizing: border-box; height: 38px; transition: border 0.2s; }
         input:focus, select:focus, textarea:focus { border-color: #27ae60; outline: none; box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.1); }
         textarea { height: 80px; resize: none; line-height: 1.5; } 
-        
-        .site-info-group { flex: 7; } 
-        .location-group { flex: 3; }  
+        .site-info-group { flex: 7; } .location-group { flex: 3; }  
         .site-inputs { display: flex; gap: 4px; }
         .site-inputs input { text-align: center; padding: 8px 2px; font-weight: bold; color: #2c3e50; } 
         .triple-col { flex: 1; }
-
-        /* 리스트 영역 */
+        .nav-buttons-row { display: flex; gap: 8px; margin-top: 12px; }
+        .btn-nav { padding: 12px 0; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 3px 5px rgba(0,0,0,0.05); transition: transform 0.1s; }
+        .btn-nav:active { transform: scale(0.98); }
+        .btn-next { background: #27ae60; color: white; flex: 1.6; }
+        .btn-prev { background: #ecf0f1; color: #7f8c8d; border: 1px solid #bdc3c7; flex: 1; }
+        .action-buttons { display: flex; gap: 8px; padding: 0 15px 20px 15px; margin-top: 10px; }
+        .btn-3d { flex: 1; padding: 12px 4px; border: none; border-radius: 12px; color: white; font-size: 0.9rem; font-weight: 800; cursor: pointer; text-shadow: 0 1px 1px rgba(0,0,0,0.3); position: relative; transform: translateY(0); transition: all 0.1s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; line-height: 1.2; }
+        .btn-pdf-3d { background: linear-gradient(to bottom, #2ecc71, #27ae60); box-shadow: 0 4px 0 #1e8449, 0 5px 10px rgba(0,0,0,0.15); }
+        .btn-pdf-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #1e8449; }
+        .btn-call-3d { background: linear-gradient(to bottom, #3498db, #2980b9); box-shadow: 0 4px 0 #21618c, 0 5px 10px rgba(0,0,0,0.15); }
+        .btn-call-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #21618c; }
+        .btn-3d i { font-size: 1.2rem; }
         .list-area { padding: 0 15px 10px 15px; }
         .list-header-box { margin-bottom: 12px; border-left: 5px solid #27ae60; background: #fff; padding: 10px 15px; border-radius: 0 8px 8px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .list-title-text { font-size: 0.95rem; font-weight: 800; color: #2c3e50; }
         .list-subtitle-text { font-size: 0.8rem; color: #e67e22; font-weight: 700; margin-top: 2px; }
-        
         .list-item { background: white; padding: 10px; border-radius: 10px; margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #f1f3f5; page-break-inside: avoid; }
         .list-thumb { width: 65px; height: 65px; border-radius: 8px; object-fit: cover; border: 1px solid #eee; flex-shrink: 0; }
         .list-content { flex: 1; display: flex; flex-direction: column; gap: 2px; }
         .list-room-work { font-weight: 800; font-size: 0.9rem; color: #2c3e50; }
         .list-type { font-size: 0.8rem; color: #e74c3c; font-weight: 700; }
         .list-detail { font-size: 0.75rem; color: #555; white-space: pre-wrap; line-height: 1.4; margin-top: 2px; }
-        
         .list-right-info { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; margin-left: auto; }
         .tag { padding: 3px 6px; border-radius: 4px; font-size: 0.7rem; color: white; font-weight: bold; }
         .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
-
-        /* 하단 버튼 2종 세트 (PDF, 수리문의) */
-        .bottom-actions { display: flex; gap: 8px; padding: 0 15px 20px 15px; margin-top: 10px; }
-        .btn-3d {
-            flex: 1;
-            padding: 12px 4px;
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 0.9rem;
-            font-weight: 800;
-            cursor: pointer;
-            text-shadow: 0 1px 1px rgba(0,0,0,0.3);
-            position: relative;
-            transform: translateY(0);
-            transition: all 0.1s;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-            line-height: 1.2;
-        }
-        .btn-pdf-3d { background: linear-gradient(to bottom, #2ecc71, #27ae60); box-shadow: 0 4px 0 #1e8449, 0 5px 10px rgba(0,0,0,0.15); }
-        .btn-pdf-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #1e8449; }
-
-        .btn-call-3d { background: linear-gradient(to bottom, #3498db, #2980b9); box-shadow: 0 4px 0 #21618c, 0 5px 10px rgba(0,0,0,0.15); }
-        .btn-call-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #21618c; }
-        .btn-3d i { font-size: 1.2rem; }
-
         .footer-info { text-align: center; padding: 20px; color: #95a5a6; font-size: 0.7rem; line-height: 1.6; border-top: 1px solid #eee; margin-top: 10px; }
         .footer-bold { font-weight: 800; color: #555; }
         .sub-desc { font-size: 0.8rem; text-align: center; color: #7f8c8d; margin-top: 10px; font-weight: 500; }
-
         @media print {
             body { background: white; padding: 0; }
             .header-container, .main-card, .bottom-actions, .footer-info, .sub-desc, .btn-delete-item { display: none !important; } 
@@ -107,7 +78,7 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">v10.0 Perfect</span>
+        <span class="version-badge">v10.1 Priority</span>
     </div>
     
     <div style="text-align:center;">
@@ -310,6 +281,24 @@
             </div>
             <textarea id="defectDetail" placeholder="AI가 하자 내용과 함께 분쟁조정위원회 기준에 따른 판단을 제공합니다."></textarea>
         </div>
+
+        <div class="nav-buttons-row">
+            <button class="btn-nav btn-next" onclick="window.goNextStep()">
+                <span>다음 (추가입력)</span> <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <button class="btn-nav btn-prev" onclick="window.goPrevStep()">
+                <i class="fa-solid fa-arrow-rotate-left"></i> <span>이전 (수정)</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="bottom-actions">
+        <button class="btn-3d btn-pdf-3d" onclick="window.savePDF()">
+            <i class="fa-solid fa-file-pdf"></i> PDF저장
+        </button>
+        <button class="btn-3d btn-call-3d" onclick="window.callCenter()">
+            <i class="fa-solid fa-phone-volume"></i> 수리문의
+        </button>
     </div>
 
     <div id="pdf-header-title" style="display:none;"></div>
@@ -320,15 +309,6 @@
             <div id="currentAptInfo" class="list-subtitle-text">현장 정보를 입력하세요</div>
         </div>
         <div id="listBox"></div>
-    </div>
-
-    <div class="bottom-actions">
-        <button class="btn-3d btn-pdf-3d" onclick="window.savePDF()">
-            <i class="fa-solid fa-file-pdf"></i> PDF저장
-        </button>
-        <button class="btn-3d btn-call-3d" onclick="window.callCenter()">
-            <i class="fa-solid fa-phone-volume"></i> 수리문의
-        </button>
     </div>
 
     <div class="footer-info">
@@ -365,6 +345,7 @@
                 const preview = document.getElementById('previewImage');
                 preview.src = e.target.result;
                 preview.style.display = 'block';
+                // 사진 로드 즉시 분석 -> 분석 후 자동 저장
                 runTargetedAnalysis(file);
             };
             reader.readAsDataURL(file);
@@ -399,25 +380,32 @@
                 const genAI = new GoogleGenerativeAI(API_KEY);
                 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
-                // [두뇌 업그레이드] 다양한 표현 사용 및 상황별 전문 용어 선택 지시
+                // [중요] 하자 우선순위 로직이 포함된 강화된 프롬프트
                 const prompt = `
                     당신은 '국토교통부 하자심사·분쟁조정위원회'의 전문 심사관입니다.
-                    사진 속 중앙 십자선 위치의 하자를 정밀 분석하여 보고서를 작성하세요.
+                    사진 속 중앙 십자선 위치를 정밀 분석하여 하자를 판단하세요.
 
-                    [작성 지침 - 중요]
-                    1. **"미관상 하자로 판단되며"라는 문구를 앵무새처럼 반복하지 마세요.**
-                    2. 사진의 하자 상태에 맞춰 전문적인 서술어를 선택하세요.
-                       - 예) 긁힘/오염 -> "마감 처리 미흡으로 인한 오염 및 스크래치가 식별됨"
-                       - 예) 깨짐/파손 -> "외부 충격 또는 시공상 부주의로 인한 파손이 명백함"
-                       - 예) 틈새/유격 -> "허용 오차를 초과하는 과도한 유격으로 기능상/미관상 결함임"
-                    3. 결론적으로 이것이 **입주 전 발생한 하자로서 시공사 보수 대상**임을 명확히 하세요.
+                    [★하자 우선순위 판단 기준 (수리비 및 심각도 순)]
+                    만약 사진에 여러 문제가 동시에 보인다면(예: 문짝이 비뚤어지고 얼룩도 있음), **반드시 아래 순서 중 더 상위의 하자를 선택**하세요.
+                    1순위: **미시공** (설치 누락)
+                    2순위: **결로/곰팡이**
+                    3순위: **파손/깨짐** (기능 상실)
+                    4순위: **수직수평불량/단차/유격** (시공 불량)
+                    5순위: **오염/스크래치/코킹/도장불량** (미관상 하자)
+
+                    [작성 지침]
+                    1. **"미관상 하자로 판단되며" 같은 문구를 반복하지 마세요.**
+                    2. 위 우선순위에 따라 결정된 '하자 유형'에 맞는 전문적인 소견을 서술하세요.
+                       - 수직수평불량: "허용 오차를 초과하는 시공 불량으로 재시공이 필요합니다."
+                       - 파손: "입주 전 발생한 파손으로 교체 시공 대상입니다."
+                       - 오염: "마감 관리 미흡으로 인한 오염으로 제거 및 재도장이 필요합니다."
 
                     [출력 형식 - JSON]
                     {
                         "work": "공종 (예: 창호공사)",
                         "sub": "세부공종 (예: 창문짝)",
-                        "type": "하자유형 (예: 긁힘, 오염, 파손, 유격)",
-                        "detail": "1. 하자 현상: [구체적 설명]\\n2. 💡전문가 의견: [위 작성 지침에 따라 전문 용어를 사용하여 다양하게 서술]. 따라서 국토부 기준에 의거 시공사 하자 보수 이행이 필요합니다."
+                        "type": "하자유형 (예: 수직수평불량, 파손, 오염)",
+                        "detail": "1. 하자 현상: [구체적 설명]\\n2. 💡전문가 의견: [위 작성 지침에 따른 소견]. 따라서 국토부 기준에 의거 시공사 하자 보수 이행이 필요합니다."
                     }
                 `;
                 
@@ -462,6 +450,20 @@
             detailBox.value = data.detail || "";
         }
 
+        window.goNextStep = function() {
+            const aptName = document.getElementById('aptName').value;
+            if(!aptName) { alert("아파트명을 입력하세요."); return; }
+            alert("다음 항목을 촬영하세요.");
+            document.getElementById('cameraInput').click();
+        };
+        
+        window.goPrevStep = function() { 
+            document.getElementById('workType').value = ''; 
+            document.getElementById('subWorkType').value = ''; 
+            document.getElementById('defectType').value = ''; 
+            document.getElementById('defectDetail').value = ''; 
+        };
+
         window.addToList = function() {
             const previewSrc = document.getElementById('previewImage').src;
             if (!currentImageFile && (!previewSrc || previewSrc.includes('data:image/svg+xml'))) { return; }
@@ -499,18 +501,17 @@
             
             defectDataList.push(uniqueId);
 
-            // [자동 초기화] 사진 영역을 초기 상태로 복구
+            // [자동 초기화] 사진 영역 및 입력값 리셋
             document.getElementById('cameraInput').value = "";
             currentImageFile = null;
-            document.getElementById('previewImage').style.display = 'none'; // 이미지 숨김
+            document.getElementById('previewImage').style.display = 'none'; 
             document.getElementById('previewImage').src = "";
             
-            // 입력창 초기화 (현장 정보/위치 제외)
             document.getElementById('workType').value = ""; 
             document.getElementById('subWorkType').value = ""; 
             document.getElementById('defectType').value = ""; 
             document.getElementById('defectDetail').value = ""; 
-            document.getElementById('statusMsg').innerText = "AI 엔진(2.0 Exp) 준비 완료"; // 상태 메시지 초기화
+            document.getElementById('statusMsg').innerText = "AI 엔진(2.0 Exp) 준비 완료"; 
             
             window.scrollTo(0, document.body.scrollHeight);
         };

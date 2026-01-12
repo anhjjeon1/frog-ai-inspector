@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (Final v5.1 Debug)</title>
+    <title>청개구리 입주자사전점검 AI (Final v5.3)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -15,81 +15,41 @@
         .header-title { color: white; font-size: 1.1rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
         .version-badge { position: absolute; right: 20px; bottom: 12px; font-size: 0.75rem; color: #ffffff; font-weight: 700; opacity: 0.9; }
         .main-card { background: white; padding: 0 20px; max-width: 100%; margin: 0; }
-        
         .top-section { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; margin-top: 10px; }
-        
-        .photo-area { 
-            width: 100%; 
-            aspect-ratio: 16 / 9; 
-            background: #f1f3f5; 
-            border: 2px dashed #bdc3c7; 
-            border-radius: 12px; 
-            position: relative; 
-            cursor: pointer; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            overflow: hidden; 
-            min-height: 200px; 
-            transition: opacity 0.3s;
-            box-sizing: border-box;
-        }
-        
-        .center-crosshair {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            pointer-events: none;
-            z-index: 20;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .photo-area { width: 100%; aspect-ratio: 16 / 9; background: #f1f3f5; border: 2px dashed #bdc3c7; border-radius: 12px; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; min-height: 200px; transition: opacity 0.3s; box-sizing: border-box; }
+        .center-crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 20; display: flex; align-items: center; justify-content: center; }
         .center-crosshair::before { content: ''; position: absolute; width: 100%; height: 0; border-top: 3px dashed rgba(255, 0, 0, 0.9); filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
         .center-crosshair::after { content: ''; position: absolute; height: 100%; width: 0; border-left: 3px dashed rgba(255, 0, 0, 0.9); filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
-
         .photo-icon { font-size: 2rem; margin-bottom: 5px; opacity: 0.4; color: #3498db; pointer-events: none; }
         .photo-text { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; text-align: center; pointer-events: none; }
         .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 10; background-color: #000; pointer-events: none; }
-        
         .basic-inputs { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 12px; }
         .input-group { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
         .input-group label { font-size: 0.75rem; color: #34495e; font-weight: 700; margin: 0; }
         .input-group input, .input-group select { width: 100%; padding: 0 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; height: 38px; background: #fff; box-sizing: border-box; }
         .input-group input:focus, .input-group select:focus { border-color: #3498db; outline: none; }
-        
         .apt-row { display: flex; width: 100%; gap: 6px; align-items: center; }
         .apt-input-wrap { position: relative; flex: 1; }
         .apt-input-wrap input { width: 100%; text-align: center; padding-right: 25px; }
         .unit-text { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: #7f8c8d; font-weight: bold; pointer-events: none; }
-
         .split-row { display: flex; gap: 10px; width: 100%; }
         .split-row input { flex: 1; text-align: center; }
-
         .bottom-section { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
         .auto-input-label { font-size: 0.85rem; font-weight: 700; color: #3498db; display: flex; align-items: center; gap: 6px; }
         textarea { width: 100%; padding: 12px; border: 1px solid #dcdde1; border-radius: 12px; height: 70px; font-size: 0.9rem; box-sizing: border-box; resize: none; background: #fdfdfd; }
         textarea:focus { border-color: #3498db; outline: none; }
-        
         .nav-buttons-row { display: flex; gap: 10px; margin-top: 15px; }
         .btn-nav { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .btn-next { background: #3498db; color: white; }
         .btn-prev { background: #ecf0f1; color: #555; border: 1px solid #bdc3c7; }
-        
         .action-buttons { display: flex; gap: 10px; margin-top: 25px; padding: 20px; background: #f8f9fa; border-top: 1px solid #eee; }
         .btn { flex: 1; padding: 14px; border: none; border-radius: 10px; font-weight: 700; color: white; font-size: 0.95rem; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
         .btn-save { background: #e74c3c; }
         .btn-export { background: #2ecc71; }
-        
         .list-area { padding: 0 20px 10px 20px; margin-top: 20px; }
         .list-header-box { margin-bottom:10px; border-left: 4px solid #3498db; padding-left:10px; }
         .list-title-text { font-size: 0.95rem; font-weight: bold; color: #2c3e50; }
         .list-subtitle-text { font-size: 0.8rem; color: #e67e22; font-weight: bold; margin-top: 2px; }
-
         .list-item { background: white; padding: 12px; border-radius: 12px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid #ecf0f1; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; }
         .list-thumb { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; border: 1px solid #eee; }
         .list-right-info { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; margin-left: auto; }
@@ -97,7 +57,6 @@
         .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
         .footer-info { text-align: center; background: #f1f2f6; padding: 30px 20px; color: #7f8c8d; font-size: 0.7rem; border-top: 1px solid #dfe4ea; line-height: 1.6; }
         .footer-bold { font-weight: 700; color: #2c3e50; font-size: 0.75rem;}
-
         .sub-desc { font-size: 0.8rem; text-align: center; color: #666; margin: 15px 0 5px 0; background: #f8f9fa; padding: 5px; }
         
         .key-modal {
@@ -128,7 +87,7 @@
     <div id="keyModal" class="key-modal" style="display:none;">
         <div class="key-box">
             <h3 style="margin-top:0;">🔑 관리자 인증</h3>
-            <p style="font-size:13px; color:#666;">Google AI Studio 키를 입력하세요.<br>(Base64 암호화 키 아님!)</p>
+            <p style="font-size:13px; color:#666;">Google AI Studio 키를 입력하세요.<br>(Base64 아님! 원본 키 입력)</p>
             <input type="password" id="apiKeyInput" class="key-input" placeholder="AIzaSy...">
             <button class="key-btn" onclick="saveApiKey()">인증 및 시작</button>
         </div>
@@ -137,7 +96,7 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 5.1 (Debug)</span>
+        <span class="version-badge">Ver 5.3 (Gemini 2.0)</span>
     </div>
     
     <div style="text-align:center; margin-top:5px;">
@@ -253,7 +212,6 @@
         let defectDataList = [];
         let currentImageFile = null;
 
-        // 키가 없으면 입력창 띄우기
         if (!API_KEY) {
             document.getElementById('keyModal').style.display = 'flex';
         } else {
@@ -324,7 +282,8 @@
 
             try {
                 const genAI = new GoogleGenerativeAI(API_KEY);
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                // [대폭 업그레이드] 최신 모델 2.0-flash-exp 적용!
+                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
                 const prompt = `
                     너는 건축 하자 진단 전문가야.
@@ -367,18 +326,17 @@
                 statusMsg.style.color = "#e74c3c";
                 
                 let errorMsg = error.toString();
-                // [중요 수정] 이제 에러가 나도 키를 자동 삭제하지 않고, 에러 내용을 보여줍니다.
-                let displayMsg = "[에러 상세 내용]\n" + errorMsg;
-
-                if (errorMsg.includes("404") || errorMsg.includes("400")) {
-                    displayMsg += "\n\n👉 [원인] API 키가 잘못되었습니다. '키 재설정' 버튼을 눌러 정확한 키(AIzaSy...)를 다시 입력하세요.";
+                
+                // 에러 메시지 덮어쓰기
+                if (errorMsg.includes("404")) {
+                    errorMsg = "모델 오류: gemini-2.0-flash-exp를 찾을 수 없습니다. (키 문제일 수 있습니다)";
                 } else if (errorMsg.includes("403")) {
-                    displayMsg += "\n\n👉 [원인] 키 권한이 없거나 차단되었습니다. 새 키를 발급받으세요.";
+                    errorMsg = "API 키 오류: 키 권한이 없거나 차단되었습니다. 새 키를 발급받으세요.";
                 } else if (errorMsg.includes("429")) {
-                    displayMsg += "\n\n👉 [원인] 사용량 초과. 잠시 후 다시 시도하세요.";
+                    errorMsg = "사용량 초과: 잠시 후 다시 시도하세요.";
                 }
                 
-                detailBox.value = displayMsg;
+                detailBox.value = errorMsg + "\n(직접 입력해주세요)";
                 
                 document.getElementById('workType').value = "";
                 document.getElementById('subWorkType').value = "";

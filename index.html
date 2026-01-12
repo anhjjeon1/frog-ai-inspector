@@ -3,597 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (Final v4.5)</title>
+    <title>청개구리 입주자사전점검 AI (Final v5.0)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* 기존 스타일 유지 */
+        /* --- 기본 스타일 (디자인 유지) --- */
         body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #ffffff; color: #333; line-height: 1.4; }
         .header-container { background: linear-gradient(135deg, #3498db, #2c3e50); padding: 15px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); height: 50px; position: relative; }
         .header-frog-img { height: 40px; width: 40px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.8); background-color: white; }
         .header-title { color: white; font-size: 1.1rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
         .version-badge { position: absolute; right: 20px; bottom: 12px; font-size: 0.75rem; color: #ffffff; font-weight: 700; opacity: 0.9; }
         .main-card { background: white; padding: 0 20px; max-width: 100%; margin: 0; }
-        .top-section { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; margin-top: 10px; }
-        .photo-area { width: 100%; aspect-ratio: 16 / 9; background: #f1f3f5; border: 2px dashed #bdc3c7; border-radius: 12px; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; min-height: 200px; transition: opacity 0.3s; box-sizing: border-box; }
-        .center-crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 20; display: flex; align-items: center; justify-content: center; }
-        .center-crosshair::before { content: ''; position: absolute; width: 100%; height: 0; border-top: 3px dashed rgba(255, 0, 0, 0.9); filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
-        .center-crosshair::after { content: ''; position: absolute; height: 100%; width: 0; border-left: 3px dashed rgba(255, 0, 0, 0.9); filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
-        .photo-icon { font-size: 2rem; margin-bottom: 5px; opacity: 0.4; color: #3498db; pointer-events: none; }
-        .photo-text { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; text-align: center; pointer-events: none; }
-        .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 10; background-color: #000; pointer-events: none; }
-        .basic-inputs { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 12px; }
-        .input-group { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
-        .input-group label { font-size: 0.75rem; color: #34495e; font-weight: 700; margin: 0; }
-        .input-group input, .input-group select { width: 100%; padding: 0 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; height: 38px; background: #fff; box-sizing: border-box; }
-        .input-group input:focus, .input-group select:focus { border-color: #3498db; outline: none; }
-        .apt-row { display: flex; width: 100%; gap: 6px; align-items: center; }
-        .apt-input-wrap { position: relative; flex: 1; }
-        .apt-input-wrap input { width: 100%; text-align: center; padding-right: 25px; }
-        .unit-text { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: #7f8c8d; font-weight: bold; pointer-events: none; }
-        .split-row { display: flex; gap: 10px; width: 100%; }
-        .split-row input { flex: 1; text-align: center; }
-        .bottom-section { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
-        .auto-input-label { font-size: 0.85rem; font-weight: 700; color: #3498db; display: flex; align-items: center; gap: 6px; }
-        textarea { width: 100%; padding: 12px; border: 1px solid #dcdde1; border-radius: 12px; height: 70px; font-size: 0.9rem; box-sizing: border-box; resize: none; background: #fdfdfd; }
-        textarea:focus { border-color: #3498db; outline: none; }
-        .nav-buttons-row { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-nav { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .btn-next { background: #3498db; color: white; }
-        .btn-prev { background: #ecf0f1; color: #555; border: 1px solid #bdc3c7; }
-        .action-buttons { display: flex; gap: 10px; margin-top: 25px; padding: 20px; background: #f8f9fa; border-top: 1px solid #eee; }
-        .btn { flex: 1; padding: 14px; border: none; border-radius: 10px; font-weight: 700; color: white; font-size: 0.95rem; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
-        .btn-save { background: #e74c3c; }
-        .btn-export { background: #2ecc71; }
-        .list-area { padding: 0 20px 10px 20px; margin-top: 20px; }
-        .list-header-box { margin-bottom:10px; border-left: 4px solid #3498db; padding-left:10px; }
-        .list-title-text { font-size: 0.95rem; font-weight: bold; color: #2c3e50; }
-        .list-subtitle-text { font-size: 0.8rem; color: #e67e22; font-weight: bold; margin-top: 2px; }
-        .list-item { background: white; padding: 12px; border-radius: 12px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid #ecf0f1; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; }
-        .list-thumb { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; border: 1px solid #eee; }
-        .list-right-info { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; margin-left: auto; }
-        .tag { padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; color: white; font-weight: bold; }
-        .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
-        .footer-info { text-align: center; background: #f1f2f6; padding: 30px 20px; color: #7f8c8d; font-size: 0.7rem; border-top: 1px solid #dfe4ea; line-height: 1.6; }
-        .footer-bold { font-weight: 700; color: #2c3e50; font-size: 0.75rem;}
-        .sub-desc { font-size: 0.8rem; text-align: center; color: #666; margin: 15px 0 5px 0; background: #f8f9fa; padding: 5px; }
-    </style>
-</head>
-<body>
-
-    <div class="header-container">
-        <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
-        <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 4.5 (Secret)</span>
-    </div>
-    <p class="sub-desc" id="statusMsg">AI 엔진 연결 대기중...</p>
-
-    <div class="main-card">
-        <div class="top-section">
-            <input type="file" id="cameraInput" accept="image/*" style="display:none">
-            <label class="photo-area" id="photoAreaBtn" for="cameraInput">
-                <div class="photo-icon"><i class="fa-solid fa-camera"></i></div>
-                <div class="photo-text">터치하여 촬영<br>(점선 십자선에 하자를 맞추세요)</div>
-                <img id="previewImage" class="preview-img">
-                <div class="center-crosshair"></div>
-            </label>
-
-            <div class="basic-inputs">
-                <div class="input-group">
-                    <label>현장 정보 (아파트 / 동 / 호)</label>
-                    <div class="apt-row">
-                        <div class="apt-input-wrap" style="flex: 1.5;">
-                            <input type="text" id="aptName" placeholder="아파트명">
-                        </div>
-                        <div class="apt-input-wrap">
-                            <input type="tel" id="aptDong" placeholder="000">
-                            <span class="unit-text">동</span>
-                        </div>
-                        <div class="apt-input-wrap">
-                            <input type="tel" id="aptHo" placeholder="0000">
-                            <span class="unit-text">호</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>위치(실내)</label>
-                    <select id="roomSelect">
-                        <option value="">선택 (거실, 안방 등)</option>
-                        <option value="거실">거실</option>
-                        <option value="안방">안방</option>
-                        <option value="주방">주방</option>
-                        <option value="욕실1">공용 욕실</option>
-                        <option value="욕실2">부부 욕실</option>
-                        <option value="현관">현관</option>
-                        <option value="발코니">발코니</option>
-                        <option value="실외기실">실외기실</option>
-                    </select>
-                </div>
-                
-                <div class="input-group">
-                    <label>공종 / 세부공종</label>
-                    <div class="split-row">
-                        <input type="text" id="workType" placeholder="공종 (예: 창호)">
-                        <input type="text" id="subWorkType" placeholder="세부 (예: 손잡이)">
-                    </div>
-                </div>
-                
-                <div class="input-group">
-                    <label>하자유형</label>
-                    <input type="text" id="defectType" placeholder="자동 입력">
-                </div>
-            </div>
-        </div>
-
-        <div class="bottom-section">
-            <div class="auto-input-label">
-                <i class="fa-solid fa-robot"></i> AI하자입력 (십자선 집중 분석)
-            </div>
-            <textarea id="defectDetail" placeholder="점선 십자선(+) 위치의 하자를 AI가 분석합니다."></textarea>
-        </div>
-
-        <div class="nav-buttons-row">
-            <button class="btn-nav btn-next" onclick="window.goNextStep()">
-                <span>다음 (추가입력)</span> <i class="fa-solid fa-arrow-right"></i>
-            </button>
-            <button class="btn-nav btn-prev" onclick="window.goPrevStep()">
-                <i class="fa-solid fa-arrow-rotate-left"></i> <span>이전 (수정)</span>
-            </button>
-        </div>
-    </div>
-
-    <div class="action-buttons">
-        <button class="btn btn-save" onclick="window.addToList()">리스트 저장</button>
-        <button class="btn btn-export" onclick="window.saveAll()">엑셀 저장</button>
-    </div>
-
-    <div class="list-area">
-        <div class="list-header-box">
-            <div class="list-title-text">📋 저장된 리스트 <span id="listCount">(0)</span></div>
-            <div id="currentAptInfo" class="list-subtitle-text"></div>
-        </div>
-        <div id="listBox"></div>
-    </div>
-
-    <div class="footer-info">
-        <p><span class="footer-bold">청개구리샤시</span> | 사업자등록번호 : 123-36-31426 | 대표 : 전영웅</p>
-        <p>전화 1599-7380 | COPYRIGHT ⓒ 2026 Cheong-gaeguri Corp.</p>
-    </div>
-
-    <script type="importmap">
-        {
-          "imports": {
-            "@google/generative-ai": "https://esm.run/@google/generative-ai"
-          }
-        }
-    </script>
-
-    <script type="module">
-        import { GoogleGenerativeAI } from "@google/generative-ai";
-
-        // =========================================================
-        // [보안 패치] Base64로 암호화된 키를 넣는 곳입니다.
-        // * Base64 사이트에서 'ENCODE'한 결과를 아래 따옴표 안에 넣으세요.
-        // =========================================================
-        const ENCODED_KEY = "<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (Final v4.5)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        /* 기존 스타일 유지 */
-        body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #ffffff; color: #333; line-height: 1.4; }
-        .header-container { background: linear-gradient(135deg, #3498db, #2c3e50); padding: 15px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); height: 50px; position: relative; }
-        .header-frog-img { height: 40px; width: 40px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.8); background-color: white; }
-        .header-title { color: white; font-size: 1.1rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
-        .version-badge { position: absolute; right: 20px; bottom: 12px; font-size: 0.75rem; color: #ffffff; font-weight: 700; opacity: 0.9; }
-        .main-card { background: white; padding: 0 20px; max-width: 100%; margin: 0; }
-        .top-section { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; margin-top: 10px; }
-        .photo-area { width: 100%; aspect-ratio: 16 / 9; background: #f1f3f5; border: 2px dashed #bdc3c7; border-radius: 12px; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; min-height: 200px; transition: opacity 0.3s; box-sizing: border-box; }
-        .center-crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 20; display: flex; align-items: center; justify-content: center; }
-        .center-crosshair::before { content: ''; position: absolute; width: 100%; height: 0; border-top: 3px dashed rgba(255, 0, 0, 0.9); filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
-        .center-crosshair::after { content: ''; position: absolute; height: 100%; width: 0; border-left: 3px dashed rgba(255, 0, 0, 0.9); filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
-        .photo-icon { font-size: 2rem; margin-bottom: 5px; opacity: 0.4; color: #3498db; pointer-events: none; }
-        .photo-text { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; text-align: center; pointer-events: none; }
-        .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 10; background-color: #000; pointer-events: none; }
-        .basic-inputs { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 12px; }
-        .input-group { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
-        .input-group label { font-size: 0.75rem; color: #34495e; font-weight: 700; margin: 0; }
-        .input-group input, .input-group select { width: 100%; padding: 0 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; height: 38px; background: #fff; box-sizing: border-box; }
-        .input-group input:focus, .input-group select:focus { border-color: #3498db; outline: none; }
-        .apt-row { display: flex; width: 100%; gap: 6px; align-items: center; }
-        .apt-input-wrap { position: relative; flex: 1; }
-        .apt-input-wrap input { width: 100%; text-align: center; padding-right: 25px; }
-        .unit-text { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: #7f8c8d; font-weight: bold; pointer-events: none; }
-        .split-row { display: flex; gap: 10px; width: 100%; }
-        .split-row input { flex: 1; text-align: center; }
-        .bottom-section { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
-        .auto-input-label { font-size: 0.85rem; font-weight: 700; color: #3498db; display: flex; align-items: center; gap: 6px; }
-        textarea { width: 100%; padding: 12px; border: 1px solid #dcdde1; border-radius: 12px; height: 70px; font-size: 0.9rem; box-sizing: border-box; resize: none; background: #fdfdfd; }
-        textarea:focus { border-color: #3498db; outline: none; }
-        .nav-buttons-row { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-nav { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .btn-next { background: #3498db; color: white; }
-        .btn-prev { background: #ecf0f1; color: #555; border: 1px solid #bdc3c7; }
-        .action-buttons { display: flex; gap: 10px; margin-top: 25px; padding: 20px; background: #f8f9fa; border-top: 1px solid #eee; }
-        .btn { flex: 1; padding: 14px; border: none; border-radius: 10px; font-weight: 700; color: white; font-size: 0.95rem; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
-        .btn-save { background: #e74c3c; }
-        .btn-export { background: #2ecc71; }
-        .list-area { padding: 0 20px 10px 20px; margin-top: 20px; }
-        .list-header-box { margin-bottom:10px; border-left: 4px solid #3498db; padding-left:10px; }
-        .list-title-text { font-size: 0.95rem; font-weight: bold; color: #2c3e50; }
-        .list-subtitle-text { font-size: 0.8rem; color: #e67e22; font-weight: bold; margin-top: 2px; }
-        .list-item { background: white; padding: 12px; border-radius: 12px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid #ecf0f1; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; }
-        .list-thumb { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; border: 1px solid #eee; }
-        .list-right-info { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; margin-left: auto; }
-        .tag { padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; color: white; font-weight: bold; }
-        .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
-        .footer-info { text-align: center; background: #f1f2f6; padding: 30px 20px; color: #7f8c8d; font-size: 0.7rem; border-top: 1px solid #dfe4ea; line-height: 1.6; }
-        .footer-bold { font-weight: 700; color: #2c3e50; font-size: 0.75rem;}
-        .sub-desc { font-size: 0.8rem; text-align: center; color: #666; margin: 15px 0 5px 0; background: #f8f9fa; padding: 5px; }
-    </style>
-</head>
-<body>
-
-    <div class="header-container">
-        <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
-        <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">Ver 4.5 (Secret)</span>
-    </div>
-    <p class="sub-desc" id="statusMsg">AI 엔진 연결 대기중...</p>
-
-    <div class="main-card">
-        <div class="top-section">
-            <input type="file" id="cameraInput" accept="image/*" style="display:none">
-            <label class="photo-area" id="photoAreaBtn" for="cameraInput">
-                <div class="photo-icon"><i class="fa-solid fa-camera"></i></div>
-                <div class="photo-text">터치하여 촬영<br>(점선 십자선에 하자를 맞추세요)</div>
-                <img id="previewImage" class="preview-img">
-                <div class="center-crosshair"></div>
-            </label>
-
-            <div class="basic-inputs">
-                <div class="input-group">
-                    <label>현장 정보 (아파트 / 동 / 호)</label>
-                    <div class="apt-row">
-                        <div class="apt-input-wrap" style="flex: 1.5;">
-                            <input type="text" id="aptName" placeholder="아파트명">
-                        </div>
-                        <div class="apt-input-wrap">
-                            <input type="tel" id="aptDong" placeholder="000">
-                            <span class="unit-text">동</span>
-                        </div>
-                        <div class="apt-input-wrap">
-                            <input type="tel" id="aptHo" placeholder="0000">
-                            <span class="unit-text">호</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>위치(실내)</label>
-                    <select id="roomSelect">
-                        <option value="">선택 (거실, 안방 등)</option>
-                        <option value="거실">거실</option>
-                        <option value="안방">안방</option>
-                        <option value="주방">주방</option>
-                        <option value="욕실1">공용 욕실</option>
-                        <option value="욕실2">부부 욕실</option>
-                        <option value="현관">현관</option>
-                        <option value="발코니">발코니</option>
-                        <option value="실외기실">실외기실</option>
-                    </select>
-                </div>
-                
-                <div class="input-group">
-                    <label>공종 / 세부공종</label>
-                    <div class="split-row">
-                        <input type="text" id="workType" placeholder="공종 (예: 창호)">
-                        <input type="text" id="subWorkType" placeholder="세부 (예: 손잡이)">
-                    </div>
-                </div>
-                
-                <div class="input-group">
-                    <label>하자유형</label>
-                    <input type="text" id="defectType" placeholder="자동 입력">
-                </div>
-            </div>
-        </div>
-
-        <div class="bottom-section">
-            <div class="auto-input-label">
-                <i class="fa-solid fa-robot"></i> AI하자입력 (십자선 집중 분석)
-            </div>
-            <textarea id="defectDetail" placeholder="점선 십자선(+) 위치의 하자를 AI가 분석합니다."></textarea>
-        </div>
-
-        <div class="nav-buttons-row">
-            <button class="btn-nav btn-next" onclick="window.goNextStep()">
-                <span>다음 (추가입력)</span> <i class="fa-solid fa-arrow-right"></i>
-            </button>
-            <button class="btn-nav btn-prev" onclick="window.goPrevStep()">
-                <i class="fa-solid fa-arrow-rotate-left"></i> <span>이전 (수정)</span>
-            </button>
-        </div>
-    </div>
-
-    <div class="action-buttons">
-        <button class="btn btn-save" onclick="window.addToList()">리스트 저장</button>
-        <button class="btn btn-export" onclick="window.saveAll()">엑셀 저장</button>
-    </div>
-
-    <div class="list-area">
-        <div class="list-header-box">
-            <div class="list-title-text">📋 저장된 리스트 <span id="listCount">(0)</span></div>
-            <div id="currentAptInfo" class="list-subtitle-text"></div>
-        </div>
-        <div id="listBox"></div>
-    </div>
-
-    <div class="footer-info">
-        <p><span class="footer-bold">청개구리샤시</span> | 사업자등록번호 : 123-36-31426 | 대표 : 전영웅</p>
-        <p>전화 1599-7380 | COPYRIGHT ⓒ 2026 Cheong-gaeguri Corp.</p>
-    </div>
-
-    <script type="importmap">
-        {
-          "imports": {
-            "@google/generative-ai": "https://esm.run/@google/generative-ai"
-          }
-        }
-    </script>
-
-    <script type="module">
-        import { GoogleGenerativeAI } from "@google/generative-ai";
-
-        // =========================================================
-        // [보안 패치] Base64로 암호화된 키를 넣는 곳입니다.
-        // * Base64 사이트에서 'ENCODE'한 결과를 아래 따옴표 안에 넣으세요.
-        // =========================================================
-        const ENCODED_KEY = "QUl6YVN5QVBfOWRjYlJQUmRQNEdENlduaVFzV2l4RlVGWVJoZmln"; 
         
-        // 암호 해독 (Base64 Decode)
-        const API_KEY = atob(ENCODED_KEY);
+        .top-section { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; margin-top: 10px; }
+        
+        .photo-area { 
+            width: 100%; 
+            aspect-ratio: 16 / 9; 
+            background: #f1f3f5; 
+            border: 2px dashed #bdc3c7; 
+            border-radius: 12px; 
+            position: relative; 
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            min-height: 200px; 
+            transition: opacity 0.3s;
+            box-sizing: border-box;
+        }
+        
+        .center-crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            pointer-events: none;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .center-crosshair::before { content: ''; position: absolute; width: 100%; height: 0; border-top: 3px dashed rgba(255, 0, 0, 0.9); filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
+        .center-crosshair::after { content: ''; position: absolute; height: 100%; width: 0; border-left: 3px dashed rgba(255, 0, 0, 0.9); filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
 
-        const genAI = new GoogleGenerativeAI(API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        .photo-icon { font-size: 2rem; margin-bottom: 5px; opacity: 0.4; color: #3498db; pointer-events: none; }
+        .photo-text { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; text-align: center; pointer-events: none; }
+        .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 10; background-color: #000; pointer-events: none; }
+        
+        .basic-inputs { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 12px; }
+        .input-group { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+        .input-group label { font-size: 0.75rem; color: #34495e; font-weight: 700; margin: 0; }
+        .input-group input, .input-group select { width: 100%; padding: 0 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; height: 38px; background: #fff; box-sizing: border-box; }
+        .input-group input:focus, .input-group select:focus { border-color: #3498db; outline: none; }
+        
+        .apt-row { display: flex; width: 100%; gap: 6px; align-items: center; }
+        .apt-input-wrap { position: relative; flex: 1; }
+        .apt-input-wrap input { width: 100%; text-align: center; padding-right: 25px; }
+        .unit-text { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: #7f8c8d; font-weight: bold; pointer-events: none; }
 
+        .split-row { display: flex; gap: 10px; width: 100%; }
+        .split-row input { flex: 1; text-align: center; }
+
+        .bottom-section { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
+        .auto-input-label { font-size: 0.85rem; font-weight: 700; color: #3498db; display: flex; align-items: center; gap: 6px; }
+        textarea { width: 100%; padding: 12px; border: 1px solid #dcdde1; border-radius: 12px; height: 70px; font-size: 0.9rem; box-sizing: border-box; resize: none; background: #fdfdfd; }
+        textarea:focus { border-color: #3498db; outline: none; }
+        
+        .nav-buttons-row { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-nav { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .btn-next { background: #3498db; color: white; }
+        .btn-prev { background: #ecf0f1; color: #555; border: 1px solid #bdc3c7; }
+        
+        .action-buttons { display: flex; gap: 10px; margin-top: 25px; padding: 20px; background: #f8f9fa; border-top: 1px solid #eee; }
+        .btn { flex: 1; padding: 14px; border: none; border-radius: 10px; font-weight: 700; color: white; font-size: 0.95rem; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+        .btn-save { background: #e74c3c; }
+        .btn-export { background: #2ecc71; }
+        
+        .list-area { padding: 0 20px 10px 20px; margin-top: 20px; }
+        .list-header-box { margin-bottom:10px; border-left: 4px solid #3498db; padding-left:10px; }
+        .list-title-text { font-size: 0.95rem; font-weight: bold; color: #2c3e50; }
+        .list-subtitle-text { font-size: 0.8rem; color: #e67e22; font-weight: bold; margin-top: 2px; }
+
+        .list-item { background: white; padding: 12px; border-radius: 12px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid #ecf0f1; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; }
+        .list-thumb { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; border: 1px solid #eee; }
+        .list-right-info { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; margin-left: auto; }
+        .tag { padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; color: white; font-weight: bold; }
+        .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
+        .footer-info { text-align: center; background: #f1f2f6; padding: 30px 20px; color: #7f8c8d; font-size: 0.7rem; border-top: 1px solid #dfe4ea; line-height: 1.6; }
+        .footer-bold { font-weight: 700; color: #2c3e50; font-size: 0.75rem;}
+
+        .sub-desc { font-size: 0.8rem; text-align: center; color: #666; margin: 15px 0 5px 0; background: #f8f9fa; padding: 5px; }
+        
+        /* 키 입력 모달 스타일 */
+        .key-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .key-box {
+            background: white; width: 85%; padding: 25px; border-radius: 15px;
+            text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .key-input {
+            width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;
+            margin: 15px 0; font-size: 14px; box-sizing: border-box;
+        }
+        .key-btn {
+            background: #2ecc71; color: white; border: none; padding: 10px 20px;
+            border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="keyModal" class="key-modal" style="display:none;">
+        <div class="key-box">
+            <h3 style="margin-top:0;">🔑 관리자 인증</h3>
+            <p style="font-size:13px; color:#666;">발급받은 Google API Key를 입력하세요.<br>(기기에 안전하게 저장됩니다)</p>
+            <input type="password" id="apiKeyInput" class="key-input" placeholder="AIzaSy...">
+            <button class="key-btn" onclick="saveApiKey()">인증 및 시작</button>
+        </div>
+    </div>
+
+    <div class="header-container">
+        <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
+        <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
+        <span class="version-badge">Ver 5.0 (Security)</span>
+    </div>
+    <p class="sub-desc" id="statusMsg">AI 엔진 연결 대기중...</p>
+
+    <div class="main-card">
+        <div class="top-section">
+            <input type="file" id="cameraInput" accept="image/*" style="display:none">
+            <label class="photo-area" id="photoAreaBtn" for="cameraInput">
+                <div class="photo-icon"><i class="fa-solid fa-camera"></i></div>
+                <div class="photo-text">터치하여 촬영<br>(점선 십자선에 하자를 맞추세요)</div>
+                <img id="previewImage" class="preview-img">
+                <div class="center-crosshair"></div>
+            </label>
+
+            <div class="basic-inputs">
+                <div class="input-group">
+                    <label>현장 정보 (아파트 / 동 / 호)</label>
+                    <div class="apt-row">
+                        <div class="apt-input-wrap" style="flex: 1.5;">
+                            <input type="text" id="aptName" placeholder="아파트명">
+                        </div>
+                        <div class="apt-input-wrap">
+                            <input type="tel" id="aptDong" placeholder="000">
+                            <span class="unit-text">동</span>
+                        </div>
+                        <div class="apt-input-wrap">
+                            <input type="tel" id="aptHo" placeholder="0000">
+                            <span class="unit-text">호</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>위치(실내)</label>
+                    <select id="roomSelect">
+                        <option value="">선택 (거실, 안방 등)</option>
+                        <option value="거실">거실</option>
+                        <option value="안방">안방</option>
+                        <option value="주방">주방</option>
+                        <option value="욕실1">공용 욕실</option>
+                        <option value="욕실2">부부 욕실</option>
+                        <option value="현관">현관</option>
+                        <option value="발코니">발코니</option>
+                        <option value="실외기실">실외기실</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>공종 / 세부공종</label>
+                    <div class="split-row">
+                        <input type="text" id="workType" placeholder="공종 (예: 창호)">
+                        <input type="text" id="subWorkType" placeholder="세부 (예: 손잡이)">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>하자유형</label>
+                    <input type="text" id="defectType" placeholder="자동 입력">
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-section">
+            <div class="auto-input-label">
+                <i class="fa-solid fa-robot"></i> AI하자입력 (십자선 집중 분석)
+            </div>
+            <textarea id="defectDetail" placeholder="점선 십자선(+) 위치의 하자를 AI가 분석합니다."></textarea>
+        </div>
+
+        <div class="nav-buttons-row">
+            <button class="btn-nav btn-next" onclick="window.goNextStep()">
+                <span>다음 (추가입력)</span> <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <button class="btn-nav btn-prev" onclick="window.goPrevStep()">
+                <i class="fa-solid fa-arrow-rotate-left"></i> <span>이전 (수정)</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <button class="btn btn-save" onclick="window.addToList()">리스트 저장</button>
+        <button class="btn btn-export" onclick="window.saveAll()">엑셀 저장</button>
+    </div>
+
+    <div class="list-area">
+        <div class="list-header-box">
+            <div class="list-title-text">📋 저장된 리스트 <span id="listCount">(0)</span></div>
+            <div id="currentAptInfo" class="list-subtitle-text"></div>
+        </div>
+        <div id="listBox"></div>
+    </div>
+
+    <div class="footer-info">
+        <p><span class="footer-bold">청개구리샤시</span> | 사업자등록번호 : 123-36-31426 | 대표 : 전영웅</p>
+        <p>전화 1599-7380 | COPYRIGHT ⓒ 2026 Cheong-gaeguri Corp.</p>
+    </div>
+
+    <script type="importmap">
+        {
+          "imports": {
+            "@google/generative-ai": "https://esm.run/@google/generative-ai"
+          }
+        }
+    </script>
+
+    <script type="module">
+        import { GoogleGenerativeAI } from "@google/generative-ai";
+
+        let API_KEY = localStorage.getItem("frog_ai_key"); // 저장된 키 불러오기
         let defectDataList = [];
         let currentImageFile = null;
 
-        document.getElementById('cameraInput').addEventListener('change', async (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-            currentImageFile = file;
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const preview = document.getElementById('previewImage');
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-                runTargetedAnalysis(file);
-            };
-            reader.readAsDataURL(file);
-        });
-
-        async function fileToGenerativePart(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    const base64Data = reader.result.split(',')[1];
-                    resolve({ inlineData: { data: base64Data, mimeType: file.type } });
-                };
-                reader.readAsDataURL(file);
-            });
+        // 키가 없으면 입력창 띄우기
+        if (!API_KEY) {
+            document.getElementById('keyModal').style.display = 'flex';
+        } else {
+            document.getElementById('statusMsg').innerText = "✅ AI 엔진 준비 완료";
         }
 
-        async function runTargetedAnalysis(file) {
-            const detailBox = document.getElementById('defectDetail');
-            const statusMsg = document.getElementById('statusMsg');
-            const photoBtn = document.getElementById('photoAreaBtn');
-            
-            detailBox.value = "점선 십자선(+) 위치를 분석 중입니다...";
-            statusMsg.innerText = "🎯 타겟 정밀 분석 중...";
-            
-            photoBtn.style.opacity = '0.5';
-            photoBtn.style.pointerEvents = 'none';
-
-            try {
-                const prompt = `
-                    너는 건축 하자 진단 전문가야.
-                    사용자가 사진을 찍을 때 화면 중앙에 '점선 십자선(+)'을 맞추고 찍었어.
-                    
-                    [지시사항]
-                    1. 사진의 정중앙(Center Point)에 있는 물체의 하자를 분석해줘.
-                    2. 주변 배경은 철저히 무시해.
-                    3. 결과를 JSON 형식으로만 출력해.
-                    
-                    {"work": "공종", "sub": "세부공종", "type": "하자유형", "detail": "하자내용"}
-                `;
-                
-                const imagePart = await fileToGenerativePart(file);
-                const result = await model.generateContent([prompt, imagePart]);
-                const response = await result.response;
-                const text = response.text();
-                
-                let data = {};
-                try {
-                    let cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
-                    const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
-                    if (jsonMatch) {
-                        data = JSON.parse(jsonMatch[0]);
-                    } else {
-                        throw new Error("JSON not found");
-                    }
-                } catch (e) {
-                    data = { detail: text, work: "기타", sub: "", type: "점검요망" };
-                }
-
-                applyDataToUI(data);
-                statusMsg.innerText = "✅ 타겟 분석 성공";
-                statusMsg.style.color = "#2ecc71";
-
-            } catch (error) {
-                console.error("AI Error:", error);
-                
-                statusMsg.innerText = "⚠️ 분석 실패";
-                statusMsg.style.color = "#e74c3c";
-                
-                // [진단용] 진짜 에러 메시지를 화면에 출력합니다.
-                let errorMsg = error.toString();
-                let displayMsg = "[에러 상세 내용]\n" + errorMsg;
-
-                if (errorMsg.includes("404")) {
-                    displayMsg += "\n\n👉 [원인] API 키가 유효하지 않습니다. (GitHub가 또 차단했거나, 프로젝트 키가 아님)";
-                } else if (errorMsg.includes("429")) {
-                    displayMsg += "\n\n👉 [원인] 사용량 초과. (잠시 후 시도하세요)";
-                } else if (errorMsg.includes("400")) {
-                    displayMsg += "\n\n👉 [원인] 요청 형식 오류. (이미지가 너무 크거나 형식이 다름)";
-                } else if (errorMsg.includes("fetch")) {
-                    displayMsg += "\n\n👉 [원인] 네트워크 연결 실패. (인터넷 확인)";
-                }
-                
-                detailBox.value = displayMsg;
-                
-                document.getElementById('workType').value = "";
-                document.getElementById('subWorkType').value = "";
-                document.getElementById('defectType').value = "";
-            } finally {
-                photoBtn.style.opacity = '1';
-                photoBtn.style.pointerEvents = 'auto';
-            }
-        }
-
-        function applyDataToUI(data) {
-            document.getElementById('workType').value = data.work || "";
-            document.getElementById('subWorkType').value = data.sub || ""; 
-            document.getElementById('defectType').value = data.type || "";
-            
-            if(data.location) document.getElementById('roomSelect').value = data.location;
-            
-            const detailBox = document.getElementById('defectDetail');
-            const detailText = data.detail || "";
-            detailBox.value = detailText;
-            
-            const isDanger = (detailText.includes("파손") || detailText.includes("누수") || detailText.includes("균열"));
-            if(isDanger) {
-                detailBox.style.color = "#e74c3c";
-                detailBox.style.borderColor = "#e74c3c";
+        window.saveApiKey = function() {
+            const inputKey = document.getElementById('apiKeyInput').value.trim();
+            if (inputKey.startsWith("AIza")) {
+                localStorage.setItem("frog_ai_key", inputKey);
+                API_KEY = inputKey;
+                document.getElementById('keyModal').style.display = 'none';
+                alert("인증되었습니다!");
+                location.reload(); // 새로고침해서 적용
             } else {
-                detailBox.style.color = "#333";
-                detailBox.style.borderColor = "#2ecc71";
-            }
-        }
-
-        window.goNextStep = function() { alert("다음 단계로 이동 (기능 준비중)"); };
-        window.goPrevStep = function() { 
-            document.getElementById('workType').value = ''; 
-            document.getElementById('subWorkType').value = ''; 
-            document.getElementById('defectType').value = ''; 
-            document.getElementById('defectDetail').value = ''; 
-        };
-
-        window.addToList = function() {
-            const previewSrc = document.getElementById('previewImage').src;
-            if (!currentImageFile && !previewSrc) { alert("사진이 없습니다."); return; }
-            
-            const aptName = document.getElementById('aptName').value;
-            const aptDong = document.getElementById('aptDong').value;
-            const aptHo = document.getElementById('aptHo').value;
-            
-            const room = document.getElementById('roomSelect').value;
-            const work = document.getElementById('workType').value;
-            const sub = document.getElementById('subWorkType').value;
-            const type = document.getElementById('defectType').value;
-            const detail = document.getElementById('defectDetail').value;
-
-            if(!room) { alert("위치(실내)를 선택해주세요."); return; }
-            
-            const aptInfoText = `${aptName || "OO아파트"} ${aptDong || "000"}동 ${aptHo || "0000"}호`;
-            document.getElementById('currentAptInfo').innerText = aptInfoText;
-
-            const uniqueId = Date.now();
-            const count = defectDataList.length + 1;
-            
-            const safeDetail = detail || "";
-            const verdict = (safeDetail.includes("파손") || safeDetail.includes("누수") || safeDetail.includes("균열")) ? "심각" : "정상";
-            const tagColor = verdict === "심각" ? "#e74c3c" : "#2ecc71";
-
-            defectDataList.push({ 
-                id: uniqueId, no: count, 
-                apt: aptInfoText, 
-                room, work, sub, type, detail: safeDetail, verdict 
-            });
-
-            const item = document.createElement('div');
-            item.className = 'list-item';
-            item.id = `item-${uniqueId}`;
-            item.innerHTML = `
-                <img src="${previewSrc}" class="list-thumb">
-                <div style="flex:1;">
-                    <div style="font-weight:bold; font-size:0.9rem;">${room} - ${work}</div>
-                    <div style="font-size:0.8rem; color:#555;">${sub} | ${type}</div>
-                    <div style="font-size:0.8rem; color:#666;">${verdict}</div>
-                </div>
-                <div class="list-right-info">
-                    <span class="tag" style="background:${tagColor}">No.${count}</span>
-                    <button class="btn-delete-item" onclick="window.deleteItem(${uniqueId})">삭제</button>
-                </div>
-            `;
-            document.getElementById('listBox').prepend(item);
-            document.getElementById('listCount').innerText = `(${defectDataList.length})`;
-            
-            document.getElementById('cameraInput').value = "";
-            currentImageFile = null;
-        };
-
-        window.deleteItem = function(id) {
-            if(confirm("삭제하시겠습니까?")) {
-                defectDataList = defectDataList.filter(i => i.id !== id);
-                document.getElementById(`item-${id}`).remove();
-                document.getElementById('listCount').innerText = `(${defectDataList.length})`;
+                alert("올바른 Google API Key가 아닙니다.");
             }
         };
-
-        window.saveAll = function() {
-            if(defectDataList.length === 0) { alert("저장할 데이터가 없습니다."); return; }
-            
-            const aptName = document.getElementById('aptName').value || "현장";
-            const aptDong = document.getElementById('aptDong').value || "동";
-            const aptHo = document.getElementById('aptHo').value || "호";
-            const fileName = `${aptName}_${aptDong}동_${aptHo}호_점검리스트.csv`;
-
-            let csv = `\uFEFF[${aptName} ${aptDong}동 ${aptHo}호 점검 리스트]\n`; 
-            csv += "번호,아파트정보,위치,공종,세부,유형,내용,판정\n";
-            
-            defectDataList.forEach(r => {
-                const cleanDetail = r.detail.replace(/,/g, " ");
-                csv += `${r.no},"${r.apt}","${r.room}","${r.work}","${r.sub}","${r.type}","${cleanDetail}","${r.verdict}"\n`;
-            });
-
-            const link = document.createElement("a");
-            link.href = encodeURI("data:text/csv;charset=utf-8," + csv);
-            link.download = fileName;
-            link.click();
-        };
-    </script>
-</body>
-</html>"; 
-        
-        // 암호 해독 (Base64 Decode)
-        const API_KEY = atob(ENCODED_KEY);
-
-        const genAI = new GoogleGenerativeAI(API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-        let defectDataList = [];
-        let currentImageFile = null;
 
         document.getElementById('cameraInput').addEventListener('change', async (event) => {
             const file = event.target.files[0];
@@ -622,6 +293,11 @@
         }
 
         async function runTargetedAnalysis(file) {
+            if (!API_KEY) {
+                alert("API 키가 없습니다. 새로고침하여 키를 입력해주세요.");
+                return;
+            }
+
             const detailBox = document.getElementById('defectDetail');
             const statusMsg = document.getElementById('statusMsg');
             const photoBtn = document.getElementById('photoAreaBtn');
@@ -633,6 +309,9 @@
             photoBtn.style.pointerEvents = 'none';
 
             try {
+                const genAI = new GoogleGenerativeAI(API_KEY);
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
                 const prompt = `
                     너는 건축 하자 진단 전문가야.
                     사용자가 사진을 찍을 때 화면 중앙에 '점선 십자선(+)'을 맞추고 찍었어.
@@ -673,21 +352,14 @@
                 statusMsg.innerText = "⚠️ 분석 실패";
                 statusMsg.style.color = "#e74c3c";
                 
-                // [진단용] 진짜 에러 메시지를 화면에 출력합니다.
                 let errorMsg = error.toString();
-                let displayMsg = "[에러 상세 내용]\n" + errorMsg;
-
-                if (errorMsg.includes("404")) {
-                    displayMsg += "\n\n👉 [원인] API 키가 유효하지 않습니다. (GitHub가 또 차단했거나, 프로젝트 키가 아님)";
-                } else if (errorMsg.includes("429")) {
-                    displayMsg += "\n\n👉 [원인] 사용량 초과. (잠시 후 시도하세요)";
-                } else if (errorMsg.includes("400")) {
-                    displayMsg += "\n\n👉 [원인] 요청 형식 오류. (이미지가 너무 크거나 형식이 다름)";
-                } else if (errorMsg.includes("fetch")) {
-                    displayMsg += "\n\n👉 [원인] 네트워크 연결 실패. (인터넷 확인)";
+                if (errorMsg.includes("404") || errorMsg.includes("403")) {
+                    errorMsg = "API 키 오류: 키가 만료되었거나 잘못되었습니다. 키를 다시 입력하세요.";
+                    localStorage.removeItem("frog_ai_key"); // 잘못된 키 삭제
+                    setTimeout(() => location.reload(), 2000);
                 }
                 
-                detailBox.value = displayMsg;
+                detailBox.value = errorMsg + "\n(직접 입력해주세요)";
                 
                 document.getElementById('workType').value = "";
                 document.getElementById('subWorkType').value = "";

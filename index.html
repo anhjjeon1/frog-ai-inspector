@@ -3,18 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (v10.1 Priority)</title>
+    <title>청개구리 입주자사전점검 AI (v11.0 Ultimate)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 기본 스타일 (기존 유지) --- */
+        /* --- 디자인 (기존 스타일 유지 + 추가) --- */
         body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #f4f6f9; color: #333; line-height: 1.4; padding-bottom: 30px; }
+        
         .header-container { background: linear-gradient(135deg, #27ae60, #2c3e50); padding: 12px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); height: 45px; position: relative; z-index: 100; }
         .header-frog-img { height: 35px; width: 35px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.9); background-color: white; }
         .header-title { color: white; font-size: 1.05rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
         .version-badge { position: absolute; right: 20px; bottom: 12px; font-size: 0.7rem; color: #ecf0f1; font-weight: 700; opacity: 0.8; }
+        
         .main-card { background: white; padding: 15px; margin: 12px; border-radius: 18px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        
         .photo-area { width: 100%; aspect-ratio: 16 / 9; background: #eef2f3; border: 2px dashed #bdc3c7; border-radius: 12px; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 10px; margin-top: 10px; box-sizing: border-box; }
         .center-crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 20; display: flex; align-items: center; justify-content: center; }
         .center-crosshair::before { content: ''; position: absolute; width: 100%; height: 0; border-top: 3px dashed rgba(231, 76, 60, 0.9); filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
@@ -22,47 +25,66 @@
         .photo-icon { font-size: 2rem; margin-bottom: 8px; opacity: 0.3; color: #27ae60; pointer-events: none; }
         .photo-text { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; text-align: center; pointer-events: none; }
         .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 10; background-color: #000; pointer-events: none; }
+
         .input-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: stretch; }
         .input-col { display: flex; flex-direction: column; gap: 4px; }
         .input-label { font-size: 0.75rem; font-weight: 800; color: #34495e; letter-spacing: -0.3px; }
         input, select, textarea { width: 100%; padding: 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; background: #fff; box-sizing: border-box; height: 38px; transition: border 0.2s; }
         input:focus, select:focus, textarea:focus { border-color: #27ae60; outline: none; box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.1); }
         textarea { height: 80px; resize: none; line-height: 1.5; } 
+        
         .site-info-group { flex: 7; } .location-group { flex: 3; }  
         .site-inputs { display: flex; gap: 4px; }
         .site-inputs input { text-align: center; padding: 8px 2px; font-weight: bold; color: #2c3e50; } 
         .triple-col { flex: 1; }
+
         .nav-buttons-row { display: flex; gap: 8px; margin-top: 12px; }
         .btn-nav { padding: 12px 0; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 3px 5px rgba(0,0,0,0.05); transition: transform 0.1s; }
         .btn-nav:active { transform: scale(0.98); }
         .btn-next { background: #27ae60; color: white; flex: 1.6; }
         .btn-prev { background: #ecf0f1; color: #7f8c8d; border: 1px solid #bdc3c7; flex: 1; }
-        .action-buttons { display: flex; gap: 8px; padding: 0 15px 20px 15px; margin-top: 10px; }
-        .btn-3d { flex: 1; padding: 12px 4px; border: none; border-radius: 12px; color: white; font-size: 0.9rem; font-weight: 800; cursor: pointer; text-shadow: 0 1px 1px rgba(0,0,0,0.3); position: relative; transform: translateY(0); transition: all 0.1s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; line-height: 1.2; }
-        .btn-pdf-3d { background: linear-gradient(to bottom, #2ecc71, #27ae60); box-shadow: 0 4px 0 #1e8449, 0 5px 10px rgba(0,0,0,0.15); }
-        .btn-pdf-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #1e8449; }
-        .btn-call-3d { background: linear-gradient(to bottom, #3498db, #2980b9); box-shadow: 0 4px 0 #21618c, 0 5px 10px rgba(0,0,0,0.15); }
-        .btn-call-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #21618c; }
-        .btn-3d i { font-size: 1.2rem; }
+
+        /* [NEW] 다음입력 버튼 스타일 */
+        .btn-save-next {
+            background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; cursor: pointer; float: right; margin-top: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn-save-next:active { background: #2980b9; transform: translateY(2px); }
+
+        /* 리스트 영역 */
         .list-area { padding: 0 15px 10px 15px; }
         .list-header-box { margin-bottom: 12px; border-left: 5px solid #27ae60; background: #fff; padding: 10px 15px; border-radius: 0 8px 8px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .list-title-text { font-size: 0.95rem; font-weight: 800; color: #2c3e50; }
         .list-subtitle-text { font-size: 0.8rem; color: #e67e22; font-weight: 700; margin-top: 2px; }
+        
         .list-item { background: white; padding: 10px; border-radius: 10px; margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #f1f3f5; page-break-inside: avoid; }
         .list-thumb { width: 65px; height: 65px; border-radius: 8px; object-fit: cover; border: 1px solid #eee; flex-shrink: 0; }
         .list-content { flex: 1; display: flex; flex-direction: column; gap: 2px; }
         .list-room-work { font-weight: 800; font-size: 0.9rem; color: #2c3e50; }
         .list-type { font-size: 0.8rem; color: #e74c3c; font-weight: 700; }
         .list-detail { font-size: 0.75rem; color: #555; white-space: pre-wrap; line-height: 1.4; margin-top: 2px; }
-        .list-right-info { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; margin-left: auto; }
-        .tag { padding: 3px 6px; border-radius: 4px; font-size: 0.7rem; color: white; font-weight: bold; }
-        .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
+        
+        .list-right-info { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; margin-left: auto; width: 60px; }
+        .tag { padding: 3px 6px; border-radius: 4px; font-size: 0.7rem; color: white; font-weight: bold; background: #2ecc71; text-align: center; width: 100%; box-sizing: border-box; }
+        
+        /* [NEW] 수정/삭제 버튼 스타일 */
+        .btn-edit-item { background: #f39c12; color: white; border: none; border-radius: 4px; padding: 4px 0; font-size: 0.7rem; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 2px; }
+        .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 4px; padding: 4px 0; font-size: 0.7rem; cursor: pointer; width: 100%; font-weight: bold; }
+
+        .bottom-actions { display: flex; gap: 8px; padding: 0 15px 20px 15px; margin-top: 10px; }
+        .btn-3d { flex: 1; padding: 12px 4px; border: none; border-radius: 12px; color: white; font-size: 0.9rem; font-weight: 800; cursor: pointer; text-shadow: 0 1px 1px rgba(0,0,0,0.3); position: relative; transform: translateY(0); transition: all 0.1s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; line-height: 1.2; }
+        .btn-pdf-3d { background: linear-gradient(to bottom, #2ecc71, #27ae60); box-shadow: 0 4px 0 #1e8449, 0 5px 10px rgba(0,0,0,0.15); }
+        .btn-pdf-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #1e8449; }
+        .btn-call-3d { background: linear-gradient(to bottom, #3498db, #2980b9); box-shadow: 0 4px 0 #21618c, 0 5px 10px rgba(0,0,0,0.15); }
+        .btn-call-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #21618c; }
+        .btn-3d i { font-size: 1.2rem; }
+
         .footer-info { text-align: center; padding: 20px; color: #95a5a6; font-size: 0.7rem; line-height: 1.6; border-top: 1px solid #eee; margin-top: 10px; }
         .footer-bold { font-weight: 800; color: #555; }
         .sub-desc { font-size: 0.8rem; text-align: center; color: #7f8c8d; margin-top: 10px; font-weight: 500; }
+
         @media print {
             body { background: white; padding: 0; }
-            .header-container, .main-card, .bottom-actions, .footer-info, .sub-desc, .btn-delete-item { display: none !important; } 
+            .header-container, .main-card, .bottom-actions, .footer-info, .sub-desc, .btn-delete-item, .btn-edit-item { display: none !important; } 
             .list-area { padding: 0; margin: 0; }
             .list-header-box { border: none; padding: 0; margin-bottom: 20px; border-bottom: 2px solid #333; border-radius: 0; }
             .list-title-text { font-size: 1.5rem; color: #000; text-align: center; margin-bottom: 10px; }
@@ -78,7 +100,7 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">v10.1 Priority</span>
+        <span class="version-badge">v11.0 Ultimate</span>
     </div>
     
     <div style="text-align:center;">
@@ -280,25 +302,19 @@
                 <i class="fa-solid fa-robot"></i> F. AI하자입력 (국토부 분쟁조정 사례 기준)
             </div>
             <textarea id="defectDetail" placeholder="AI가 하자 내용과 함께 분쟁조정위원회 기준에 따른 판단을 제공합니다."></textarea>
+            <div style="text-align: right;">
+                <button class="btn-save-next" onclick="window.addToList()">다음입력 <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
         </div>
 
         <div class="nav-buttons-row">
             <button class="btn-nav btn-next" onclick="window.goNextStep()">
-                <span>다음 (추가입력)</span> <i class="fa-solid fa-arrow-right"></i>
+                <span>다음 (추가입력)</span>
             </button>
             <button class="btn-nav btn-prev" onclick="window.goPrevStep()">
                 <i class="fa-solid fa-arrow-rotate-left"></i> <span>이전 (수정)</span>
             </button>
         </div>
-    </div>
-
-    <div class="bottom-actions">
-        <button class="btn-3d btn-pdf-3d" onclick="window.savePDF()">
-            <i class="fa-solid fa-file-pdf"></i> PDF저장
-        </button>
-        <button class="btn-3d btn-call-3d" onclick="window.callCenter()">
-            <i class="fa-solid fa-phone-volume"></i> 수리문의
-        </button>
     </div>
 
     <div id="pdf-header-title" style="display:none;"></div>
@@ -309,6 +325,15 @@
             <div id="currentAptInfo" class="list-subtitle-text">현장 정보를 입력하세요</div>
         </div>
         <div id="listBox"></div>
+    </div>
+
+    <div class="bottom-actions">
+        <button class="btn-3d btn-pdf-3d" onclick="window.savePDF()">
+            <i class="fa-solid fa-file-pdf"></i> PDF저장
+        </button>
+        <button class="btn-3d btn-call-3d" onclick="window.callCenter()">
+            <i class="fa-solid fa-phone-volume"></i> 수리문의
+        </button>
     </div>
 
     <div class="footer-info">
@@ -367,8 +392,8 @@
             const statusMsg = document.getElementById('statusMsg');
             const photoBtn = document.getElementById('photoAreaBtn');
             
-            detailBox.value = "AI(2.0 Exp)가 국토부 하자 판정 기준을 검색 중입니다...";
-            statusMsg.innerText = "⚖️ 법적 기준 분석 중...";
+            detailBox.value = "AI(2.0 Exp)가 정밀 분석 중입니다...";
+            statusMsg.innerText = "⚖️ 하자 우선순위 판단 중...";
             photoBtn.style.opacity = '0.5';
             photoBtn.style.pointerEvents = 'none';
 
@@ -380,32 +405,31 @@
                 const genAI = new GoogleGenerativeAI(API_KEY);
                 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
-                // [중요] 하자 우선순위 로직이 포함된 강화된 프롬프트
+                // [강력한 우선순위 프롬프트]
                 const prompt = `
                     당신은 '국토교통부 하자심사·분쟁조정위원회'의 전문 심사관입니다.
                     사진 속 중앙 십자선 위치를 정밀 분석하여 하자를 판단하세요.
 
-                    [★하자 우선순위 판단 기준 (수리비 및 심각도 순)]
-                    만약 사진에 여러 문제가 동시에 보인다면(예: 문짝이 비뚤어지고 얼룩도 있음), **반드시 아래 순서 중 더 상위의 하자를 선택**하세요.
-                    1순위: **미시공** (설치 누락)
-                    2순위: **결로/곰팡이**
-                    3순위: **파손/깨짐** (기능 상실)
-                    4순위: **수직수평불량/단차/유격** (시공 불량)
-                    5순위: **오염/스크래치/코킹/도장불량** (미관상 하자)
+                    [★절대적 우선순위 규칙 (Critical Priority)]
+                    만약 사진에서 여러 하자가 동시에 발견될 경우(예: 문짝이 기울어졌는데 얼룩도 있음), 
+                    반드시 **가장 심각하고 수리비용이 많이 드는 하자**를 선택하여 출력하세요.
+                    
+                    **[우선순위 순서]**
+                    1위: **미시공** (설치되어야 할 것이 없음)
+                    2위: **결로/곰팡이/누수** (구조적 문제)
+                    3위: **파손/깨짐** (자재 교체 필요)
+                    4위: **수직수평불량/단차/기울어짐/유격** (특히 주방가구, 창호, 문짝 등에서 매우 중요함. 오염보다 무조건 우선할 것!)
+                    5위: **작동불량** (열고 닫힘 문제)
+                    6위: **오염/스크래치/코킹/도장불량** (단순 미관상 하자 - 최하위)
 
-                    [작성 지침]
-                    1. **"미관상 하자로 판단되며" 같은 문구를 반복하지 마세요.**
-                    2. 위 우선순위에 따라 결정된 '하자 유형'에 맞는 전문적인 소견을 서술하세요.
-                       - 수직수평불량: "허용 오차를 초과하는 시공 불량으로 재시공이 필요합니다."
-                       - 파손: "입주 전 발생한 파손으로 교체 시공 대상입니다."
-                       - 오염: "마감 관리 미흡으로 인한 오염으로 제거 및 재도장이 필요합니다."
+                    *주의: 가구 문짝이나 창호가 비뚤어져 있다면 '오염'이 있더라도 무조건 '수직수평불량'으로 판단할 것.*
 
                     [출력 형식 - JSON]
                     {
-                        "work": "공종 (예: 창호공사)",
-                        "sub": "세부공종 (예: 창문짝)",
-                        "type": "하자유형 (예: 수직수평불량, 파손, 오염)",
-                        "detail": "1. 하자 현상: [구체적 설명]\\n2. 💡전문가 의견: [위 작성 지침에 따른 소견]. 따라서 국토부 기준에 의거 시공사 하자 보수 이행이 필요합니다."
+                        "work": "공종 (예: 주방가구공사)",
+                        "sub": "세부공종 (예: 상부장)",
+                        "type": "하자유형 (예: 수직수평불량)",
+                        "detail": "1. 하자 현상: [구체적 설명]\\n2. 💡전문가 의견: [우선순위에 따른 판단 근거 및 시공사 책임 명시]"
                     }
                 `;
                 
@@ -428,7 +452,7 @@
                 statusMsg.innerText = "✅ 분석 및 저장 완료";
                 statusMsg.style.color = "#2ecc71";
                 
-                // 분석 완료 즉시 저장
+                // 분석 완료 즉시 저장 (사용자 편의)
                 window.addToList();
 
             } catch (error) {
@@ -458,6 +482,7 @@
         };
         
         window.goPrevStep = function() { 
+            // 단순 초기화
             document.getElementById('workType').value = ''; 
             document.getElementById('subWorkType').value = ''; 
             document.getElementById('defectType').value = ''; 
@@ -481,27 +506,39 @@
             const uniqueId = Date.now();
             const count = defectDataList.length + 1;
             
+            // [NEW] 데이터 객체 저장 (수정 기능을 위해)
+            const itemData = {
+                id: uniqueId,
+                room: room,
+                work: document.getElementById('workType').value,
+                sub: document.getElementById('subWorkType').value,
+                type: document.getElementById('defectType').value,
+                detail: document.getElementById('defectDetail').value,
+                imgSrc: previewSrc
+            };
+            defectDataList.push(itemData);
+
+            // [NEW] 수정 버튼 추가
             const itemHtml = `
                 <div class="list-item" id="item-${uniqueId}">
                     <img src="${previewSrc}" class="list-thumb">
                     <div class="list-content">
-                        <div class="list-room-work">${room} - ${document.getElementById('workType').value}</div>
-                        <div class="list-type">유형: ${document.getElementById('defectType').value}</div>
-                        <div class="list-detail">${document.getElementById('defectDetail').value}</div>
+                        <div class="list-room-work">${room} - ${itemData.work}</div>
+                        <div class="list-type">하자유형: ${itemData.type}</div>
+                        <div class="list-detail">${itemData.detail}</div>
                     </div>
                     <div class="list-right-info">
                         <span class="tag" style="background:#2ecc71">No.${count}</span>
+                        <button class="btn-edit-item" onclick="window.editItem(${uniqueId})">수정</button>
                         <button class="btn-delete-item" onclick="window.deleteItem(${uniqueId})">삭제</button>
                     </div>
                 </div>
             `;
             
             document.getElementById('listBox').insertAdjacentHTML('beforeend', itemHtml); 
-            document.getElementById('listCount').innerText = `(${count})`;
+            document.getElementById('listCount').innerText = `(${defectDataList.length})`;
             
-            defectDataList.push(uniqueId);
-
-            // [자동 초기화] 사진 영역 및 입력값 리셋
+            // [자동 초기화]
             document.getElementById('cameraInput').value = "";
             currentImageFile = null;
             document.getElementById('previewImage').style.display = 'none'; 
@@ -516,9 +553,39 @@
             window.scrollTo(0, document.body.scrollHeight);
         };
 
+        // [NEW] 수정 기능: 데이터를 다시 입력창으로 불러오고, 리스트에서 임시 삭제
+        window.editItem = function(id) {
+            const itemIndex = defectDataList.findIndex(i => i.id === id);
+            if (itemIndex === -1) return;
+            
+            const item = defectDataList[itemIndex];
+            
+            // 입력창에 값 채우기
+            document.getElementById('roomSelect').value = item.room;
+            document.getElementById('workType').value = item.work;
+            document.getElementById('subWorkType').value = item.sub;
+            document.getElementById('defectType').value = item.type;
+            document.getElementById('defectDetail').value = item.detail;
+            
+            // 이미지 미리보기 복구
+            const preview = document.getElementById('previewImage');
+            preview.src = item.imgSrc;
+            preview.style.display = 'block';
+            
+            // 현재 리스트에서는 삭제 (수정 후 다시 저장하면 됨)
+            if(confirm("해당 항목을 수정하시겠습니까? (내용을 불러온 후 기존 항목은 삭제됩니다)")) {
+                document.getElementById(`item-${id}`).remove();
+                defectDataList.splice(itemIndex, 1);
+                document.getElementById('listCount').innerText = `(${defectDataList.length})`;
+                window.scrollTo(0, 0); // 맨 위로 이동
+            }
+        };
+
         window.deleteItem = function(id) {
             if(confirm("삭제하시겠습니까?")) {
                 document.getElementById(`item-${id}`).remove();
+                defectDataList = defectDataList.filter(i => i.id !== id);
+                document.getElementById('listCount').innerText = `(${defectDataList.length})`;
             }
         };
         

@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (v11.5 Final Tune)</title>
+    <title>청개구리 입주자사전점검 AI (v11.6 Manual Added)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 디자인 (기존 유지) --- */
+        /* --- 디자인 (기존 유지 및 추가) --- */
         body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #f4f6f9; color: #333; line-height: 1.4; padding-bottom: 30px; }
         .header-container { background: linear-gradient(135deg, #27ae60, #2c3e50); padding: 12px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); height: 45px; position: relative; z-index: 100; }
         .header-frog-img { height: 35px; width: 35px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.9); background-color: white; }
@@ -62,10 +62,59 @@
         .btn-3d i { font-size: 1.2rem; }
         .footer-info { text-align: center; padding: 20px; color: #95a5a6; font-size: 0.7rem; line-height: 1.6; border-top: 1px solid #eee; margin-top: 10px; }
         .footer-bold { font-weight: 800; color: #555; }
-        .sub-desc { font-size: 0.8rem; text-align: center; color: #7f8c8d; margin-top: 10px; font-weight: 500; }
+        
+        /* --- [NEW] 상태바 & 설명서 버튼 스타일 --- */
+        .status-bar-container {
+            display: flex;
+            justify-content: space-between; /* 양 끝 정렬 */
+            align-items: center;
+            padding: 5px 20px 0 20px;
+            margin-top: 10px;
+        }
+        .status-spacer { flex: 1; } /* 좌측 공백용 */
+        .sub-desc { font-size: 0.8rem; text-align: center; color: #7f8c8d; font-weight: 500; margin: 0; flex: 2; }
+        .btn-manual { 
+            flex: 1; 
+            text-align: right; 
+            background: none; 
+            border: none; 
+            color: #3498db; 
+            font-size: 0.75rem; 
+            font-weight: 800; 
+            cursor: pointer; 
+            padding: 5px 0;
+        }
+        .btn-manual i { margin-left: 3px; }
+
+        /* --- [NEW] 설명서 모달 스타일 --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        .modal-content {
+            background: white; width: 85%; max-width: 400px;
+            border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+            animation: popUp 0.3s ease-out;
+        }
+        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-title { font-size: 1.2rem; font-weight: 900; color: #27ae60; margin-bottom: 15px; }
+        .step-list { text-align: left; margin-bottom: 20px; font-size: 0.9rem; color: #444; }
+        .step-item { margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; }
+        .step-num { background: #27ae60; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; flex-shrink: 0; margin-top: 2px; }
+        .step-text { flex: 1; line-height: 1.4; }
+        .step-highlight { color: #e74c3c; font-weight: bold; }
+        .btn-modal-close {
+            background: #34495e; color: white; border: none; padding: 10px 0; width: 100%;
+            border-radius: 8px; font-weight: bold; font-size: 0.95rem; cursor: pointer;
+        }
+
         @media print {
             body { background: white; padding: 0; }
-            .header-container, .main-card, .bottom-actions, .footer-info, .sub-desc, .btn-delete-item, .btn-edit-item { display: none !important; } 
+            .header-container, .main-card, .bottom-actions, .footer-info, .status-bar-container, .btn-delete-item, .btn-edit-item { display: none !important; } 
             .list-area { padding: 0; margin: 0; }
             .list-header-box { border: none; padding: 0; margin-bottom: 20px; border-bottom: 2px solid #333; border-radius: 0; }
             .list-title-text { font-size: 1.5rem; color: #000; text-align: center; margin-bottom: 10px; }
@@ -81,11 +130,12 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">v11.5 Final Tune</span>
+        <span class="version-badge">v11.6 Manual</span>
     </div>
     
-    <div style="text-align:center;">
-        <p class="sub-desc" id="statusMsg">AI 엔진(2.0 Exp) 준비 완료</p>
+    <div class="status-bar-container">
+        <div class="status-spacer"></div> <p class="sub-desc" id="statusMsg">AI 엔진(2.0 Exp) 준비 완료</p>
+        <button class="btn-manual" onclick="window.openManual()">앱 사용설명서 <i class="fa-solid fa-circle-question"></i></button>
     </div>
 
     <div class="main-card">
@@ -322,6 +372,31 @@
         <p>전화 1599-7380 | COPYRIGHT ⓒ 2026 Cheong-gaeguri Corp.</p>
     </div>
 
+    <div id="manualModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-title">🐸 앱 사용설명서</div>
+            <div class="step-list">
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <div class="step-text">상단에 <span class="step-highlight">아파트, 동, 호수</span>를 먼저 입력하세요.</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <div class="step-text">점검할 <span class="step-highlight">방(위치)</span>을 선택 후 카메라 아이콘을 눌러 촬영하세요.<br><small>(*붉은 십자선에 하자를 맞추세요)</small></div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">3</div>
+                    <div class="step-text"><span class="step-highlight">AI가 자동으로</span> 공종과 하자를 분석합니다. 내용 확인 후 <b>[다음입력]</b>을 누르세요.</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">4</div>
+                    <div class="step-text">모든 점검이 끝나면 하단의 <b>[PDF저장]</b>을 눌러 파일을 보관하세요.</div>
+                </div>
+            </div>
+            <button class="btn-modal-close" onclick="window.closeManual()">확인했습니다</button>
+        </div>
+    </div>
+
     <script type="importmap">
         { "imports": { "@google/generative-ai": "https://esm.run/@google/generative-ai" } }
     </script>
@@ -333,13 +408,21 @@
         // [중요] API 키 입력
         // =========================================================
         const part1 = "AIzaSyAP_9dcbRPRdP4";  // [수정] 키 앞부분
-        const part2 = "GD6WniQsWixFUFYRhfig";      // [수정] 키 뒷부분
+        const part2 = "GD6WniQsWixFUFYRhfig";       // [수정] 키 뒷부분
         
         const API_KEY = part1 + part2;
         // =========================================================
 
         let defectDataList = [];
         let currentImageFile = null;
+
+        // [NEW] 설명서 모달 제어 함수
+        window.openManual = function() {
+            document.getElementById('manualModal').style.display = 'flex';
+        };
+        window.closeManual = function() {
+            document.getElementById('manualModal').style.display = 'none';
+        };
 
         document.getElementById('cameraInput').addEventListener('change', async (event) => {
             const file = event.target.files[0];

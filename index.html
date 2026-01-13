@@ -16,10 +16,10 @@
         .version-badge { position: absolute; right: 20px; bottom: 12px; font-size: 0.7rem; color: #ecf0f1; font-weight: 700; opacity: 0.8; }
         .main-card { background: white; padding: 15px; margin: 12px; border-radius: 18px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         
-        /* [수정 1] 카메라 영역 비율 4:3으로 변경 */
+        /* 카메라 영역 비율 4:3 */
         .photo-area { 
             width: 100%; 
-            aspect-ratio: 4 / 3; /* 기존 16/9에서 변경 */
+            aspect-ratio: 4 / 3; 
             background: #eef2f3; 
             border: 2px dashed #bdc3c7; 
             border-radius: 12px; 
@@ -86,14 +86,14 @@
         .btn-edit-item { background: #f39c12; color: white; border: none; border-radius: 4px; padding: 4px 0; font-size: 0.7rem; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 2px; }
         .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 4px; padding: 4px 0; font-size: 0.7rem; cursor: pointer; width: 100%; font-weight: bold; }
         
-        /* 하단 3D 버튼 */
+        /* [수정 1] 하단 3D 버튼 높이 줄임 (padding, gap 수정) */
         .bottom-actions { display: flex; gap: 8px; padding: 0 15px 20px 15px; margin-top: 10px; }
-        .btn-3d { flex: 1; padding: 12px 4px; border: none; border-radius: 12px; color: white; font-size: 0.9rem; font-weight: 800; cursor: pointer; text-shadow: 0 1px 1px rgba(0,0,0,0.3); position: relative; transform: translateY(0); transition: all 0.1s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; line-height: 1.2; }
+        .btn-3d { flex: 1; padding: 6px 4px; /* 높이 줄임 */ border: none; border-radius: 12px; color: white; font-size: 0.9rem; font-weight: 800; cursor: pointer; text-shadow: 0 1px 1px rgba(0,0,0,0.3); position: relative; transform: translateY(0); transition: all 0.1s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; /* 간격 줄임 */ line-height: 1.2; }
         .btn-pdf-3d { background: linear-gradient(to bottom, #2ecc71, #27ae60); box-shadow: 0 4px 0 #1e8449, 0 5px 10px rgba(0,0,0,0.15); }
         .btn-pdf-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #1e8449; }
         .btn-call-3d { background: linear-gradient(to bottom, #3498db, #2980b9); box-shadow: 0 4px 0 #21618c, 0 5px 10px rgba(0,0,0,0.15); }
         .btn-call-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #21618c; }
-        .btn-3d i { font-size: 1.2rem; }
+        .btn-3d i { font-size: 1.1rem; /* 아이콘 크기 약간 축소 */ }
         
         .footer-info { text-align: center; padding: 20px; color: #95a5a6; font-size: 0.7rem; line-height: 1.6; border-top: 1px solid #eee; margin-top: 10px; }
         .footer-bold { font-weight: 800; color: #555; }
@@ -115,7 +115,29 @@
         .step-num { background: #27ae60; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; flex-shrink: 0; margin-top: 2px; }
         .step-text { flex: 1; line-height: 1.4; }
         .step-highlight { color: #e74c3c; font-weight: bold; }
-        .btn-modal-close { background: #34495e; color: white; border: none; padding: 10px 0; width: 100%; border-radius: 8px; font-weight: bold; font-size: 0.95rem; cursor: pointer; }
+        
+        /* [수정 2] 설명서 확인 3D 버튼 스타일 추가 */
+        .btn-modal-close-3d {
+            width: 100%;
+            padding: 10px 0;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+            position: relative;
+            transform: translateY(0);
+            transition: all 0.1s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            background: linear-gradient(to bottom, #1abc9c, #16a085); /* 청록색 계열 */
+            box-shadow: 0 4px 0 #12876f, 0 5px 10px rgba(0,0,0,0.15);
+        }
+        .btn-modal-close-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #12876f;
+        }
 
         @media print {
             body { background: white; padding: 0; }
@@ -345,7 +367,7 @@
             </div>
         </div>
 
-        </div>
+    </div>
 
     <div id="pdf-header-title" style="display:none;"></div>
 
@@ -392,7 +414,9 @@
                     <div class="step-text">내용이 맞으면 파란색 <b>[다음입력]</b>을 눌러 저장하고 다음 하자를 촬영하세요.</div>
                 </div>
             </div>
-            <button class="btn-modal-close" onclick="window.closeManual()">확인했습니다</button>
+            <button class="btn-modal-close-3d" onclick="window.closeManual()">
+                <i class="fa-solid fa-check"></i> 확인
+            </button>
         </div>
     </div>
 
@@ -518,7 +542,6 @@
                 }
 
                 applyDataToUI(data);
-                // [수정 핵심] 자동저장(addToList) 호출 제거함.
                 statusMsg.innerText = "✅ 분석 완료. [다음입력]을 눌러 저장하세요.";
                 statusMsg.style.color = "#2980b9";
                 
@@ -541,7 +564,6 @@
             detailBox.value = data.detail || "";
         }
 
-        // [수정] 버튼 클릭 시 호출됨 (저장 -> 리스트추가 -> 폼초기화)
         window.addToList = function() {
             const previewSrc = document.getElementById('previewImage').src;
             if (!currentImageFile && (!previewSrc || previewSrc.includes('data:image/svg+xml'))) { 
@@ -592,7 +614,6 @@
             document.getElementById('listBox').insertAdjacentHTML('beforeend', itemHtml); 
             document.getElementById('listCount').innerText = `(${defectDataList.length})`;
             
-            // [중요] 저장 후 입력란 초기화
             document.getElementById('cameraInput').value = "";
             currentImageFile = null;
             document.getElementById('previewImage').style.display = 'none'; 
@@ -604,7 +625,6 @@
             document.getElementById('defectDetail').value = ""; 
             document.getElementById('statusMsg').innerText = "AI 엔진(2.0 Exp) 준비 완료"; 
             
-            // 스크롤을 리스트 쪽으로 살짝 이동
             document.querySelector('.list-header-box').scrollIntoView({behavior: "smooth"});
         };
 

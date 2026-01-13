@@ -63,28 +63,49 @@
         .footer-info { text-align: center; padding: 20px; color: #95a5a6; font-size: 0.7rem; line-height: 1.6; border-top: 1px solid #eee; margin-top: 10px; }
         .footer-bold { font-weight: 800; color: #555; }
         
-        /* --- [NEW] 상태바 & 설명서 버튼 스타일 --- */
+        /* ======================================================== */
+        /* [수정됨] 상태바 & 3D 설명서 버튼 스타일 */
+        /* ======================================================== */
         .status-bar-container {
             display: flex;
             justify-content: space-between; /* 양 끝 정렬 */
             align-items: center;
-            padding: 5px 20px 0 20px;
-            margin-top: 10px;
+            padding: 10px 20px 5px 20px;
+            margin-top: 5px;
         }
-        .status-spacer { flex: 1; } /* 좌측 공백용 */
-        .sub-desc { font-size: 0.8rem; text-align: center; color: #7f8c8d; font-weight: 500; margin: 0; flex: 2; }
-        .btn-manual { 
-            flex: 1; 
-            text-align: right; 
-            background: none; 
-            border: none; 
-            color: #3498db; 
-            font-size: 0.75rem; 
-            font-weight: 800; 
-            cursor: pointer; 
-            padding: 5px 0;
+
+        /* 1. AI 상태 텍스트 (좌측 정렬) */
+        .sub-desc { 
+            font-size: 0.8rem; 
+            color: #7f8c8d; 
+            font-weight: 700; 
+            margin: 0; 
+            text-align: left; /* 좌측 강제 */
         }
-        .btn-manual i { margin-left: 3px; }
+
+        /* 2. 앱사용안내 버튼 (3D 입체 그라데이션) */
+        .btn-manual-3d { 
+            background: linear-gradient(145deg, #4facfe, #00f2fe); /* 시원한 파란색 그라데이션 */
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px; /* 둥글게 */
+            font-size: 0.75rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2), 
+                        inset 0 -2px 0 rgba(0, 0, 0, 0.1); /* 입체 그림자 */
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-manual-3d:active {
+            transform: translateY(2px); /* 눌림 효과 */
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        .btn-manual-3d i { font-size: 0.9rem; }
+        /* ======================================================== */
 
         /* --- [NEW] 설명서 모달 스타일 --- */
         .modal-overlay {
@@ -134,8 +155,11 @@
     </div>
     
     <div class="status-bar-container">
-        <div class="status-spacer"></div> <p class="sub-desc" id="statusMsg">AI 엔진(2.0 Exp) 준비 완료</p>
-        <button class="btn-manual" onclick="window.openManual()">앱 사용설명서 <i class="fa-solid fa-circle-question"></i></button>
+        <p class="sub-desc" id="statusMsg">AI 엔진(2.0 Exp) 준비 완료</p>
+        
+        <button class="btn-manual-3d" onclick="window.openManual()">
+            앱사용안내 <i class="fa-solid fa-circle-question"></i>
+        </button>
     </div>
 
     <div class="main-card">

@@ -3,25 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (v11.6 Manual Added)</title>
+    <title>청개구리 입주자사전점검 AI (v11.7 Optimized)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 디자인 (기존 유지 및 추가) --- */
+        /* --- 디자인 (기존 유지 및 비율 수정) --- */
         body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #f4f6f9; color: #333; line-height: 1.4; padding-bottom: 30px; }
         .header-container { background: linear-gradient(135deg, #27ae60, #2c3e50); padding: 12px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); height: 45px; position: relative; z-index: 100; }
         .header-frog-img { height: 35px; width: 35px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.9); background-color: white; }
         .header-title { color: white; font-size: 1.05rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
         .version-badge { position: absolute; right: 20px; bottom: 12px; font-size: 0.7rem; color: #ecf0f1; font-weight: 700; opacity: 0.8; }
         .main-card { background: white; padding: 15px; margin: 12px; border-radius: 18px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-        .photo-area { width: 100%; aspect-ratio: 16 / 9; background: #eef2f3; border: 2px dashed #bdc3c7; border-radius: 12px; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 10px; margin-top: 10px; box-sizing: border-box; }
+        
+        /* [수정 1] 카메라 영역 비율 4:3으로 변경 */
+        .photo-area { 
+            width: 100%; 
+            aspect-ratio: 4 / 3; /* 기존 16/9에서 변경 */
+            background: #eef2f3; 
+            border: 2px dashed #bdc3c7; 
+            border-radius: 12px; 
+            position: relative; 
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            margin-bottom: 10px; 
+            margin-top: 10px; 
+            box-sizing: border-box; 
+        }
+
         .center-crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 20; display: flex; align-items: center; justify-content: center; }
         .center-crosshair::before { content: ''; position: absolute; width: 100%; height: 0; border-top: 3px dashed rgba(231, 76, 60, 0.9); filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
         .center-crosshair::after { content: ''; position: absolute; height: 100%; width: 0; border-left: 3px dashed rgba(231, 76, 60, 0.9); filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
         .photo-icon { font-size: 2rem; margin-bottom: 8px; opacity: 0.3; color: #27ae60; pointer-events: none; }
         .photo-text { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; text-align: center; pointer-events: none; }
         .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 10; background-color: #000; pointer-events: none; }
+        
         .input-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: stretch; }
         .input-col { display: flex; flex-direction: column; gap: 4px; }
         .input-label { font-size: 0.75rem; font-weight: 800; color: #34495e; letter-spacing: -0.3px; }
@@ -32,13 +52,25 @@
         .site-inputs { display: flex; gap: 4px; }
         .site-inputs input { text-align: center; padding: 8px 2px; font-weight: bold; color: #2c3e50; } 
         .triple-col { flex: 1; }
-        .nav-buttons-row { display: flex; gap: 8px; margin-top: 12px; }
-        .btn-nav { padding: 12px 0; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 3px 5px rgba(0,0,0,0.05); transition: transform 0.1s; }
-        .btn-nav:active { transform: scale(0.98); }
-        .btn-next { background: #27ae60; color: white; flex: 1.6; }
-        .btn-prev { background: #ecf0f1; color: #7f8c8d; border: 1px solid #bdc3c7; flex: 1; }
-        .btn-save-next { background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; cursor: pointer; float: right; margin-top: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .btn-save-next:active { background: #2980b9; transform: translateY(2px); }
+        
+        /* 버튼 스타일 */
+        .btn-save-next { 
+            background: #2980b9; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            font-size: 0.9rem; 
+            cursor: pointer; 
+            float: right; 
+            margin-top: 5px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            transition: background 0.2s;
+        }
+        .btn-save-next:active { background: #1f6391; transform: translateY(2px); }
+        
+        /* 리스트 스타일 */
         .list-area { padding: 0 15px 10px 15px; }
         .list-header-box { margin-bottom: 12px; border-left: 5px solid #27ae60; background: #fff; padding: 10px 15px; border-radius: 0 8px 8px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .list-title-text { font-size: 0.95rem; font-weight: 800; color: #2c3e50; }
@@ -53,6 +85,8 @@
         .tag { padding: 3px 6px; border-radius: 4px; font-size: 0.7rem; color: white; font-weight: bold; background: #2ecc71; text-align: center; width: 100%; box-sizing: border-box; }
         .btn-edit-item { background: #f39c12; color: white; border: none; border-radius: 4px; padding: 4px 0; font-size: 0.7rem; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 2px; }
         .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 4px; padding: 4px 0; font-size: 0.7rem; cursor: pointer; width: 100%; font-weight: bold; }
+        
+        /* 하단 3D 버튼 */
         .bottom-actions { display: flex; gap: 8px; padding: 0 15px 20px 15px; margin-top: 10px; }
         .btn-3d { flex: 1; padding: 12px 4px; border: none; border-radius: 12px; color: white; font-size: 0.9rem; font-weight: 800; cursor: pointer; text-shadow: 0 1px 1px rgba(0,0,0,0.3); position: relative; transform: translateY(0); transition: all 0.1s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; line-height: 1.2; }
         .btn-pdf-3d { background: linear-gradient(to bottom, #2ecc71, #27ae60); box-shadow: 0 4px 0 #1e8449, 0 5px 10px rgba(0,0,0,0.15); }
@@ -60,67 +94,20 @@
         .btn-call-3d { background: linear-gradient(to bottom, #3498db, #2980b9); box-shadow: 0 4px 0 #21618c, 0 5px 10px rgba(0,0,0,0.15); }
         .btn-call-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #21618c; }
         .btn-3d i { font-size: 1.2rem; }
+        
         .footer-info { text-align: center; padding: 20px; color: #95a5a6; font-size: 0.7rem; line-height: 1.6; border-top: 1px solid #eee; margin-top: 10px; }
         .footer-bold { font-weight: 800; color: #555; }
         
-        /* ======================================================== */
-        /* [수정됨] 상태바 & 3D 설명서 버튼 스타일 */
-        /* ======================================================== */
-        .status-bar-container {
-            display: flex;
-            justify-content: space-between; /* 양 끝 정렬 */
-            align-items: center;
-            padding: 10px 20px 5px 20px;
-            margin-top: 5px;
-        }
-
-        /* 1. AI 상태 텍스트 (좌측 정렬) */
-        .sub-desc { 
-            font-size: 0.8rem; 
-            color: #7f8c8d; 
-            font-weight: 700; 
-            margin: 0; 
-            text-align: left; /* 좌측 강제 */
-        }
-
-        /* 2. 앱사용안내 버튼 (3D 입체 그라데이션) */
-        .btn-manual-3d { 
-            background: linear-gradient(145deg, #4facfe, #00f2fe); /* 시원한 파란색 그라데이션 */
-            color: white;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 20px; /* 둥글게 */
-            font-size: 0.75rem;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2), 
-                        inset 0 -2px 0 rgba(0, 0, 0, 0.1); /* 입체 그림자 */
-            transition: all 0.1s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .btn-manual-3d:active {
-            transform: translateY(2px); /* 눌림 효과 */
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-        }
+        /* 상태바 및 설명서 버튼 */
+        .status-bar-container { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px 5px 20px; margin-top: 5px; }
+        .sub-desc { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; margin: 0; text-align: left; }
+        .btn-manual-3d { background: linear-gradient(145deg, #4facfe, #00f2fe); color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; cursor: pointer; box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2), inset 0 -2px 0 rgba(0, 0, 0, 0.1); transition: all 0.1s; display: flex; align-items: center; gap: 5px; }
+        .btn-manual-3d:active { transform: translateY(2px); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
         .btn-manual-3d i { font-size: 0.9rem; }
-        /* ======================================================== */
 
-        /* --- [NEW] 설명서 모달 스타일 --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 9999;
-            display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(2px);
-        }
-        .modal-content {
-            background: white; width: 85%; max-width: 400px;
-            border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            text-align: center;
-            position: relative;
-            animation: popUp 0.3s ease-out;
-        }
+        /* 모달 스타일 */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+        .modal-content { background: white; width: 85%; max-width: 400px; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; position: relative; animation: popUp 0.3s ease-out; }
         @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .modal-title { font-size: 1.2rem; font-weight: 900; color: #27ae60; margin-bottom: 15px; }
         .step-list { text-align: left; margin-bottom: 20px; font-size: 0.9rem; color: #444; }
@@ -128,10 +115,7 @@
         .step-num { background: #27ae60; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; flex-shrink: 0; margin-top: 2px; }
         .step-text { flex: 1; line-height: 1.4; }
         .step-highlight { color: #e74c3c; font-weight: bold; }
-        .btn-modal-close {
-            background: #34495e; color: white; border: none; padding: 10px 0; width: 100%;
-            border-radius: 8px; font-weight: bold; font-size: 0.95rem; cursor: pointer;
-        }
+        .btn-modal-close { background: #34495e; color: white; border: none; padding: 10px 0; width: 100%; border-radius: 8px; font-weight: bold; font-size: 0.95rem; cursor: pointer; }
 
         @media print {
             body { background: white; padding: 0; }
@@ -151,12 +135,11 @@
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">v11.6 Manual</span>
+        <span class="version-badge">v11.7 Opt</span>
     </div>
     
     <div class="status-bar-container">
         <p class="sub-desc" id="statusMsg">AI 엔진(2.0 Exp) 준비 완료</p>
-        
         <button class="btn-manual-3d" onclick="window.openManual()">
             앱사용안내 <i class="fa-solid fa-circle-question"></i>
         </button>
@@ -362,15 +345,7 @@
             </div>
         </div>
 
-        <div class="nav-buttons-row">
-            <button class="btn-nav btn-next" onclick="window.goNextStep()">
-                <span>다음 (추가입력)</span>
-            </button>
-            <button class="btn-nav btn-prev" onclick="window.goPrevStep()">
-                <i class="fa-solid fa-arrow-rotate-left"></i> <span>이전 (수정)</span>
-            </button>
         </div>
-    </div>
 
     <div id="pdf-header-title" style="display:none;"></div>
 
@@ -406,15 +381,15 @@
                 </div>
                 <div class="step-item">
                     <div class="step-num">2</div>
-                    <div class="step-text">점검할 <span class="step-highlight">방(위치)</span>을 선택 후 카메라 아이콘을 눌러 촬영하세요.<br><small>(*붉은 십자선에 하자를 맞추세요)</small></div>
+                    <div class="step-text">점검할 <span class="step-highlight">방(위치)</span>을 선택 후 카메라 아이콘을 눌러 촬영하세요.</div>
                 </div>
                 <div class="step-item">
                     <div class="step-num">3</div>
-                    <div class="step-text"><span class="step-highlight">AI가 자동으로</span> 공종과 하자를 분석합니다. 내용 확인 후 <b>[다음입력]</b>을 누르세요.</div>
+                    <div class="step-text"><span class="step-highlight">AI 분석 후</span> 내용이 화면에 표시됩니다. 수정이 필요하면 수정하세요.</div>
                 </div>
                 <div class="step-item">
                     <div class="step-num">4</div>
-                    <div class="step-text">모든 점검이 끝나면 하단의 <b>[PDF저장]</b>을 눌러 파일을 보관하세요.</div>
+                    <div class="step-text">내용이 맞으면 파란색 <b>[다음입력]</b>을 눌러 저장하고 다음 하자를 촬영하세요.</div>
                 </div>
             </div>
             <button class="btn-modal-close" onclick="window.closeManual()">확인했습니다</button>
@@ -431,22 +406,16 @@
         // =========================================================
         // [중요] API 키 입력
         // =========================================================
-        const part1 = "AIzaSyAP_9dcbRPRdP4";  // [수정] 키 앞부분
-        const part2 = "GD6WniQsWixFUFYRhfig";       // [수정] 키 뒷부분
-        
+        const part1 = "AIzaSyAP_9dcbRPRdP4"; 
+        const part2 = "GD6WniQsWixFUFYRhfig";
         const API_KEY = part1 + part2;
         // =========================================================
 
         let defectDataList = [];
         let currentImageFile = null;
 
-        // [NEW] 설명서 모달 제어 함수
-        window.openManual = function() {
-            document.getElementById('manualModal').style.display = 'flex';
-        };
-        window.closeManual = function() {
-            document.getElementById('manualModal').style.display = 'none';
-        };
+        window.openManual = function() { document.getElementById('manualModal').style.display = 'flex'; };
+        window.closeManual = function() { document.getElementById('manualModal').style.display = 'none'; };
 
         document.getElementById('cameraInput').addEventListener('change', async (event) => {
             const file = event.target.files[0];
@@ -458,7 +427,7 @@
                 const preview = document.getElementById('previewImage');
                 preview.src = e.target.result;
                 preview.style.display = 'block';
-                // 사진 로드 즉시 분석 -> 분석 후 자동 저장
+                // 사진 로드 즉시 분석 -> 결과만 화면에 표시 (자동저장 X)
                 runTargetedAnalysis(file);
             };
             reader.readAsDataURL(file);
@@ -493,7 +462,6 @@
                 const genAI = new GoogleGenerativeAI(API_KEY);
                 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
-                // [중요] 세부공종 리스트를 프롬프트에 포함 (AI가 여기서 고르도록 함)
                 const subWorks = `
                     폴리싱타일, 화장대, 3연동도어, 준공청소, 실외기, 등기구, 도장, PL창호, 붙박이장, 
                     복도팬트리도어/틀, 문짝, 터닝도어, 스윙도어, 콘센트, 코킹, 강마루, 욕실장, 유리, 
@@ -515,7 +483,6 @@
 
                     [판단 지침 1: 세부공종 선택]
                     사진의 대상을 보고, 반드시 다음 리스트 중에서 가장 정확한 **세부공종** 하나를 선택하세요.
-                    (예: 주방 위쪽 수납장이면 '상부장', 아래쪽이면 '하부장', 가스렌지 후드면 '렌지후드')
                     * 세부공종 리스트: ${subWorks}
 
                     [판단 지침 2: 하자 우선순위]
@@ -551,11 +518,10 @@
                 }
 
                 applyDataToUI(data);
-                statusMsg.innerText = "✅ 세부공종 매칭 완료";
-                statusMsg.style.color = "#2ecc71";
+                // [수정 핵심] 자동저장(addToList) 호출 제거함.
+                statusMsg.innerText = "✅ 분석 완료. [다음입력]을 눌러 저장하세요.";
+                statusMsg.style.color = "#2980b9";
                 
-                window.addToList();
-
             } catch (error) {
                 console.error("AI Error:", error);
                 statusMsg.innerText = "⚠️ 분석 실패";
@@ -575,24 +541,13 @@
             detailBox.value = data.detail || "";
         }
 
-        window.goNextStep = function() {
-            const aptName = document.getElementById('aptName').value;
-            if(!aptName) { alert("아파트명을 입력하세요."); return; }
-            alert("다음 항목을 촬영하세요.");
-            document.getElementById('cameraInput').click();
-        };
-        
-        window.goPrevStep = function() { 
-            // 단순 초기화
-            document.getElementById('workType').value = ''; 
-            document.getElementById('subWorkType').value = ''; 
-            document.getElementById('defectType').value = ''; 
-            document.getElementById('defectDetail').value = ''; 
-        };
-
+        // [수정] 버튼 클릭 시 호출됨 (저장 -> 리스트추가 -> 폼초기화)
         window.addToList = function() {
             const previewSrc = document.getElementById('previewImage').src;
-            if (!currentImageFile && (!previewSrc || previewSrc.includes('data:image/svg+xml'))) { return; }
+            if (!currentImageFile && (!previewSrc || previewSrc.includes('data:image/svg+xml'))) { 
+                alert("먼저 사진을 촬영하고 AI 분석을 진행해주세요.");
+                return; 
+            }
             
             const aptName = document.getElementById('aptName').value || "OO아파트";
             const aptDong = document.getElementById('aptDong').value || "000";
@@ -607,7 +562,6 @@
             const uniqueId = Date.now();
             const count = defectDataList.length + 1;
             
-            // 데이터 객체 저장
             const itemData = {
                 id: uniqueId,
                 room: room,
@@ -638,7 +592,7 @@
             document.getElementById('listBox').insertAdjacentHTML('beforeend', itemHtml); 
             document.getElementById('listCount').innerText = `(${defectDataList.length})`;
             
-            // 자동 초기화
+            // [중요] 저장 후 입력란 초기화
             document.getElementById('cameraInput').value = "";
             currentImageFile = null;
             document.getElementById('previewImage').style.display = 'none'; 
@@ -650,7 +604,8 @@
             document.getElementById('defectDetail').value = ""; 
             document.getElementById('statusMsg').innerText = "AI 엔진(2.0 Exp) 준비 완료"; 
             
-            window.scrollTo(0, document.body.scrollHeight);
+            // 스크롤을 리스트 쪽으로 살짝 이동
+            document.querySelector('.list-header-box').scrollIntoView({behavior: "smooth"});
         };
 
         window.editItem = function(id) {

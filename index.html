@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 입주자사전점검 AI (v11.7 Optimized)</title>
+    <title>청개구리 사전점검 도우미 AI (v12.0 Legal-Safe)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 디자인 (기존 유지 및 비율 수정) --- */
+        /* --- 디자인 (기존 유지) --- */
         body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #f4f6f9; color: #333; line-height: 1.4; padding-bottom: 30px; }
         .header-container { background: linear-gradient(135deg, #27ae60, #2c3e50); padding: 12px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); height: 45px; position: relative; z-index: 100; }
         .header-frog-img { height: 35px; width: 35px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.9); background-color: white; }
@@ -16,7 +16,6 @@
         .version-badge { position: absolute; right: 20px; bottom: 12px; font-size: 0.7rem; color: #ecf0f1; font-weight: 700; opacity: 0.8; }
         .main-card { background: white; padding: 15px; margin: 12px; border-radius: 18px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         
-        /* 카메라 영역 비율 4:3 */
         .photo-area { 
             width: 100%; 
             aspect-ratio: 4 / 3; 
@@ -53,7 +52,6 @@
         .site-inputs input { text-align: center; padding: 8px 2px; font-weight: bold; color: #2c3e50; } 
         .triple-col { flex: 1; }
         
-        /* 버튼 스타일 */
         .btn-save-next { 
             background: #2980b9; 
             color: white; 
@@ -70,7 +68,6 @@
         }
         .btn-save-next:active { background: #1f6391; transform: translateY(2px); }
         
-        /* 리스트 스타일 */
         .list-area { padding: 0 15px 10px 15px; }
         .list-header-box { margin-bottom: 12px; border-left: 5px solid #27ae60; background: #fff; padding: 10px 15px; border-radius: 0 8px 8px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .list-title-text { font-size: 0.95rem; font-weight: 800; color: #2c3e50; }
@@ -86,26 +83,23 @@
         .btn-edit-item { background: #f39c12; color: white; border: none; border-radius: 4px; padding: 4px 0; font-size: 0.7rem; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 2px; }
         .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 4px; padding: 4px 0; font-size: 0.7rem; cursor: pointer; width: 100%; font-weight: bold; }
         
-        /* [수정 1] 하단 3D 버튼 높이 줄임 (padding, gap 수정) */
         .bottom-actions { display: flex; gap: 8px; padding: 0 15px 20px 15px; margin-top: 10px; }
-        .btn-3d { flex: 1; padding: 6px 4px; /* 높이 줄임 */ border: none; border-radius: 12px; color: white; font-size: 0.9rem; font-weight: 800; cursor: pointer; text-shadow: 0 1px 1px rgba(0,0,0,0.3); position: relative; transform: translateY(0); transition: all 0.1s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; /* 간격 줄임 */ line-height: 1.2; }
+        .btn-3d { flex: 1; padding: 6px 4px; border: none; border-radius: 12px; color: white; font-size: 0.9rem; font-weight: 800; cursor: pointer; text-shadow: 0 1px 1px rgba(0,0,0,0.3); position: relative; transform: translateY(0); transition: all 0.1s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; line-height: 1.2; }
         .btn-pdf-3d { background: linear-gradient(to bottom, #2ecc71, #27ae60); box-shadow: 0 4px 0 #1e8449, 0 5px 10px rgba(0,0,0,0.15); }
         .btn-pdf-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #1e8449; }
         .btn-call-3d { background: linear-gradient(to bottom, #3498db, #2980b9); box-shadow: 0 4px 0 #21618c, 0 5px 10px rgba(0,0,0,0.15); }
         .btn-call-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #21618c; }
-        .btn-3d i { font-size: 1.1rem; /* 아이콘 크기 약간 축소 */ }
+        .btn-3d i { font-size: 1.1rem; }
         
         .footer-info { text-align: center; padding: 20px; color: #95a5a6; font-size: 0.7rem; line-height: 1.6; border-top: 1px solid #eee; margin-top: 10px; }
         .footer-bold { font-weight: 800; color: #555; }
         
-        /* 상태바 및 설명서 버튼 */
         .status-bar-container { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px 5px 20px; margin-top: 5px; }
         .sub-desc { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; margin: 0; text-align: left; }
         .btn-manual-3d { background: linear-gradient(145deg, #4facfe, #00f2fe); color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; cursor: pointer; box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2), inset 0 -2px 0 rgba(0, 0, 0, 0.1); transition: all 0.1s; display: flex; align-items: center; gap: 5px; }
         .btn-manual-3d:active { transform: translateY(2px); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
         .btn-manual-3d i { font-size: 0.9rem; }
 
-        /* 모달 스타일 */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .modal-content { background: white; width: 85%; max-width: 400px; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; position: relative; animation: popUp 0.3s ease-out; }
         @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -116,28 +110,17 @@
         .step-text { flex: 1; line-height: 1.4; }
         .step-highlight { color: #e74c3c; font-weight: bold; }
         
-        /* [수정 2] 설명서 확인 3D 버튼 스타일 추가 */
         .btn-modal-close-3d {
-            width: 100%;
-            padding: 10px 0;
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 0.95rem;
-            font-weight: 800;
-            cursor: pointer;
-            text-shadow: 0 1px 1px rgba(0,0,0,0.3);
-            position: relative;
-            transform: translateY(0);
-            transition: all 0.1s;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            background: linear-gradient(to bottom, #1abc9c, #16a085); /* 청록색 계열 */
-            box-shadow: 0 4px 0 #12876f, 0 5px 10px rgba(0,0,0,0.15);
+            width: 100%; padding: 10px 0; border: none; border-radius: 10px; color: white; font-size: 0.95rem; font-weight: 800; cursor: pointer; text-shadow: 0 1px 1px rgba(0,0,0,0.3); position: relative; transform: translateY(0); transition: all 0.1s; display: flex; align-items: center; justify-content: center; gap: 6px;
+            background: linear-gradient(to bottom, #1abc9c, #16a085); box-shadow: 0 4px 0 #12876f, 0 5px 10px rgba(0,0,0,0.15);
         }
-        .btn-modal-close-3d:active {
-            transform: translateY(4px);
-            box-shadow: 0 0 0 #12876f;
-        }
+        .btn-modal-close-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #12876f; }
+
+        /* [추가] 법적 고지 모달 스타일 */
+        .legal-check { display: flex; align-items: center; gap: 10px; background: #f8f9fa; padding: 10px; border-radius: 8px; margin-top: 15px; border: 1px solid #ddd; }
+        .legal-check input { width: 20px; height: 20px; margin: 0; }
+        .legal-check label { font-size: 0.8rem; font-weight: bold; color: #333; text-align: left; }
+        .warning-box { background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; font-size: 0.8rem; text-align: left; margin-bottom: 15px; border: 1px solid #ffeeba; }
 
         @media print {
             body { background: white; padding: 0; }
@@ -149,19 +132,40 @@
             .list-item { border: 1px solid #ccc; box-shadow: none; break-inside: avoid; margin-bottom: 15px; }
             .list-detail { color: #000; }
             #pdf-header-title { display: block !important; text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 20px; padding-top: 20px;}
+            /* PDF 하단 법적 고지 추가 */
+            #pdf-disclaimer { display: block !important; margin-top: 30px; font-size: 10px; color: #666; text-align: center; border-top: 1px solid #ddd; padding-top: 10px; }
         }
     </style>
 </head>
 <body>
 
+    <div id="legalModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-title" style="color:#e74c3c;">⚠️ 이용 전 필수 확인</div>
+            <div class="warning-box">
+                <b>1. 법적 효력 없음</b><br>
+                본 서비스는 AI 시각 분석을 통한 <b>단순 참고용 정보</b>만을 제공합니다. AI의 분석 결과는 법적 감정 효력이 없으며, 최종 판단은 전문가의 현장 실사가 필요합니다.<br><br>
+                <b>2. 책임의 제한</b><br>
+                분석 오류로 인한 건설사와의 분쟁 및 손해에 대해 개발사(청개구리샤시)는 어떠한 법적 책임도 지지 않습니다.
+            </div>
+            <div class="legal-check">
+                <input type="checkbox" id="agreeCheck">
+                <label for="agreeCheck">위 내용을 충분히 이해하였으며,<br>이에 동의합니다.</label>
+            </div>
+            <button class="btn-modal-close-3d" style="background: #95a5a6; margin-top:10px;" id="agreeBtn" onclick="window.checkAgreement()">
+                동의하고 시작하기
+            </button>
+        </div>
+    </div>
+
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
-        <h2 class="header-title">청개구리 입주자사전점검 AI</h2>
-        <span class="version-badge">v11.7 Opt</span>
+        <h2 class="header-title">청개구리 사전점검 도우미 AI</h2>
+        <span class="version-badge">v12.0</span>
     </div>
     
     <div class="status-bar-container">
-        <p class="sub-desc" id="statusMsg">AI 엔진(2.0 Exp) 준비 완료</p>
+        <p class="sub-desc" id="statusMsg">AI 분석 엔진 대기 중</p>
         <button class="btn-manual-3d" onclick="window.openManual()">
             앱사용안내 <i class="fa-solid fa-circle-question"></i>
         </button>
@@ -208,7 +212,7 @@
         <input type="file" id="cameraInput" accept="image/*" style="display:none">
         <label class="photo-area" id="photoAreaBtn" for="cameraInput">
             <div class="photo-icon"><i class="fa-solid fa-camera"></i></div>
-            <div class="photo-text">터치하여 촬영 (자동 저장됨)<br>(점선 십자선에 하자를 맞추세요)</div>
+            <div class="photo-text">터치하여 촬영 (자동 분석)<br>(점선 십자선에 하자를 맞추세요)</div>
             <img id="previewImage" class="preview-img">
             <div class="center-crosshair"></div>
         </label>
@@ -352,16 +356,16 @@
                 </select>
             </div>
             <div class="input-col triple-col">
-                <label class="input-label">E. 하자유형</label>
+                <label class="input-label">E. 추정 하자유형</label>
                 <input type="text" id="defectType" placeholder="자동입력">
             </div>
         </div>
 
         <div class="input-col" style="margin-bottom: 10px;">
             <div class="input-label" style="color:#2980b9;">
-                <i class="fa-solid fa-robot"></i> F. AI하자입력 (국토부 분쟁조정 사례 기준)
+                <i class="fa-solid fa-robot"></i> F. AI 분석 리포트 (국토부 사례 매칭)
             </div>
-            <textarea id="defectDetail" placeholder="AI가 하자 내용과 함께 분쟁조정위원회 기준에 따른 판단을 제공합니다."></textarea>
+            <textarea id="defectDetail" placeholder="AI가 국토교통부 분쟁조정 사례와 유사한지 분석하여 참고 의견을 제공합니다. (법적 판단 아님)"></textarea>
             <div style="text-align: right;">
                 <button class="btn-save-next" onclick="window.addToList()">다음입력 <i class="fa-solid fa-arrow-right"></i></button>
             </div>
@@ -373,10 +377,14 @@
 
     <div class="list-area">
         <div class="list-header-box">
-            <div class="list-title-text">📋 저장된 리스트 <span id="listCount">(0)</span></div>
+            <div class="list-title-text">📋 점검 리스트 <span id="listCount">(0)</span></div>
             <div id="currentAptInfo" class="list-subtitle-text">현장 정보를 입력하세요</div>
         </div>
         <div id="listBox"></div>
+    </div>
+    
+    <div id="pdf-disclaimer" style="display:none;">
+        ※ 본 리포트는 입주자 사전점검을 돕기 위한 보조 자료이며, 법적 효력이 없습니다. 정확한 하자 판단은 전문가의 진단이 필요합니다. (제공: 청개구리샤시)
     </div>
 
     <div class="bottom-actions">
@@ -390,7 +398,8 @@
 
     <div class="footer-info">
         <p><span class="footer-bold">청개구리샤시</span> | 사업자등록번호 : 123-36-31426 | 대표 : 전영웅</p>
-        <p>전화 1599-7380 | COPYRIGHT ⓒ 2026 Cheong-gaeguri Corp.</p>
+        <p>전화 1599-7380 | 본 서비스는 보조 도구로써 법적 책임을 지지 않습니다.</p>
+        <p>COPYRIGHT ⓒ 2026 Cheong-gaeguri Corp.</p>
     </div>
 
     <div id="manualModal" class="modal-overlay" style="display:none;">
@@ -399,19 +408,19 @@
             <div class="step-list">
                 <div class="step-item">
                     <div class="step-num">1</div>
-                    <div class="step-text">상단에 <span class="step-highlight">아파트, 동, 호수</span>를 먼저 입력하세요.</div>
+                    <div class="step-text">상단에 <span class="step-highlight">아파트 정보</span>를 입력하세요.</div>
                 </div>
                 <div class="step-item">
                     <div class="step-num">2</div>
-                    <div class="step-text">점검할 <span class="step-highlight">방(위치)</span>을 선택 후 카메라 아이콘을 눌러 촬영하세요.</div>
+                    <div class="step-text">점검할 <span class="step-highlight">방(위치)</span>을 선택 후 촬영하세요.</div>
                 </div>
                 <div class="step-item">
                     <div class="step-num">3</div>
-                    <div class="step-text"><span class="step-highlight">AI 분석 후</span> 내용이 화면에 표시됩니다. 수정이 필요하면 수정하세요.</div>
+                    <div class="step-text">AI가 유사 사례를 분석합니다. 내용을 확인 후 저장하세요.</div>
                 </div>
                 <div class="step-item">
                     <div class="step-num">4</div>
-                    <div class="step-text">내용이 맞으면 파란색 <b>[다음입력]</b>을 눌러 저장하고 다음 하자를 촬영하세요.</div>
+                    <div class="step-text">모든 점검 후 <b>[PDF저장]</b> 또는 <b>[수리문의]</b>를 이용하세요.</div>
                 </div>
             </div>
             <button class="btn-modal-close-3d" onclick="window.closeManual()">
@@ -428,7 +437,7 @@
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
         // =========================================================
-        // [중요] API 키 입력
+        // [중요] API 키
         // =========================================================
         const part1 = "AIzaSyAP_9dcbRPRdP4"; 
         const part2 = "GD6WniQsWixFUFYRhfig";
@@ -437,6 +446,19 @@
 
         let defectDataList = [];
         let currentImageFile = null;
+
+        // [법적 고지 동의 체크 로직]
+        window.checkAgreement = function() {
+            const checkbox = document.getElementById('agreeCheck');
+            const btn = document.getElementById('agreeBtn');
+            if(checkbox.checked) {
+                document.getElementById('legalModal').style.display = 'none';
+                // 동의 후 버튼 색상 활성화 스타일 변경 (시각적 피드백)
+                btn.style.background = 'linear-gradient(to bottom, #1abc9c, #16a085)';
+            } else {
+                alert("서비스 이용을 위해 법적 고지 내용에 동의해주세요.");
+            }
+        };
 
         window.openManual = function() { document.getElementById('manualModal').style.display = 'flex'; };
         window.closeManual = function() { document.getElementById('manualModal').style.display = 'none'; };
@@ -451,7 +473,6 @@
                 const preview = document.getElementById('previewImage');
                 preview.src = e.target.result;
                 preview.style.display = 'block';
-                // 사진 로드 즉시 분석 -> 결과만 화면에 표시 (자동저장 X)
                 runTargetedAnalysis(file);
             };
             reader.readAsDataURL(file);
@@ -473,19 +494,20 @@
             const statusMsg = document.getElementById('statusMsg');
             const photoBtn = document.getElementById('photoAreaBtn');
             
-            detailBox.value = "AI(2.0 Exp)가 세부공종을 검색 중입니다...";
-            statusMsg.innerText = "⚖️ 세부공종 및 하자 분석 중...";
+            detailBox.value = "AI가 국토부 사례 데이터와 매칭 중입니다... (잠시만 기다려주세요)";
+            statusMsg.innerText = "🔍 하자 사례 매칭 중...";
             photoBtn.style.opacity = '0.5';
             photoBtn.style.pointerEvents = 'none';
 
             try {
                 if (API_KEY.includes("AIzaSy...") || API_KEY.length < 20) {
-                    throw new Error("코드에 API 키를 올바르게 입력해주세요.");
+                    throw new Error("API 키 확인 필요");
                 }
 
                 const genAI = new GoogleGenerativeAI(API_KEY);
                 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
+                // [중요] 세부공종 리스트
                 const subWorks = `
                     폴리싱타일, 화장대, 3연동도어, 준공청소, 실외기, 등기구, 도장, PL창호, 붙박이장, 
                     복도팬트리도어/틀, 문짝, 터닝도어, 스윙도어, 콘센트, 코킹, 강마루, 욕실장, 유리, 
@@ -501,28 +523,31 @@
                     배수육가(트렌치포함), 욕조, 수전류, 하부씰, 완강기
                 `;
 
+                // [법적 리스크 방어용 프롬프트 수정]
+                // 1. 역할 변경: '심사관' -> '보조 도구'
+                // 2. 워딩 변경: '판단하세요' -> '유사성을 분석하세요'
+                // 3. 국토부 기준: '기준'을 참고하되 확정하지 말 것
                 const prompt = `
-                    당신은 '국토교통부 하자심사·분쟁조정위원회'의 전문 심사관입니다.
-                    사진 속 중앙 십자선 위치를 정밀 분석하여 하자를 판단하세요.
+                    당신은 입주자 사전점검을 돕는 유용한 AI 어시스턴트입니다.
+                    사진 속 중앙 십자선 위치를 분석하여, '국토교통부 하자심사 분쟁조정 사례'와 시각적으로 유사한지 비교하세요.
 
-                    [판단 지침 1: 세부공종 선택]
-                    사진의 대상을 보고, 반드시 다음 리스트 중에서 가장 정확한 **세부공종** 하나를 선택하세요.
-                    * 세부공종 리스트: ${subWorks}
+                    [주의사항: 법적 책임 회피]
+                    - 절대로 "이것은 하자입니다"라고 확정하지 마세요.
+                    - "하자일 가능성이 있습니다" 또는 "유사한 하자 사례가 있습니다"라고 표현하세요.
+                    - 당신은 전문가가 아니며, 최종 판단은 사람이 해야 함을 인지하세요.
 
-                    [판단 지침 2: 하자 우선순위]
-                    만약 여러 하자가 동시에 보이면 아래 우선순위에 따라 '하자유형'을 결정하세요.
-                    1순위: **미시공** 2순위: **결로/곰팡이**
-                    3순위: **파손/깨짐**
-                    4순위: **수직수평불량** (문짝/창호가 기울거나 비뚤어짐 - 오염보다 우선!)
-                    5순위: **작동불량**
-                    6순위: **오염/스크래치**
+                    [분석 지침 1: 세부공종]
+                    - 리스트 중에서 가장 적합한 하나를 찾으세요: ${subWorks}
+
+                    [분석 지침 2: 하자유형 우선순위]
+                    1순위: 미시공, 2순위: 결로/곰팡이, 3순위: 파손/깨짐, 4순위: 수직수평불량, 5순위: 작동불량, 6순위: 오염/스크래치
 
                     [출력 형식 - JSON]
                     {
                         "work": "공종 (예: 주방가구공사)",
-                        "sub": "세부공종 (위 리스트 중 선택, 예: 상부장)",
-                        "type": "하자유형 (예: 수직수평불량)",
-                        "detail": "1. 하자 현상: [구체적 설명]\\n2. 💡전문가 의견: [판단 근거 및 시공사 책임 명시]"
+                        "sub": "세부공종",
+                        "type": "추정 하자유형 (예: 수직수평불량 의심)",
+                        "detail": "1. 현상 분석: [화면상 보이는 상태 설명]\\n2. 💡국토부 사례 매칭: [유사 사례가 인정된 기준 설명]\\n(※ AI 분석 결과는 단순 참고용입니다.)"
                     }
                 `;
                 
@@ -536,9 +561,9 @@
                     let cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
                     const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
                     if (jsonMatch) data = JSON.parse(jsonMatch[0]);
-                    else throw new Error("JSON fail");
+                    else throw new Error("JSON Parsing Failed");
                 } catch (e) {
-                    data = { detail: text, work: "기타", sub: "", type: "점검요망" };
+                    data = { detail: "분석 내용을 불러오지 못했습니다. 다시 촬영해주세요.", work: "기타", sub: "", type: "점검요망" };
                 }
 
                 applyDataToUI(data);
@@ -547,9 +572,9 @@
                 
             } catch (error) {
                 console.error("AI Error:", error);
-                statusMsg.innerText = "⚠️ 분석 실패";
+                statusMsg.innerText = "⚠️ 분석 실패 (네트워크 확인)";
                 statusMsg.style.color = "#e74c3c";
-                detailBox.value = "오류 발생: " + error.toString();
+                detailBox.value = "일시적인 오류입니다. 잠시 후 다시 시도해주세요.";
             } finally {
                 photoBtn.style.opacity = '1';
                 photoBtn.style.pointerEvents = 'auto';
@@ -561,7 +586,8 @@
             document.getElementById('subWorkType').value = data.sub || ""; 
             document.getElementById('defectType').value = data.type || "";
             const detailBox = document.getElementById('defectDetail');
-            detailBox.value = data.detail || "";
+            // [중요] 모든 결과 뒤에 고정 꼬리말 추가
+            detailBox.value = (data.detail || "") + "\n\n(※ 본 결과는 AI 시각 분석에 기초한 참고용이며, 법적 효력이 없습니다.)";
         }
 
         window.addToList = function() {
@@ -600,7 +626,7 @@
                     <img src="${previewSrc}" class="list-thumb">
                     <div class="list-content">
                         <div class="list-room-work">${room} - ${itemData.work} (${itemData.sub})</div>
-                        <div class="list-type">하자유형: ${itemData.type}</div>
+                        <div class="list-type">추정유형: ${itemData.type}</div>
                         <div class="list-detail">${itemData.detail}</div>
                     </div>
                     <div class="list-right-info">
@@ -623,7 +649,7 @@
             document.getElementById('subWorkType').value = ""; 
             document.getElementById('defectType').value = ""; 
             document.getElementById('defectDetail').value = ""; 
-            document.getElementById('statusMsg').innerText = "AI 엔진(2.0 Exp) 준비 완료"; 
+            document.getElementById('statusMsg').innerText = "AI 분석 엔진 대기 중"; 
             
             document.querySelector('.list-header-box').scrollIntoView({behavior: "smooth"});
         };
@@ -676,7 +702,8 @@
         };
 
         window.callCenter = function() {
-            if(confirm("청개구리 샤시 고객센터(1599-7380)로 연결하시겠습니까?")) {
+            // [수정] 통화 연결 전에도 단순 문의임을 명시
+            if(confirm("청개구리 샤시 고객센터(1599-7380)로 연결하시겠습니까?\n(수리 및 견적 문의 가능)")) {
                 window.location.href = "tel:1599-7380";
             }
         };

@@ -3,146 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 사전점검 도우미 AI (v12.1 Compact)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <title>청개구리 사전점검 도우미 AI (v13.0 Pro Design)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 디자인 (기존 유지) --- */
-        body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #f4f6f9; color: #333; line-height: 1.4; padding-bottom: 30px; }
-        .header-container { background: linear-gradient(135deg, #27ae60, #2c3e50); padding: 12px 20px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); height: 45px; position: relative; z-index: 100; }
-        .header-frog-img { height: 35px; width: 35px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.9); background-color: white; }
-        .header-title { color: white; font-size: 1.05rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-        .version-badge { position: absolute; right: 20px; bottom: 12px; font-size: 0.7rem; color: #ecf0f1; font-weight: 700; opacity: 0.8; }
-        .main-card { background: white; padding: 15px; margin: 12px; border-radius: 18px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-        
-        .photo-area { 
-            width: 100%; 
-            aspect-ratio: 4 / 3; 
-            background: #eef2f3; 
-            border: 2px dashed #bdc3c7; 
-            border-radius: 12px; 
-            position: relative; 
-            cursor: pointer; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            overflow: hidden; 
-            margin-bottom: 10px; 
-            margin-top: 10px; 
-            box-sizing: border-box; 
+        /* --- [v13.0 디자인 시스템 적용] --- */
+        :root {
+            --primary-grad: linear-gradient(135deg, #00b09b, #96c93d); /* 청개구리 밝은 톤 */
+            --header-grad: linear-gradient(135deg, #134E5E, #71B280); /* 전문적인 딥 그린 */
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-main: #2d3436;
+            --text-sub: #636e72;
+            --shadow-soft: 0 10px 25px rgba(0,0,0,0.05);
+            --shadow-3d: 0 4px 0 #1e8449; /* 버튼 그림자 */
         }
 
-        .center-crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 20; display: flex; align-items: center; justify-content: center; }
-        .center-crosshair::before { content: ''; position: absolute; width: 100%; height: 0; border-top: 3px dashed rgba(231, 76, 60, 0.9); filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
-        .center-crosshair::after { content: ''; position: absolute; height: 100%; width: 0; border-left: 3px dashed rgba(231, 76, 60, 0.9); filter: drop-shadow(0 0 2px rgba(255,255,255,0.8)); }
-        .photo-icon { font-size: 2rem; margin-bottom: 8px; opacity: 0.3; color: #27ae60; pointer-events: none; }
-        .photo-text { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; text-align: center; pointer-events: none; }
-        .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 10; background-color: #000; pointer-events: none; }
+        body { 
+            margin: 0; padding: 0; 
+            font-family: 'Pretendard', sans-serif; /* 최신 폰트 교체 */
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            line-height: 1.5; 
+            padding-bottom: 40px; 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 1. 헤더 디자인: 전문적인 그라데이션 */
+        .header-container { 
+            background: var(--header-grad); 
+            padding: 15px 20px 25px 20px; 
+            border-radius: 0 0 24px 24px; 
+            display: flex; align-items: center; gap: 12px; 
+            box-shadow: 0 4px 15px rgba(19, 78, 94, 0.3); 
+            position: relative; z-index: 100; 
+        }
+        .header-frog-img { 
+            height: 40px; width: 40px; object-fit: cover; 
+            border-radius: 12px; border: 2px solid rgba(255,255,255,0.8); 
+            background-color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .header-title { 
+            color: white; font-size: 1.2rem; font-weight: 800; margin: 0; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        .version-badge { 
+            position: absolute; right: 20px; top: 22px; 
+            font-size: 0.7rem; background: rgba(0,0,0,0.2); 
+            color: #fff; padding: 2px 8px; border-radius: 12px; font-weight: 600;
+        }
+
+        /* 2. 상태바 및 설명서 버튼 (알약 모양) */
+        .status-bar-container { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 15px 20px 5px 20px; margin-top: -10px; 
+        }
+        .status-pill {
+            background: white; padding: 5px 12px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 700; color: var(--text-sub);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 5px;
+        }
+        .btn-manual-3d { 
+            background: linear-gradient(135deg, #667eea, #764ba2); 
+            color: white; border: none; padding: 6px 14px; border-radius: 20px; 
+            font-size: 0.75rem; font-weight: 700; cursor: pointer; 
+            box-shadow: 0 4px 10px rgba(118, 75, 162, 0.3); 
+            transition: transform 0.1s; 
+        }
+        .btn-manual-3d:active { transform: scale(0.95); }
+
+        /* 3. 메인 카드 (Glassmorphism 느낌의 깔끔함) */
+        .main-card { 
+            background: var(--card-bg); 
+            padding: 20px; margin: 15px; 
+            border-radius: 24px; 
+            box-shadow: var(--shadow-soft); 
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        /* 입력 폼 스타일 (Soft UI) */
+        .input-row { display: flex; gap: 10px; margin-bottom: 12px; }
+        .input-col { display: flex; flex-direction: column; gap: 6px; }
+        .input-label { font-size: 0.75rem; font-weight: 700; color: #636e72; margin-left: 4px; }
         
-        .input-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: stretch; }
-        .input-col { display: flex; flex-direction: column; gap: 4px; }
-        .input-label { font-size: 0.75rem; font-weight: 800; color: #34495e; letter-spacing: -0.3px; }
-        input, select, textarea { width: 100%; padding: 8px; font-size: 0.9rem; border: 1px solid #dfe4ea; border-radius: 8px; background: #fff; box-sizing: border-box; height: 38px; transition: border 0.2s; }
-        input:focus, select:focus, textarea:focus { border-color: #27ae60; outline: none; box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.1); }
-        textarea { height: 80px; resize: none; line-height: 1.5; } 
-        .site-info-group { flex: 7; } .location-group { flex: 3; }  
-        .site-inputs { display: flex; gap: 4px; }
-        .site-inputs input { text-align: center; padding: 8px 2px; font-weight: bold; color: #2c3e50; } 
-        .triple-col { flex: 1; }
-        
-        .btn-save-next { 
-            background: #2980b9; 
-            color: white; 
-            border: none; 
-            padding: 10px 20px; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            font-size: 0.9rem; 
-            cursor: pointer; 
-            float: right; 
-            margin-top: 5px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        /* 인풋창: 테두리 없애고 배경색으로 구분 */
+        input, select, textarea { 
+            width: 100%; padding: 10px 12px; font-size: 0.95rem; 
+            border: none; border-radius: 12px; 
+            background: #f1f3f5; color: #2d3436; 
+            box-sizing: border-box; transition: all 0.2s; 
+            font-family: 'Pretendard', sans-serif;
+        }
+        input:focus, select:focus, textarea:focus { 
+            background: #fff; outline: none; 
+            box-shadow: 0 0 0 2px #00b09b; /* 포커스 시 청록색 링 */
+        }
+        textarea { height: 90px; resize: none; line-height: 1.6; } 
+        .site-inputs { display: flex; gap: 5px; }
+        .site-inputs input { text-align: center; font-weight: 700; color: #2d3436; } 
+        .site-info-group { flex: 7; } .location-group { flex: 3; } .triple-col { flex: 1; }
+
+        /* 4. 카메라 영역 (가시성 향상) */
+        .photo-area { 
+            width: 100%; aspect-ratio: 4 / 3; 
+            background: #eefbf3; /* 아주 연한 초록 배경 */
+            border: 2px dashed #00b09b; /* 청록색 점선 */
+            border-radius: 16px; 
+            position: relative; cursor: pointer; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            overflow: hidden; margin: 15px 0; box-sizing: border-box; 
             transition: background 0.2s;
         }
-        .btn-save-next:active { background: #1f6391; transform: translateY(2px); }
+        .photo-area:active { background: #dff6e9; }
         
-        .list-area { padding: 0 15px 10px 15px; }
-        .list-header-box { margin-bottom: 12px; border-left: 5px solid #27ae60; background: #fff; padding: 10px 15px; border-radius: 0 8px 8px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
-        .list-title-text { font-size: 0.95rem; font-weight: 800; color: #2c3e50; }
-        .list-subtitle-text { font-size: 0.8rem; color: #e67e22; font-weight: 700; margin-top: 2px; }
-        .list-item { background: white; padding: 10px; border-radius: 10px; margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #f1f3f5; page-break-inside: avoid; }
-        .list-thumb { width: 65px; height: 65px; border-radius: 8px; object-fit: cover; border: 1px solid #eee; flex-shrink: 0; }
-        .list-content { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-        .list-room-work { font-weight: 800; font-size: 0.9rem; color: #2c3e50; }
-        .list-type { font-size: 0.8rem; color: #e74c3c; font-weight: 700; }
-        .list-detail { font-size: 0.75rem; color: #555; white-space: pre-wrap; line-height: 1.4; margin-top: 2px; }
-        .list-right-info { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; margin-left: auto; width: 60px; }
-        .tag { padding: 3px 6px; border-radius: 4px; font-size: 0.7rem; color: white; font-weight: bold; background: #2ecc71; text-align: center; width: 100%; box-sizing: border-box; }
-        .btn-edit-item { background: #f39c12; color: white; border: none; border-radius: 4px; padding: 4px 0; font-size: 0.7rem; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 2px; }
-        .btn-delete-item { background: #95a5a6; color: white; border: none; border-radius: 4px; padding: 4px 0; font-size: 0.7rem; cursor: pointer; width: 100%; font-weight: bold; }
+        .center-crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 20; }
+        .center-crosshair::before, .center-crosshair::after { content: ''; position: absolute; background: rgba(231, 76, 60, 0.8); }
+        .center-crosshair::before { width: 100%; height: 2px; top: 50%; }
+        .center-crosshair::after { height: 100%; width: 2px; left: 50%; }
         
-        .bottom-actions { display: flex; gap: 8px; padding: 0 15px 20px 15px; margin-top: 10px; }
-        .btn-3d { flex: 1; padding: 6px 4px; border: none; border-radius: 12px; color: white; font-size: 0.9rem; font-weight: 800; cursor: pointer; text-shadow: 0 1px 1px rgba(0,0,0,0.3); position: relative; transform: translateY(0); transition: all 0.1s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; line-height: 1.2; }
-        .btn-pdf-3d { background: linear-gradient(to bottom, #2ecc71, #27ae60); box-shadow: 0 4px 0 #1e8449, 0 5px 10px rgba(0,0,0,0.15); }
-        .btn-pdf-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #1e8449; }
-        .btn-call-3d { background: linear-gradient(to bottom, #3498db, #2980b9); box-shadow: 0 4px 0 #21618c, 0 5px 10px rgba(0,0,0,0.15); }
-        .btn-call-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #21618c; }
-        .btn-3d i { font-size: 1.1rem; }
-        
-        /* [수정] 하단 푸터 스타일 최적화 (2줄, 여백 최소화) */
-        .footer-info { 
-            text-align: center; 
-            padding: 10px 5px; 
-            color: #bdc3c7; 
-            font-size: 0.6rem; 
-            line-height: 1.3; 
-            border-top: 1px solid #eee; 
-            margin-top: 10px; 
+        .photo-icon { 
+            font-size: 2.2rem; margin-bottom: 10px; 
+            background: linear-gradient(135deg, #00b09b, #96c93d); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
         }
-        .footer-info p { margin: 0; padding: 0; }
-        .footer-bold { font-weight: 800; color: #7f8c8d; }
-        
-        .status-bar-container { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px 5px 20px; margin-top: 5px; }
-        .sub-desc { font-size: 0.8rem; color: #7f8c8d; font-weight: 700; margin: 0; text-align: left; }
-        .btn-manual-3d { background: linear-gradient(145deg, #4facfe, #00f2fe); color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; cursor: pointer; box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2), inset 0 -2px 0 rgba(0, 0, 0, 0.1); transition: all 0.1s; display: flex; align-items: center; gap: 5px; }
-        .btn-manual-3d:active { transform: translateY(2px); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
-        .btn-manual-3d i { font-size: 0.9rem; }
+        .photo-text { font-size: 0.85rem; color: #00b09b; font-weight: 700; text-align: center; pointer-events: none; }
+        .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 10; background-color: #000; }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
-        .modal-content { background: white; width: 85%; max-width: 400px; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; position: relative; animation: popUp 0.3s ease-out; }
-        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-title { font-size: 1.2rem; font-weight: 900; color: #27ae60; margin-bottom: 15px; }
-        .step-list { text-align: left; margin-bottom: 20px; font-size: 0.9rem; color: #444; }
-        .step-item { margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; }
-        .step-num { background: #27ae60; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; flex-shrink: 0; margin-top: 2px; }
-        .step-text { flex: 1; line-height: 1.4; }
-        .step-highlight { color: #e74c3c; font-weight: bold; }
+        /* 5. 버튼: 리얼 3D 스타일 (그림자 이용) */
+        .btn-save-next { 
+            background: linear-gradient(to bottom, #3498db, #2980b9); 
+            color: white; border: none; padding: 12px 24px; border-radius: 12px; 
+            font-weight: 800; font-size: 0.95rem; cursor: pointer; 
+            box-shadow: 0 4px 0 #1c5985, 0 5px 10px rgba(0,0,0,0.2); /* 3D 효과 핵심 */
+            transition: all 0.1s; float: right; margin-top: 5px;
+        }
+        .btn-save-next:active { 
+            transform: translateY(4px); box-shadow: 0 0 0 #1c5985; /* 눌렸을 때 */
+        }
+
+        /* 리스트 영역 디자인 */
+        .list-area { padding: 0 15px 10px 15px; }
+        .list-header-box { 
+            margin-bottom: 15px; background: #fff; padding: 15px; 
+            border-radius: 16px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); 
+            display: flex; justify-content: space-between; align-items: center; border-left: 6px solid #00b09b;
+        }
+        .list-title-text { font-size: 1rem; font-weight: 800; color: #2d3436; }
+        .list-subtitle-text { font-size: 0.85rem; color: #00b09b; font-weight: 600; }
+        
+        .list-item { 
+            background: white; padding: 12px; border-radius: 16px; margin-bottom: 12px; 
+            display: flex; gap: 12px; align-items: flex-start; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid #f1f3f5;
+        }
+        .list-thumb { width: 70px; height: 70px; border-radius: 12px; object-fit: cover; border: 1px solid #eee; flex-shrink: 0; }
+        .list-content { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .list-room-work { font-weight: 800; font-size: 0.95rem; color: #2d3436; }
+        .list-type { font-size: 0.8rem; color: #e74c3c; font-weight: 700; background: #fff5f5; padding: 2px 6px; border-radius: 4px; align-self: flex-start; }
+        .list-detail { font-size: 0.8rem; color: #636e72; line-height: 1.4; }
+        .list-right-info { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; margin-left: auto; width: 60px; }
+        
+        .tag { font-size: 0.7rem; color: white; font-weight: bold; background: #2d3436; border-radius: 6px; padding: 4px; width: 100%; text-align: center; }
+        .btn-edit-item, .btn-delete-item { 
+            border: none; border-radius: 6px; padding: 6px 0; font-size: 0.75rem; 
+            cursor: pointer; width: 100%; font-weight: bold; color: white; 
+        }
+        .btn-edit-item { background: #f39c12; }
+        .btn-delete-item { background: #b2bec3; }
+
+        /* 6. 하단 액션 버튼 (3D) */
+        .bottom-actions { display: flex; gap: 12px; padding: 0 15px 20px 15px; margin-top: 10px; }
+        .btn-3d { 
+            flex: 1; padding: 12px 0; border: none; border-radius: 16px; 
+            color: white; font-size: 1rem; font-weight: 800; cursor: pointer; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; 
+            transition: all 0.1s; position: relative;
+        }
+        /* PDF 저장 버튼: 초록 계열 */
+        .btn-pdf-3d { 
+            background: linear-gradient(to bottom, #2ecc71, #27ae60); 
+            box-shadow: 0 5px 0 #1e8449, 0 10px 20px rgba(46, 204, 113, 0.3); 
+        }
+        .btn-pdf-3d:active { transform: translateY(5px); box-shadow: 0 0 0 #1e8449; }
+        
+        /* 수리 문의 버튼: 파랑 계열 */
+        .btn-call-3d { 
+            background: linear-gradient(to bottom, #3498db, #2980b9); 
+            box-shadow: 0 5px 0 #21618c, 0 10px 20px rgba(52, 152, 219, 0.3); 
+        }
+        .btn-call-3d:active { transform: translateY(5px); box-shadow: 0 0 0 #21618c; }
+
+        /* [수정] 2줄 압축 푸터 (가독성 향상) */
+        .footer-info { 
+            text-align: center; padding: 15px 10px; 
+            color: #b2bec3; font-size: 0.65rem; line-height: 1.3; 
+            border-top: 1px solid #dfe6e9; margin-top: 20px; background: #fff;
+        }
+        .footer-info p { margin: 2px 0; padding: 0; }
+        .footer-bold { font-weight: 800; color: #636e72; }
+
+        /* 모달 스타일 */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-content { background: white; width: 85%; max-width: 400px; border-radius: 24px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); text-align: center; animation: popUp 0.3s ease-out; }
+        @keyframes popUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-title { font-size: 1.3rem; font-weight: 900; color: #2d3436; margin-bottom: 20px; }
+        .warning-box { background: #fff9e6; color: #d35400; padding: 15px; border-radius: 12px; font-size: 0.85rem; text-align: left; margin-bottom: 20px; border: 1px solid #ffeaa7; line-height: 1.5; }
+        .legal-check { display: flex; align-items: center; gap: 10px; background: #f1f3f5; padding: 12px; border-radius: 12px; margin-top: 10px; }
+        .legal-check label { font-size: 0.85rem; font-weight: 700; color: #2d3436; text-align: left; }
         
         .btn-modal-close-3d {
-            width: 100%; padding: 10px 0; border: none; border-radius: 10px; color: white; font-size: 0.95rem; font-weight: 800; cursor: pointer; text-shadow: 0 1px 1px rgba(0,0,0,0.3); position: relative; transform: translateY(0); transition: all 0.1s; display: flex; align-items: center; justify-content: center; gap: 6px;
-            background: linear-gradient(to bottom, #1abc9c, #16a085); box-shadow: 0 4px 0 #12876f, 0 5px 10px rgba(0,0,0,0.15);
+            width: 100%; padding: 14px 0; border: none; border-radius: 16px; color: white; font-size: 1rem; font-weight: 800; cursor: pointer; margin-top: 15px;
+            background: linear-gradient(to bottom, #1abc9c, #16a085); box-shadow: 0 4px 0 #12876f, 0 5px 15px rgba(0,0,0,0.1); transition: all 0.1s;
         }
         .btn-modal-close-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #12876f; }
-
-        /* 법적 고지 모달 스타일 */
-        .legal-check { display: flex; align-items: center; gap: 10px; background: #f8f9fa; padding: 10px; border-radius: 8px; margin-top: 15px; border: 1px solid #ddd; }
-        .legal-check input { width: 20px; height: 20px; margin: 0; }
-        .legal-check label { font-size: 0.8rem; font-weight: bold; color: #333; text-align: left; }
-        .warning-box { background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; font-size: 0.8rem; text-align: left; margin-bottom: 15px; border: 1px solid #ffeeba; }
 
         @media print {
             body { background: white; padding: 0; }
             .header-container, .main-card, .bottom-actions, .footer-info, .status-bar-container, .btn-delete-item, .btn-edit-item { display: none !important; } 
             .list-area { padding: 0; margin: 0; }
-            .list-header-box { border: none; padding: 0; margin-bottom: 20px; border-bottom: 2px solid #333; border-radius: 0; }
-            .list-title-text { font-size: 1.5rem; color: #000; text-align: center; margin-bottom: 10px; }
-            .list-subtitle-text { font-size: 1.2rem; color: #333; text-align: center; display: block !important; }
+            .list-header-box { border: none; padding: 0; margin-bottom: 20px; border-bottom: 2px solid #333; border-radius: 0; box-shadow: none; }
             .list-item { border: 1px solid #ccc; box-shadow: none; break-inside: avoid; margin-bottom: 15px; }
-            .list-detail { color: #000; }
             #pdf-header-title { display: block !important; text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 20px; padding-top: 20px;}
-            /* PDF 하단 법적 고지 추가 */
             #pdf-disclaimer { display: block !important; margin-top: 30px; font-size: 10px; color: #666; text-align: center; border-top: 1px solid #ddd; padding-top: 10px; }
         }
     </style>
@@ -151,18 +233,18 @@
 
     <div id="legalModal" class="modal-overlay">
         <div class="modal-content">
-            <div class="modal-title" style="color:#e74c3c;">⚠️ 이용 전 필수 확인</div>
+            <div class="modal-title">⚠️ 이용 전 필수 확인</div>
             <div class="warning-box">
                 <b>1. 법적 효력 없음</b><br>
-                본 서비스는 AI 시각 분석을 통한 <b>단순 참고용 정보</b>만을 제공합니다. AI의 분석 결과는 법적 감정 효력이 없으며, 최종 판단은 전문가의 현장 실사가 필요합니다.<br><br>
+                본 서비스는 AI 시각 분석을 통한 <b>단순 참고용 정보</b>만을 제공합니다. 전문가의 현장 실사가 반드시 필요합니다.<br><br>
                 <b>2. 책임의 제한</b><br>
-                분석 오류로 인한 건설사와의 분쟁 및 손해에 대해 개발사(청개구리샤시)는 어떠한 법적 책임도 지지 않습니다.
+                분석 오류 및 건설사 분쟁에 대해 개발사(청개구리샤시)는 법적 책임을 지지 않습니다.
             </div>
             <div class="legal-check">
                 <input type="checkbox" id="agreeCheck">
-                <label for="agreeCheck">위 내용을 충분히 이해하였으며,<br>이에 동의합니다.</label>
+                <label for="agreeCheck">위 내용을 이해하였으며 동의합니다.</label>
             </div>
-            <button class="btn-modal-close-3d" style="background: #95a5a6; margin-top:10px;" id="agreeBtn" onclick="window.checkAgreement()">
+            <button class="btn-modal-close-3d" style="background: linear-gradient(to bottom, #95a5a6, #7f8c8d); box-shadow: 0 4px 0 #5f6a6b;" id="agreeBtn" onclick="window.checkAgreement()">
                 동의하고 시작하기
             </button>
         </div>
@@ -170,29 +252,32 @@
 
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
-        <h2 class="header-title">청개구리 사전점검 도우미 AI</h2>
-        <span class="version-badge">v12.1</span>
+        <h2 class="header-title">청개구리 사전점검 AI</h2>
+        <span class="version-badge">v13.0 Pro</span>
     </div>
     
     <div class="status-bar-container">
-        <p class="sub-desc" id="statusMsg">AI 분석 엔진 대기 중</p>
+        <div class="status-pill" id="statusPill">
+            <i class="fa-solid fa-circle-check" style="color:#00b09b;"></i>
+            <span id="statusMsg">AI 분석 엔진 대기 중</span>
+        </div>
         <button class="btn-manual-3d" onclick="window.openManual()">
-            앱사용안내 <i class="fa-solid fa-circle-question"></i>
+            사용설명서 <i class="fa-solid fa-book-open"></i>
         </button>
     </div>
 
     <div class="main-card">
         <div class="input-row">
             <div class="input-col site-info-group">
-                <label class="input-label">A. 현장 정보 (아파트 / 동 / 호)</label>
+                <label class="input-label">A. 현장 정보</label>
                 <div class="site-inputs">
                     <input type="text" id="aptName" placeholder="아파트명" style="flex:1.5;">
-                    <input type="tel" id="aptDong" placeholder="000" style="flex:1;">
-                    <input type="tel" id="aptHo" placeholder="0000" style="flex:1;">
+                    <input type="tel" id="aptDong" placeholder="000동" style="flex:1;">
+                    <input type="tel" id="aptHo" placeholder="0000호" style="flex:1;">
                 </div>
             </div>
             <div class="input-col location-group">
-                <label class="input-label">B. 위치(실내)</label>
+                <label class="input-label">B. 위치</label>
                 <select id="roomSelect">
                     <option value="">선택</option>
                     <option value="거실">거실</option>
@@ -201,208 +286,82 @@
                     <option value="침실2">침실2</option>
                     <option value="침실3">침실3</option>
                     <option value="안방">안방</option>
-                    <option value="욕실1">욕실1(공용)</option>
-                    <option value="욕실2">욕실2(부부)</option>
+                    <option value="욕실1">욕실1</option>
+                    <option value="욕실2">욕실2</option>
                     <option value="현관">현관</option>
-                    <option value="드레스룸">드레스룸</option>
-                    <option value="파우더룸">파우더룸</option>
+                    <option value="발코니">발코니</option>
                     <option value="다용도실">다용도실</option>
-                    <option value="실외기실">실외기실</option>
-                    <option value="대피공간">대피공간</option>
-                    <option value="안방발코니">안방발코니</option>
-                    <option value="복도팬트리">복도팬트리</option>
-                    <option value="주방팬트리">주방팬트리</option>
-                    <option value="현관팬트리">현관팬트리</option>
-                    <option value="다목적실">다목적실</option>
-                    <option value="테라스">테라스</option>
                 </select>
             </div>
         </div>
 
         <input type="file" id="cameraInput" accept="image/*" style="display:none">
         <label class="photo-area" id="photoAreaBtn" for="cameraInput">
-            <div class="photo-icon"><i class="fa-solid fa-camera"></i></div>
-            <div class="photo-text">터치하여 촬영 (자동 분석)<br>(점선 십자선에 하자를 맞추세요)</div>
+            <div class="photo-icon"><i class="fa-solid fa-camera-retro"></i></div>
+            <div class="photo-text">이곳을 터치하여 촬영하세요<br>(자동 분석 시작)</div>
             <img id="previewImage" class="preview-img">
             <div class="center-crosshair"></div>
         </label>
 
         <div class="input-row">
             <div class="input-col triple-col">
-                <label class="input-label">C. 공종분류</label>
+                <label class="input-label">C. 공종</label>
                 <select id="workType">
-                    <option value="">선택/자동</option>
+                    <option value="">자동입력</option>
                     <option value="타일공사">타일공사</option>
-                    <option value="일반가구공사">일반가구공사</option>
-                    <option value="준공청소공사">준공청소공사</option>
-                    <option value="PL창호공사">PL창호공사</option>
                     <option value="도배공사">도배공사</option>
                     <option value="마루공사">마루공사</option>
-                    <option value="전기공사">전기공사</option>
-                    <option value="조명공사">조명공사</option>
-                    <option value="중문공사">중문공사</option>
-                    <option value="방화문공사">방화문공사</option>
-                    <option value="가스설비공사">가스설비공사</option>
-                    <option value="내장목공사">내장목공사</option>
-                    <option value="시스템가구공사">시스템가구공사</option>
-                    <option value="소방공사">소방공사</option>
-                    <option value="도장공사">도장공사</option>
-                    <option value="기계설비공사">기계설비공사</option>
-                    <option value="홈네트워크공사">홈네트워크공사</option>
-                    <option value="렌지후드공사">렌지후드공사</option>
-                    <option value="주방가구공사">주방가구공사</option>
-                    <option value="주방상판공사">주방상판공사</option>
-                    <option value="유리공사">유리공사</option>
-                    <option value="환기유니트공사">환기유니트공사</option>
-                    <option value="에어컨공사">에어컨공사</option>
-                    <option value="자동제어공사">자동제어공사</option>
-                    <option value="욕실장공사">욕실장공사</option>
-                    <option value="욕실천정공사">욕실천정공사</option>
-                    <option value="욕실환풍기공사">욕실환풍기공사</option>
-                    <option value="샤워부스공사">샤워부스공사</option>
-                    <option value="디지털도어록공사">디지털도어록공사</option>
-                    <option value="미장공사">미장공사</option>
-                    <option value="형틀공사">형틀공사</option>
-                    <option value="코킹공사">코킹공사</option>
-                    <option value="잡철공사">잡철공사</option>
-                    <option value="위생기구납품설치공사">위생기구납품설치공사</option>
-                    <option value="주방가전공사(오븐)">주방가전공사(오븐)</option>
-                    <option value="직영공사">직영공사</option>
-                </select>
+                    <option value="창호공사">창호공사</option>
+                    <option value="가구공사">가구공사</option>
+                    </select>
             </div>
             <div class="input-col triple-col">
-                <label class="input-label">D. 세부공종</label>
+                <label class="input-label">D. 세부</label>
                 <select id="subWorkType">
-                    <option value="">선택/자동</option>
-                    <option value="폴리싱타일">폴리싱타일</option>
-                    <option value="화장대">화장대</option>
-                    <option value="3연동도어">3연동도어</option>
-                    <option value="준공청소">준공청소</option>
-                    <option value="실외기">실외기</option>
-                    <option value="등기구">등기구</option>
-                    <option value="도장">도장</option>
-                    <option value="PL창호">PL창호</option>
-                    <option value="붙박이장">붙박이장</option>
-                    <option value="복도팬트리도어/틀">복도팬트리도어/틀</option>
-                    <option value="문짝">문짝</option>
-                    <option value="터닝도어">터닝도어</option>
-                    <option value="스윙도어">스윙도어</option>
-                    <option value="콘센트">콘센트</option>
-                    <option value="코킹">코킹</option>
-                    <option value="강마루">강마루</option>
-                    <option value="욕실장">욕실장</option>
-                    <option value="유리">유리</option>
-                    <option value="타일">타일</option>
-                    <option value="바닥">바닥</option>
-                    <option value="환기디퓨져">환기디퓨져</option>
-                    <option value="아트월타일">아트월타일</option>
-                    <option value="목문틀">목문틀</option>
-                    <option value="슬라이딩도어/틀">슬라이딩도어/틀</option>
-                    <option value="타일코킹">타일코킹</option>
-                    <option value="도배">도배</option>
-                    <option value="골조">골조</option>
-                    <option value="시스템가구">시스템가구</option>
-                    <option value="분합창">분합창</option>
-                    <option value="냉장고장">냉장고장</option>
-                    <option value="난방분배기">난방분배기</option>
-                    <option value="하부장">하부장</option>
-                    <option value="상부장">상부장</option> <option value="렌지후드">렌지후드</option>
-                    <option value="석재걸레받이">석재걸레받이</option>
-                    <option value="현관문">현관문</option>
-                    <option value="젠다이/코킹">젠다이/코킹</option>
-                    <option value="아트월판넬">아트월판넬</option>
-                    <option value="화장대상판">화장대상판</option>
-                    <option value="스위치">스위치</option>
-                    <option value="천정몰딩">천정몰딩</option>
-                    <option value="마루코킹">마루코킹</option>
-                    <option value="가스감지기">가스감지기</option>
-                    <option value="주방상/하부장">주방상/하부장</option>
-                    <option value="세대등기구">세대등기구</option>
-                    <option value="스프링클러">스프링클러</option>
-                    <option value="그릴창">그릴창</option>
-                    <option value="욕실휀">욕실휀</option>
-                    <option value="엔지니어드상판">엔지니어드상판</option>
-                    <option value="픽스판넬">픽스판넬</option>
-                    <option value="배수드레인">배수드레인</option>
-                    <option value="환기스위치">환기스위치</option>
-                    <option value="주방상판/코킹">주방상판/코킹</option>
-                    <option value="월패드">월패드</option>
-                    <option value="외벽도장">외벽도장</option>
-                    <option value="현관문틀도장">현관문틀도장</option>
-                    <option value="설비">설비</option>
-                    <option value="가스배관">가스배관</option>
-                    <option value="주방TV">주방TV</option>
-                    <option value="현관팬트리도어/틀">현관팬트리도어/틀</option>
-                    <option value="다목적실도어/틀">다목적실도어/틀</option>
-                    <option value="씽크볼">씽크볼</option>
-                    <option value="욕실천정재/코킹">욕실천정재/코킹</option>
-                    <option value="오븐">오븐</option>
-                    <option value="드레스룸도어/틀">드레스룸도어/틀</option>
-                    <option value="대피공간방화문">대피공간방화문</option>
-                    <option value="도어체크">도어체크</option>
-                    <option value="현관카메라">현관카메라</option>
-                    <option value="걸레받이">걸레받이</option>
-                    <option value="아일랜드장">아일랜드장</option>
-                    <option value="발코니선반">발코니선반</option>
-                    <option value="실외기실문짝">실외기실문짝</option>
-                    <option value="위생도기류">위생도기류</option>
-                    <option value="비데">비데</option>
-                    <option value="디지털도어록">디지털도어록</option>
-                    <option value="무선충전기">무선충전기</option>
-                    <option value="에어컨배관">에어컨배관</option>
-                    <option value="욕실액세서리">욕실액세서리</option>
-                    <option value="대피창">대피창</option>
-                    <option value="아일랜드상판">아일랜드상판</option>
-                    <option value="석고보드">석고보드</option>
-                    <option value="주방팬트리도어/틀">주방팬트리도어/틀</option>
-                    <option value="샤워부스/코킹">샤워부스/코킹</option>
-                    <option value="일괄소등스위치">일괄소등스위치</option>
-                    <option value="마블씰">마블씰</option>
-                    <option value="배수육가(트렌치포함)">배수육가</option>
-                    <option value="욕조">욕조</option>
-                    <option value="수전류">수전류</option>
-                    <option value="하부씰">하부씰</option>
-                    <option value="완강기">완강기</option>
-                </select>
+                    <option value="">자동입력</option>
+                    </select>
             </div>
             <div class="input-col triple-col">
-                <label class="input-label">E. 추정 하자유형</label>
+                <label class="input-label">E. 유형</label>
                 <input type="text" id="defectType" placeholder="자동입력">
             </div>
         </div>
 
         <div class="input-col" style="margin-bottom: 10px;">
-            <div class="input-label" style="color:#2980b9;">
-                <i class="fa-solid fa-robot"></i> F. AI 분석 리포트 (국토부 사례 매칭)
+            <div class="input-label" style="color:#00b09b;">
+                <i class="fa-solid fa-robot"></i> F. AI 분석 리포트 (국토부 기준)
             </div>
-            <textarea id="defectDetail" placeholder="AI가 국토교통부 분쟁조정 사례와 유사한지 분석하여 참고 의견을 제공합니다. (법적 판단 아님)"></textarea>
+            <textarea id="defectDetail" placeholder="AI가 사진을 분석하여 국토부 하자 판례와 비교한 결과를 이곳에 표시합니다."></textarea>
             <div style="text-align: right;">
-                <button class="btn-save-next" onclick="window.addToList()">다음입력 <i class="fa-solid fa-arrow-right"></i></button>
+                <button class="btn-save-next" onclick="window.addToList()">
+                    리스트 저장 <i class="fa-solid fa-download"></i>
+                </button>
             </div>
         </div>
-
     </div>
 
     <div id="pdf-header-title" style="display:none;"></div>
 
     <div class="list-area">
         <div class="list-header-box">
-            <div class="list-title-text">📋 점검 리스트 <span id="listCount">(0)</span></div>
-            <div id="currentAptInfo" class="list-subtitle-text">현장 정보를 입력하세요</div>
+            <div class="list-title-text">📋 점검 리스트 <span id="listCount" style="color:#00b09b;">(0)</span></div>
+            <div id="currentAptInfo" class="list-subtitle-text">정보 입력 대기</div>
         </div>
         <div id="listBox"></div>
     </div>
     
     <div id="pdf-disclaimer" style="display:none;">
-        ※ 본 리포트는 입주자 사전점검을 돕기 위한 보조 자료이며, 법적 효력이 없습니다. 정확한 하자 판단은 전문가의 진단이 필요합니다. (제공: 청개구리샤시)
+        ※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다. (제공: 청개구리샤시)
     </div>
 
     <div class="bottom-actions">
         <button class="btn-3d btn-pdf-3d" onclick="window.savePDF()">
-            <i class="fa-solid fa-file-pdf"></i> PDF저장
+            <i class="fa-solid fa-file-pdf fa-lg"></i>
+            <span>PDF 저장</span>
         </button>
         <button class="btn-3d btn-call-3d" onclick="window.callCenter()">
-            <i class="fa-solid fa-phone-volume"></i> 수리문의
+            <i class="fa-solid fa-headset fa-lg"></i>
+            <span>수리 문의</span>
         </button>
     </div>
 
@@ -413,27 +372,15 @@
 
     <div id="manualModal" class="modal-overlay" style="display:none;">
         <div class="modal-content">
-            <div class="modal-title">🐸 앱 사용설명서</div>
-            <div class="step-list">
-                <div class="step-item">
-                    <div class="step-num">1</div>
-                    <div class="step-text">상단에 <span class="step-highlight">아파트 정보</span>를 입력하세요.</div>
-                </div>
-                <div class="step-item">
-                    <div class="step-num">2</div>
-                    <div class="step-text">점검할 <span class="step-highlight">방(위치)</span>을 선택 후 촬영하세요.</div>
-                </div>
-                <div class="step-item">
-                    <div class="step-num">3</div>
-                    <div class="step-text">AI가 유사 사례를 분석합니다. 내용을 확인 후 저장하세요.</div>
-                </div>
-                <div class="step-item">
-                    <div class="step-num">4</div>
-                    <div class="step-text">모든 점검 후 <b>[PDF저장]</b> 또는 <b>[수리문의]</b>를 이용하세요.</div>
-                </div>
+            <div class="modal-title">🐸 앱 사용법</div>
+            <div style="text-align:left; color:#636e72; font-size:0.9rem; line-height:1.6;">
+                1. 상단에 <b>아파트 정보</b>를 입력하세요.<br>
+                2. <b>위치(방)</b>를 선택하고 <b>카메라 아이콘</b>을 눌러 촬영하세요.<br>
+                3. AI가 분석한 내용을 확인 후 <b>[리스트 저장]</b>을 누르세요.<br>
+                4. 완료 후 <b>PDF 저장</b> 또는 <b>수리 문의</b>를 하세요.
             </div>
             <button class="btn-modal-close-3d" onclick="window.closeManual()">
-                <i class="fa-solid fa-check"></i> 확인
+                확인했습니다
             </button>
         </div>
     </div>
@@ -446,7 +393,7 @@
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
         // =========================================================
-        // [중요] API 키
+        // [API 키 설정]
         // =========================================================
         const part1 = "AIzaSyAP_9dcbRPRdP4"; 
         const part2 = "GD6WniQsWixFUFYRhfig";
@@ -456,15 +403,30 @@
         let defectDataList = [];
         let currentImageFile = null;
 
-        // [법적 고지 동의 체크 로직]
+        // [UI 상태 업데이트 함수]
+        function updateStatus(msg, isError = false) {
+            const statusMsg = document.getElementById('statusMsg');
+            const icon = document.querySelector('#statusPill i');
+            statusMsg.innerText = msg;
+            if(isError) {
+                icon.className = "fa-solid fa-circle-exclamation";
+                icon.style.color = "#e74c3c";
+            } else {
+                icon.className = "fa-solid fa-circle-check";
+                icon.style.color = "#00b09b";
+            }
+        }
+
         window.checkAgreement = function() {
             const checkbox = document.getElementById('agreeCheck');
             const btn = document.getElementById('agreeBtn');
             if(checkbox.checked) {
                 document.getElementById('legalModal').style.display = 'none';
+                // 동의 후 버튼 활성화 색상 변경
                 btn.style.background = 'linear-gradient(to bottom, #1abc9c, #16a085)';
+                btn.style.boxShadow = '0 4px 0 #12876f';
             } else {
-                alert("서비스 이용을 위해 법적 고지 내용에 동의해주세요.");
+                alert("법적 고지 내용에 동의가 필요합니다.");
             }
         };
 
@@ -499,22 +461,21 @@
 
         async function runTargetedAnalysis(file) {
             const detailBox = document.getElementById('defectDetail');
-            const statusMsg = document.getElementById('statusMsg');
             const photoBtn = document.getElementById('photoAreaBtn');
             
-            detailBox.value = "AI가 국토부 사례 데이터와 매칭 중입니다... (잠시만 기다려주세요)";
-            statusMsg.innerText = "🔍 하자 사례 매칭 중...";
-            photoBtn.style.opacity = '0.5';
-            photoBtn.style.pointerEvents = 'none';
+            detailBox.value = "AI가 이미지를 정밀 분석 중입니다...\n(국토부 사례 매칭 진행 중)";
+            updateStatus("AI 분석 중...");
+            photoBtn.style.opacity = '0.7';
 
             try {
                 if (API_KEY.includes("AIzaSy...") || API_KEY.length < 20) {
-                    throw new Error("API 키 확인 필요");
+                    throw new Error("API Key Error");
                 }
 
                 const genAI = new GoogleGenerativeAI(API_KEY);
                 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
+                // V12.1과 동일한 프롬프트 및 리스트 유지
                 const subWorks = `
                     폴리싱타일, 화장대, 3연동도어, 준공청소, 실외기, 등기구, 도장, PL창호, 붙박이장, 
                     복도팬트리도어/틀, 문짝, 터닝도어, 스윙도어, 콘센트, 코킹, 강마루, 욕실장, 유리, 
@@ -530,28 +491,24 @@
                     배수육가(트렌치포함), 욕조, 수전류, 하부씰, 완강기
                 `;
 
-                // [법적 리스크 방어 프롬프트]
                 const prompt = `
-                    당신은 입주자 사전점검을 돕는 유용한 AI 어시스턴트입니다.
-                    사진 속 중앙 십자선 위치를 분석하여, '국토교통부 하자심사 분쟁조정 사례'와 시각적으로 유사한지 비교하세요.
+                    당신은 입주자 사전점검 AI 어시스턴트입니다.
+                    사진 속 중앙 십자선 위치를 중심으로 하자를 분석하고 국토부 분쟁조정 사례와 유사한지 판단하세요.
 
-                    [주의사항: 법적 책임 회피]
-                    - 절대로 "이것은 하자입니다"라고 확정하지 마세요.
-                    - "하자일 가능성이 있습니다" 또는 "유사한 하자 사례가 있습니다"라고 표현하세요.
-                    - 당신은 전문가가 아니며, 최종 판단은 사람이 해야 함을 인지하세요.
+                    [주의사항]
+                    - "하자입니다"라고 단정 짓지 말고 "하자일 가능성이 높습니다"로 표현하세요.
+                    - 법적 효력이 없음을 인지하세요.
 
-                    [분석 지침 1: 세부공종]
-                    - 리스트 중에서 가장 적합한 하나를 찾으세요: ${subWorks}
+                    [데이터 추출]
+                    1. 세부공종: (${subWorks}) 중 1개 선택.
+                    2. 하자유형: (미시공, 결로, 파손, 수직불량, 작동불량, 오염 중 택1).
 
-                    [분석 지침 2: 하자유형 우선순위]
-                    1순위: 미시공, 2순위: 결로/곰팡이, 3순위: 파손/깨짐, 4순위: 수직수평불량, 5순위: 작동불량, 6순위: 오염/스크래치
-
-                    [출력 형식 - JSON]
+                    [출력 형식 JSON]
                     {
-                        "work": "공종 (예: 주방가구공사)",
-                        "sub": "세부공종",
-                        "type": "추정 하자유형 (예: 수직수평불량 의심)",
-                        "detail": "1. 현상 분석: [화면상 보이는 상태 설명]\\n2. 💡국토부 사례 매칭: [유사 사례가 인정된 기준 설명]\\n(※ AI 분석 결과는 단순 참고용입니다.)"
+                        "work": "공종명",
+                        "sub": "세부공종명",
+                        "type": "하자유형",
+                        "detail": "1. 현상: [보이는 대로 기술]\\n2. 💡사례매칭: [국토부 기준 설명]"
                     }
                 `;
                 
@@ -565,53 +522,52 @@
                     let cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
                     const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
                     if (jsonMatch) data = JSON.parse(jsonMatch[0]);
-                    else throw new Error("JSON Parsing Failed");
+                    else throw new Error("JSON Parse Error");
                 } catch (e) {
-                    data = { detail: "분석 내용을 불러오지 못했습니다. 다시 촬영해주세요.", work: "기타", sub: "", type: "점검요망" };
+                    data = { detail: "분석 결과를 텍스트로 변환하지 못했습니다. 다시 시도해주세요.", work: "기타", sub: "", type: "확인필요" };
                 }
 
                 applyDataToUI(data);
-                statusMsg.innerText = "✅ 분석 완료. [다음입력]을 눌러 저장하세요.";
-                statusMsg.style.color = "#2980b9";
+                updateStatus("분석 완료! 저장하세요.");
                 
             } catch (error) {
                 console.error("AI Error:", error);
-                statusMsg.innerText = "⚠️ 분석 실패 (네트워크 확인)";
-                statusMsg.style.color = "#e74c3c";
-                detailBox.value = "일시적인 오류입니다. 잠시 후 다시 시도해주세요.";
+                updateStatus("분석 실패 (네트워크/키 확인)", true);
+                detailBox.value = "일시적인 오류가 발생했습니다.";
             } finally {
                 photoBtn.style.opacity = '1';
-                photoBtn.style.pointerEvents = 'auto';
             }
         }
 
         function applyDataToUI(data) {
             document.getElementById('workType').value = data.work || "";
-            document.getElementById('subWorkType').value = data.sub || ""; 
+            // subWorkType option 동적 추가 가능성 배제하고 일단 값 넣음
+            const subSelect = document.getElementById('subWorkType');
+            subSelect.innerHTML = `<option value="${data.sub}">${data.sub}</option>`;
+            subSelect.value = data.sub || ""; 
+            
             document.getElementById('defectType').value = data.type || "";
             const detailBox = document.getElementById('defectDetail');
-            detailBox.value = (data.detail || "") + "\n\n(※ 본 결과는 AI 시각 분석에 기초한 참고용이며, 법적 효력이 없습니다.)";
+            detailBox.value = (data.detail || "") + "\n\n(※ AI 분석 결과는 단순 참고용입니다.)";
         }
 
         window.addToList = function() {
             const previewSrc = document.getElementById('previewImage').src;
             if (!currentImageFile && (!previewSrc || previewSrc.includes('data:image/svg+xml'))) { 
-                alert("먼저 사진을 촬영하고 AI 분석을 진행해주세요.");
+                alert("사진 촬영 및 AI 분석 후 저장해주세요.");
                 return; 
             }
             
             const aptName = document.getElementById('aptName').value || "OO아파트";
-            const aptDong = document.getElementById('aptDong').value || "000";
-            const aptHo = document.getElementById('aptHo').value || "0000";
-            let room = document.getElementById('roomSelect').value;
-            if(!room) room = "위치미지정";
+            const aptDong = document.getElementById('aptDong').value || "";
+            const aptHo = document.getElementById('aptHo').value || "";
+            let room = document.getElementById('roomSelect').value || "위치미지정";
 
-            const fullAptInfo = `${aptName} ${aptDong}동 ${aptHo}호 점검 리포트`;
+            const fullAptInfo = `${aptName} ${aptDong} ${aptHo}`;
             document.getElementById('currentAptInfo').innerText = fullAptInfo;
-            document.getElementById('pdf-header-title').innerText = fullAptInfo;
+            document.getElementById('pdf-header-title').innerText = fullAptInfo + " 사전점검 리포트";
 
             const uniqueId = Date.now();
-            const count = defectDataList.length + 1;
             
             const itemData = {
                 id: uniqueId,
@@ -624,16 +580,16 @@
             };
             defectDataList.push(itemData);
 
+            // [리스트 디자인 v13 적용]
             const itemHtml = `
                 <div class="list-item" id="item-${uniqueId}">
                     <img src="${previewSrc}" class="list-thumb">
                     <div class="list-content">
-                        <div class="list-room-work">${room} - ${itemData.work} (${itemData.sub})</div>
-                        <div class="list-type">추정유형: ${itemData.type}</div>
+                        <div class="list-room-work">${itemData.room} | ${itemData.work}</div>
+                        <div class="list-type">${itemData.type}</div>
                         <div class="list-detail">${itemData.detail}</div>
                     </div>
                     <div class="list-right-info">
-                        <span class="tag" style="background:#2ecc71">No.${count}</span>
                         <button class="btn-edit-item" onclick="window.editItem(${uniqueId})">수정</button>
                         <button class="btn-delete-item" onclick="window.deleteItem(${uniqueId})">삭제</button>
                     </div>
@@ -643,16 +599,13 @@
             document.getElementById('listBox').insertAdjacentHTML('beforeend', itemHtml); 
             document.getElementById('listCount').innerText = `(${defectDataList.length})`;
             
+            // 입력창 초기화
             document.getElementById('cameraInput').value = "";
             currentImageFile = null;
             document.getElementById('previewImage').style.display = 'none'; 
             document.getElementById('previewImage').src = "";
-            
-            document.getElementById('workType').value = ""; 
-            document.getElementById('subWorkType').value = ""; 
-            document.getElementById('defectType').value = ""; 
             document.getElementById('defectDetail').value = ""; 
-            document.getElementById('statusMsg').innerText = "AI 분석 엔진 대기 중"; 
+            updateStatus("다음 항목을 촬영하세요.");
             
             document.querySelector('.list-header-box').scrollIntoView({behavior: "smooth"});
         };
@@ -660,20 +613,17 @@
         window.editItem = function(id) {
             const itemIndex = defectDataList.findIndex(i => i.id === id);
             if (itemIndex === -1) return;
-            
             const item = defectDataList[itemIndex];
             
             document.getElementById('roomSelect').value = item.room;
             document.getElementById('workType').value = item.work;
-            document.getElementById('subWorkType').value = item.sub;
-            document.getElementById('defectType').value = item.type;
             document.getElementById('defectDetail').value = item.detail;
             
             const preview = document.getElementById('previewImage');
             preview.src = item.imgSrc;
             preview.style.display = 'block';
             
-            if(confirm("수정하시겠습니까? (기존 항목은 삭제됩니다)")) {
+            if(confirm("수정 모드로 불러오시겠습니까? (현재 리스트에서 삭제됩니다)")) {
                 document.getElementById(`item-${id}`).remove();
                 defectDataList.splice(itemIndex, 1);
                 document.getElementById('listCount').innerText = `(${defectDataList.length})`;
@@ -682,7 +632,7 @@
         };
 
         window.deleteItem = function(id) {
-            if(confirm("삭제하시겠습니까?")) {
+            if(confirm("이 항목을 삭제하시겠습니까?")) {
                 document.getElementById(`item-${id}`).remove();
                 defectDataList = defectDataList.filter(i => i.id !== id);
                 document.getElementById('listCount').innerText = `(${defectDataList.length})`;
@@ -690,22 +640,12 @@
         };
         
         window.savePDF = function() {
-            if(document.getElementById('listBox').children.length === 0) { 
-                alert("저장할 리스트가 없습니다."); return; 
-            }
-            const aptName = document.getElementById('aptName').value || "현장";
-            const aptDong = document.getElementById('aptDong').value || "";
-            const aptHo = document.getElementById('aptHo').value || "";
-            const title = `${aptName} ${aptDong}동 ${aptHo}호 점검 리포트`;
-            
-            document.getElementById('pdf-header-title').innerText = title;
-            document.title = title; 
-
+            if(defectDataList.length === 0) { alert("저장할 내용이 없습니다."); return; }
             window.print(); 
         };
 
         window.callCenter = function() {
-            if(confirm("청개구리 샤시 고객센터(1599-7380)로 연결하시겠습니까?\n(수리 및 견적 문의 가능)")) {
+            if(confirm("청개구리 샤시 전문 상담센터로 연결합니다.\n(1599-7380)")) {
                 window.location.href = "tel:1599-7380";
             }
         };

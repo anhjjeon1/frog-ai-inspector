@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 사전점검 도우미 AI (v13.0 Pro Design)</title>
+    <title>청개구리 사전점검 AI앱(무료) (v13.0 Pro Design)</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -45,13 +45,19 @@
             background-color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .header-title { 
-            color: white; font-size: 1.2rem; font-weight: 800; margin: 0; 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            color: white; font-size: 1.1rem; /* 글자가 길어져서 폰트 사이즈 살짝 조정 */
+            font-weight: 800; margin: 0; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            white-space: nowrap; /* 줄바꿈 방지 */
         }
+        
+        /* [수정] 버전 배지를 Flexbox를 이용해 우측 끝으로 밀어넣기 */
         .version-badge { 
-            position: absolute; right: 20px; top: 22px; 
+            margin-left: auto; /* 왼쪽 여백을 최대로 하여 우측 끝으로 이동 */
             font-size: 0.7rem; background: rgba(0,0,0,0.2); 
-            color: #fff; padding: 2px 8px; border-radius: 12px; font-weight: 600;
+            color: #fff; padding: 4px 8px; border-radius: 12px; font-weight: 600;
+            white-space: nowrap; /* 줄바꿈 방지 */
+            flex-shrink: 0; /* 공간 부족해도 찌그러지지 않게 */
         }
 
         /* 2. 상태바 및 설명서 버튼 (알약 모양) */
@@ -271,7 +277,7 @@
 
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
-        <h2 class="header-title">청개구리 사전점검 AI</h2>
+        <h2 class="header-title">청개구리 사전점검 AI앱(무료)</h2>
         <span class="version-badge">v13.0 Pro</span>
     </div>
     

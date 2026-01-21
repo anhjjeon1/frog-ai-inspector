@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 사전점검 AI앱(무료) (v13.0 Pro Design)</title>
+    <title>청개구리 사전점검 AI앱(무료) (v13.5 Premium)</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- [v13.0 디자인 시스템 적용] --- */
+        /* --- [v13.0 디자인 시스템 유지] --- */
         :root {
             --primary-grad: linear-gradient(135deg, #00b09b, #96c93d);
             --header-grad: linear-gradient(135deg, #134E5E, #71B280);
@@ -18,7 +18,7 @@
             --text-sub: #636e72;
             --shadow-soft: 0 10px 25px rgba(0,0,0,0.05);
             --shadow-3d: 0 4px 0 #1e8449;
-            --dev-color: #8e44ad; /* 개발자 모드 색상 (보라색) */
+            --dev-color: #8e44ad;
         }
 
         body { 
@@ -31,17 +31,15 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 1. 헤더 디자인 수정: 높이 및 간격 50% 축소 */
+        /* 1. 헤더 */
         .header-container { 
             background: var(--header-grad); 
-            /* [수정] 하단 패딩을 35px -> 18px로 줄여 헤더 높이 축소 */
             padding: 15px 20px 18px 20px; 
             border-radius: 0 0 24px 24px; 
             display: flex; align-items: flex-start; 
             gap: 12px; 
             box-shadow: 0 4px 15px rgba(19, 78, 94, 0.3); 
-            position: relative; 
-            z-index: 100; 
+            position: relative; z-index: 100; 
         }
         .header-frog-img { 
             height: 44px; width: 44px; 
@@ -50,43 +48,25 @@
             background-color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             margin-top: 2px; 
         }
-        
         .header-title { 
-            color: white; 
-            font-size: 1.4rem; 
-            font-weight: 800; 
-            margin: 0; 
-            line-height: 1.2;
+            color: white; font-size: 1.4rem; font-weight: 800; 
+            margin: 0; line-height: 1.2;
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            letter-spacing: -0.5px;
-            padding-right: 10px; 
+            letter-spacing: -0.5px; padding-right: 10px; 
         }
-        
-        /* [수정] 버전 배지: 히든 버튼 기능을 위해 스타일 강화 */
         .version-badge { 
-            position: absolute;
-            right: 15px; 
-            bottom: 5px; /* 12px -> 5px로 변경 */
-            font-size: 0.7rem; 
-            background: rgba(0,0,0,0.25); 
-            color: rgba(255,255,255,0.9); 
-            padding: 2px 8px; 
-            border-radius: 10px; 
-            font-weight: 600;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.1);
-            cursor: pointer; /* 클릭 가능 표시 */
-            user-select: none; /* 드래그 방지 */
-            transition: all 0.3s ease;
+            position: absolute; right: 15px; bottom: 5px; 
+            font-size: 0.7rem; background: rgba(0,0,0,0.25); 
+            color: rgba(255,255,255,0.9); padding: 2px 8px; 
+            border-radius: 10px; font-weight: 600;
+            backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer; user-select: none; transition: all 0.3s ease;
         }
-        /* 개발자 모드 활성화 시 스타일 */
         .version-badge.dev-active {
             background: var(--dev-color) !important;
             box-shadow: 0 0 10px rgba(142, 68, 173, 0.6);
-            border: 1px solid #d2b4de;
-            transform: scale(1.05);
+            border: 1px solid #d2b4de; transform: scale(1.05);
         }
-        .version-badge:active { transform: scale(0.9); }
 
         /* 2. 상태바 */
         .status-bar-container { 
@@ -109,14 +89,10 @@
 
         /* 3. 메인 카드 */
         .main-card { 
-            background: var(--card-bg); 
-            padding: 20px; margin: 15px; 
-            border-radius: 24px; 
-            box-shadow: var(--shadow-soft); 
+            background: var(--card-bg); padding: 20px; margin: 15px; 
+            border-radius: 24px; box-shadow: var(--shadow-soft); 
             border: 1px solid rgba(255,255,255,0.8);
         }
-
-        /* 입력 폼 */
         .input-row { display: flex; gap: 10px; margin-bottom: 12px; }
         .input-col { display: flex; flex-direction: column; gap: 6px; }
         .input-label { font-size: 0.75rem; font-weight: 700; color: #636e72; margin-left: 4px; }
@@ -129,8 +105,7 @@
             font-family: 'Pretendard', sans-serif;
         }
         input:focus, select:focus, textarea:focus { 
-            background: #fff; outline: none; 
-            box-shadow: 0 0 0 2px #00b09b; 
+            background: #fff; outline: none; box-shadow: 0 0 0 2px #00b09b; 
         }
         textarea { height: 90px; resize: none; line-height: 1.6; } 
         .site-inputs { display: flex; gap: 5px; }
@@ -139,22 +114,18 @@
 
         /* 4. 카메라 영역 */
         .photo-area { 
-            width: 100%; aspect-ratio: 4 / 3; 
-            background: #eefbf3; 
-            border: 2px dashed #00b09b; 
-            border-radius: 16px; 
+            width: 100%; aspect-ratio: 4 / 3; background: #eefbf3; 
+            border: 2px dashed #00b09b; border-radius: 16px; 
             position: relative; cursor: pointer; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             overflow: hidden; margin: 15px 0; box-sizing: border-box; 
             transition: background 0.2s;
         }
         .photo-area:active { background: #dff6e9; }
-        
         .center-crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 20; }
         .center-crosshair::before, .center-crosshair::after { content: ''; position: absolute; background: rgba(231, 76, 60, 0.8); }
         .center-crosshair::before { width: 100%; height: 2px; top: 50%; }
         .center-crosshair::after { height: 100%; width: 2px; left: 50%; }
-        
         .photo-icon { 
             font-size: 2.2rem; margin-bottom: 10px; 
             background: linear-gradient(135deg, #00b09b, #96c93d); 
@@ -171,9 +142,7 @@
             box-shadow: 0 4px 0 #1c5985, 0 5px 10px rgba(0,0,0,0.2);
             transition: all 0.1s; float: right; margin-top: 5px;
         }
-        .btn-save-next:active { 
-            transform: translateY(4px); box-shadow: 0 0 0 #1c5985;
-        }
+        .btn-save-next:active { transform: translateY(4px); box-shadow: 0 0 0 #1c5985; }
 
         /* 리스트 영역 */
         .list-area { padding: 0 15px 10px 15px; }
@@ -184,7 +153,6 @@
         }
         .list-title-text { font-size: 1rem; font-weight: 800; color: #2d3436; }
         .list-subtitle-text { font-size: 0.85rem; color: #00b09b; font-weight: 600; }
-        
         .list-item { 
             background: white; padding: 12px; border-radius: 16px; margin-bottom: 12px; 
             display: flex; gap: 12px; align-items: flex-start; 
@@ -196,7 +164,6 @@
         .list-type { font-size: 0.8rem; color: #e74c3c; font-weight: 700; background: #fff5f5; padding: 2px 6px; border-radius: 4px; align-self: flex-start; }
         .list-detail { font-size: 0.8rem; color: #636e72; line-height: 1.4; }
         .list-right-info { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; margin-left: auto; width: 60px; }
-        
         .btn-edit-item, .btn-delete-item { 
             border: none; border-radius: 6px; padding: 6px 0; font-size: 0.75rem; 
             cursor: pointer; width: 100%; font-weight: bold; color: white; 
@@ -218,11 +185,12 @@
         }
         .btn-pdf-3d:active { transform: translateY(5px); box-shadow: 0 0 0 #1e8449; }
         
-        .btn-call-3d { 
-            background: linear-gradient(to bottom, #3498db, #2980b9); 
-            box-shadow: 0 5px 0 #21618c, 0 10px 20px rgba(52, 152, 219, 0.3); 
+        /* [수정] 유료점검 예약 버튼 디자인 */
+        .btn-reserve-3d { 
+            background: linear-gradient(to bottom, #9b59b6, #8e44ad); 
+            box-shadow: 0 5px 0 #71368a, 0 10px 20px rgba(155, 89, 182, 0.3); 
         }
-        .btn-call-3d:active { transform: translateY(5px); box-shadow: 0 0 0 #21618c; }
+        .btn-reserve-3d:active { transform: translateY(5px); box-shadow: 0 0 0 #71368a; }
 
         .footer-info { 
             text-align: center; padding: 15px 10px; 
@@ -243,15 +211,19 @@
         .modal-title { font-size: 1.3rem; font-weight: 900; color: #2d3436; margin-bottom: 20px; }
         .warning-box { background: #fff9e6; color: #d35400; padding: 15px; border-radius: 12px; font-size: 0.85rem; text-align: left; margin-bottom: 20px; border: 1px solid #ffeaa7; line-height: 1.5; }
         
+        /* [추가] 가격표 테이블 스타일 */
+        .price-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 0.85rem; }
+        .price-table th, .price-table td { border-bottom: 1px solid #eee; padding: 8px; text-align: left; }
+        .price-table th { background: #f8f9fa; color: #2d3436; font-weight: 800; }
+        .price-table td { color: #636e72; }
+        .price-highlight { color: #8e44ad; font-weight: 800; }
+
         .legal-check { 
             display: flex; align-items: center; justify-content: center; 
             gap: 8px; background: #f1f3f5; padding: 10px; 
             border-radius: 12px; margin-top: 10px; 
         }
-        .legal-check label { 
-            font-size: 0.8rem; font-weight: 700; color: #2d3436; 
-            text-align: left; white-space: nowrap; margin: 0;
-        }
+        .legal-check label { font-size: 0.8rem; font-weight: 700; color: #2d3436; text-align: left; white-space: nowrap; margin: 0; }
         
         .btn-modal-close-3d {
             width: 100%; padding: 14px 0; border: none; border-radius: 16px; color: white; font-size: 1rem; font-weight: 800; cursor: pointer; margin-top: 15px;
@@ -291,10 +263,40 @@
         </div>
     </div>
 
+    <div id="paidServiceModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-title" style="color:#8e44ad;">🐸 유료 사전점검 안내</div>
+            <div style="text-align:left; font-size:0.9rem; margin-bottom:15px; color:#555;">
+                청개구리 전문가가 직접 방문하여 꼼꼼하게 점검해드립니다. 예약 정보를 입력해주시면 담당자가 확정 연락을 드립니다.
+            </div>
+            
+            <table class="price-table">
+                <tr><th>20평형</th><td class="price-highlight">90,000원</td></tr>
+                <tr><th>30평형</th><td class="price-highlight">110,000원</td></tr>
+                <tr><th>40평형</th><td class="price-highlight">130,000원</td></tr>
+                <tr><th>50평형</th><td class="price-highlight">150,000원</td></tr>
+                <tr><th>기타</th><td>별도 상담</td></tr>
+            </table>
+
+            <div class="warning-box" style="background:#f3e5f5; color:#8e44ad; border-color:#e1bee7; font-size:0.8rem;">
+                <b>[예약 및 환불 규정]</b><br>
+                1. <b>선입금 후 방문</b>이 확정됩니다.<br>
+                2. 방문 <b>7일 전 취소 시 100% 환불</b>됩니다.<br>
+                3. 그 외 기간은 환불이 불가합니다.<br>
+                4. 예약서 작성 시 위 내용에 동의한 것으로 간주합니다.
+            </div>
+
+            <button class="btn-modal-close-3d" style="background: linear-gradient(to bottom, #9b59b6, #8e44ad); box-shadow: 0 4px 0 #71368a;" onclick="window.goToGoogleForm()">
+                <i class="fa-solid fa-pen-to-square"></i> 예약 신청서 작성하기
+            </button>
+            <button onclick="document.getElementById('paidServiceModal').style.display='none'" style="margin-top:10px; background:none; border:none; color:#999; text-decoration:underline; cursor:pointer;">닫기</button>
+        </div>
+    </div>
+
     <div class="header-container">
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <h2 class="header-title">청개구리 사전점검 AI앱(무료)</h2>
-        <span class="version-badge" id="versionBadge" onclick="window.checkDevMode()">v13.0 Pro</span>
+        <span class="version-badge" id="versionBadge" onclick="window.checkDevMode()">v13.5 Pro</span>
     </div>
     
     <div class="status-bar-container">
@@ -400,9 +402,9 @@
             <i class="fa-solid fa-file-pdf fa-lg"></i>
             <span>PDF 저장</span>
         </button>
-        <button class="btn-3d btn-call-3d" onclick="window.callCenter()">
-            <i class="fa-solid fa-headset fa-lg"></i>
-            <span>수리 문의</span>
+        <button class="btn-3d btn-reserve-3d" onclick="window.openPaidService()">
+            <i class="fa-solid fa-calendar-check fa-lg"></i>
+            <span>유료점검 예약</span>
         </button>
     </div>
 
@@ -418,7 +420,7 @@
                 1. 상단에 <b>아파트 정보</b>를 입력하세요.<br>
                 2. <b>위치(방)</b>를 선택하고 <b>카메라 아이콘</b>을 눌러 촬영하세요.<br>
                 3. AI가 분석한 내용을 확인 후 <b>[리스트 저장]</b>을 누르세요.<br>
-                4. 완료 후 <b>PDF 저장</b> 또는 <b>수리 문의</b>를 하세요.
+                4. 완료 후 <b>PDF 저장</b> 또는 <b>유료점검 예약</b>을 하세요.
             </div>
             <button class="btn-modal-close-3d" onclick="window.closeManual()">
                 확인했습니다
@@ -441,15 +443,18 @@
         const API_KEY = part1 + part2;
         // =========================================================
 
+        // =========================================================
+        // [중요] 여기에 사장님이 만드신 구글 설문지 링크를 넣어주세요!
+        // =========================================================
+        const GOOGLE_FORM_URL = "https://forms.google.com/your-form-url-here"; 
+        // =========================================================
+
         let defectDataList = [];
         let currentImageFile = null;
-
-        // [추가] 개발자 모드(치트키) 관련 변수
         let clickCount = 0;
         let clickTimer;
         const DAILY_LIMIT = 100;
 
-        // 페이지 로드 시 초기화
         window.addEventListener('DOMContentLoaded', () => {
             const isDev = localStorage.getItem('is_developer') === 'true';
             if (isDev) {
@@ -457,18 +462,13 @@
             }
         });
 
-        // [추가] 히든 버튼(치트키) 로직: 1초 내에 5번 클릭 시 모드 전환
         window.checkDevMode = function() {
-            clearTimeout(clickTimer); // 이전 타이머 초기화
+            clearTimeout(clickTimer);
             clickCount++;
-
             if (clickCount === 5) {
-                // 토글 로직
                 const isDev = localStorage.getItem('is_developer') === 'true';
                 localStorage.setItem('is_developer', !isDev);
-                
                 const badge = document.getElementById('versionBadge');
-                
                 if (!isDev) {
                     alert("🐸 개발자 모드(무제한)가 활성화되었습니다!");
                     badge.classList.add('dev-active');
@@ -478,38 +478,24 @@
                 }
                 clickCount = 0;
             }
-
-            // 1초 뒤 클릭 횟수 초기화
-            clickTimer = setTimeout(() => {
-                clickCount = 0;
-            }, 1000);
+            clickTimer = setTimeout(() => { clickCount = 0; }, 1000);
         };
 
-        // [추가] 일일 사용량 체크 함수
         function checkDailyLimit() {
             const isDev = localStorage.getItem('is_developer') === 'true';
-            if (isDev) return true; // 개발자는 무조건 통과
-
-            const today = new Date().toDateString(); // 예: "Mon Jan 19 2026"
+            if (isDev) return true;
+            const today = new Date().toDateString();
             let usageData = JSON.parse(localStorage.getItem('frog_app_usage') || '{}');
-
-            // 날짜가 다르면 초기화
-            if (usageData.date !== today) {
-                usageData = { date: today, count: 0 };
-            }
-
+            if (usageData.date !== today) { usageData = { date: today, count: 0 }; }
             if (usageData.count >= DAILY_LIMIT) {
                 alert(`⚠️ 일일 무료 사용 한도(${DAILY_LIMIT}회)를 초과했습니다.\n내일 다시 이용해 주세요.`);
-                return false; // 차단
+                return false;
             }
-            
-            // 통과 시 카운트 증가 저장
             usageData.count++;
             localStorage.setItem('frog_app_usage', JSON.stringify(usageData));
             return true;
         }
 
-        // [UI 상태 업데이트 함수]
         function updateStatus(msg, isError = false) {
             const statusMsg = document.getElementById('statusMsg');
             const icon = document.querySelector('#statusPill i');
@@ -528,7 +514,6 @@
             const btn = document.getElementById('agreeBtn');
             if(checkbox.checked) {
                 document.getElementById('legalModal').style.display = 'none';
-                // 동의 후 버튼 활성화 색상 변경
                 btn.style.background = 'linear-gradient(to bottom, #1abc9c, #16a085)';
                 btn.style.boxShadow = '0 4px 0 #12876f';
             } else {
@@ -539,18 +524,26 @@
         window.openManual = function() { document.getElementById('manualModal').style.display = 'flex'; };
         window.closeManual = function() { document.getElementById('manualModal').style.display = 'none'; };
 
+        // [추가] 유료 점검 모달 열기/닫기/링크이동
+        window.openPaidService = function() {
+            document.getElementById('paidServiceModal').style.display = 'flex';
+        };
+        window.goToGoogleForm = function() {
+            if(GOOGLE_FORM_URL.includes("your-form-url-here")) {
+                alert("⚠️ 구글 설문지 링크가 아직 설정되지 않았습니다.\n코드 내 GOOGLE_FORM_URL 변수를 수정해주세요.");
+            } else {
+                window.open(GOOGLE_FORM_URL, '_blank');
+            }
+        };
+
         document.getElementById('cameraInput').addEventListener('change', async (event) => {
             const file = event.target.files[0];
             if (!file) return;
-
-            // [추가] 사용량 제한 체크 (파일 선택 시점)
             if (!checkDailyLimit()) {
-                document.getElementById('cameraInput').value = ""; // 선택 취소
+                document.getElementById('cameraInput').value = "";
                 return;
             }
-
             currentImageFile = file;
-
             const reader = new FileReader();
             reader.onload = (e) => {
                 const preview = document.getElementById('previewImage');
@@ -588,7 +581,6 @@
                 const genAI = new GoogleGenerativeAI(API_KEY);
                 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
-                // V12.1과 동일한 프롬프트 및 리스트 유지
                 const subWorks = `
                     폴리싱타일, 화장대, 3연동도어, 준공청소, 실외기, 등기구, 도장, PL창호, 붙박이장, 
                     복도팬트리도어/틀, 문짝, 터닝도어, 스윙도어, 콘센트, 코킹, 강마루, 욕실장, 유리, 
@@ -607,15 +599,12 @@
                 const prompt = `
                     당신은 입주자 사전점검 AI 어시스턴트입니다.
                     사진 속 중앙 십자선 위치를 중심으로 하자를 분석하고 국토부 분쟁조정 사례와 유사한지 판단하세요.
-
                     [주의사항]
                     - "하자입니다"라고 단정 짓지 말고 "하자일 가능성이 높습니다"로 표현하세요.
                     - 법적 효력이 없음을 인지하세요.
-
                     [데이터 추출]
                     1. 세부공종: (${subWorks}) 중 1개 선택.
                     2. 하자유형: (미시공, 결로, 파손, 수직불량, 작동불량, 오염 중 택1).
-
                     [출력 형식 JSON]
                     {
                         "work": "공종명",
@@ -654,7 +643,6 @@
 
         function applyDataToUI(data) {
             document.getElementById('workType').value = data.work || "";
-            // subWorkType option 동적 추가 가능성 배제하고 일단 값 넣음
             const subSelect = document.getElementById('subWorkType');
             subSelect.innerHTML = `<option value="${data.sub}">${data.sub}</option>`;
             subSelect.value = data.sub || ""; 
@@ -683,17 +671,12 @@
             const uniqueId = Date.now();
             
             const itemData = {
-                id: uniqueId,
-                room: room,
-                work: document.getElementById('workType').value,
-                sub: document.getElementById('subWorkType').value,
-                type: document.getElementById('defectType').value,
-                detail: document.getElementById('defectDetail').value,
-                imgSrc: previewSrc
+                id: uniqueId, room: room, work: document.getElementById('workType').value,
+                sub: document.getElementById('subWorkType').value, type: document.getElementById('defectType').value,
+                detail: document.getElementById('defectDetail').value, imgSrc: previewSrc
             };
             defectDataList.push(itemData);
 
-            // [리스트 디자인 v13 적용]
             const itemHtml = `
                 <div class="list-item" id="item-${uniqueId}">
                     <img src="${previewSrc}" class="list-thumb">
@@ -712,57 +695,9 @@
             document.getElementById('listBox').insertAdjacentHTML('beforeend', itemHtml); 
             document.getElementById('listCount').innerText = `(${defectDataList.length})`;
             
-            // 입력창 초기화
             document.getElementById('cameraInput').value = "";
             currentImageFile = null;
             document.getElementById('previewImage').style.display = 'none'; 
             document.getElementById('previewImage').src = "";
             document.getElementById('defectDetail').value = ""; 
-            updateStatus("다음 항목을 촬영하세요.");
-            
-            document.querySelector('.list-header-box').scrollIntoView({behavior: "smooth"});
-        };
-
-        window.editItem = function(id) {
-            const itemIndex = defectDataList.findIndex(i => i.id === id);
-            if (itemIndex === -1) return;
-            const item = defectDataList[itemIndex];
-            
-            document.getElementById('roomSelect').value = item.room;
-            document.getElementById('workType').value = item.work;
-            document.getElementById('defectDetail').value = item.detail;
-            
-            const preview = document.getElementById('previewImage');
-            preview.src = item.imgSrc;
-            preview.style.display = 'block';
-            
-            if(confirm("수정 모드로 불러오시겠습니까? (현재 리스트에서 삭제됩니다)")) {
-                document.getElementById(`item-${id}`).remove();
-                defectDataList.splice(itemIndex, 1);
-                document.getElementById('listCount').innerText = `(${defectDataList.length})`;
-                window.scrollTo(0, 0); 
-            }
-        };
-
-        window.deleteItem = function(id) {
-            if(confirm("이 항목을 삭제하시겠습니까?")) {
-                document.getElementById(`item-${id}`).remove();
-                defectDataList = defectDataList.filter(i => i.id !== id);
-                document.getElementById('listCount').innerText = `(${defectDataList.length})`;
-            }
-        };
-        
-        window.savePDF = function() {
-            if(defectDataList.length === 0) { alert("저장할 내용이 없습니다."); return; }
-            window.print(); 
-        };
-
-        window.callCenter = function() {
-            // [수정] 수리 문의 버튼은 핸드폰 번호로 연결
-            if(confirm("청개구리 샤시 전문 상담센터로 연결합니다.\n(010-2322-0949)")) {
-                window.location.href = "tel:010-2322-0949";
-            }
-        };
-    </script>
-</body>
-</html>
+            updateStatus("다음 항목

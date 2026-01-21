@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- [v13.0 디자인 시스템 유지] --- */
+        /* --- [v13.0 디자인 시스템] --- */
         :root {
             --primary-grad: linear-gradient(135deg, #00b09b, #96c93d);
             --header-grad: linear-gradient(135deg, #134E5E, #71B280);
@@ -185,7 +185,7 @@
         }
         .btn-pdf-3d:active { transform: translateY(5px); box-shadow: 0 0 0 #1e8449; }
         
-        /* [수정] 유료점검 예약 버튼 디자인 */
+        /* 유료점검 예약 버튼 디자인 */
         .btn-reserve-3d { 
             background: linear-gradient(to bottom, #9b59b6, #8e44ad); 
             box-shadow: 0 5px 0 #71368a, 0 10px 20px rgba(155, 89, 182, 0.3); 
@@ -211,7 +211,7 @@
         .modal-title { font-size: 1.3rem; font-weight: 900; color: #2d3436; margin-bottom: 20px; }
         .warning-box { background: #fff9e6; color: #d35400; padding: 15px; border-radius: 12px; font-size: 0.85rem; text-align: left; margin-bottom: 20px; border: 1px solid #ffeaa7; line-height: 1.5; }
         
-        /* [추가] 가격표 테이블 스타일 */
+        /* 가격표 테이블 스타일 */
         .price-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 0.85rem; }
         .price-table th, .price-table td { border-bottom: 1px solid #eee; padding: 8px; text-align: left; }
         .price-table th { background: #f8f9fa; color: #2d3436; font-weight: 800; }
@@ -524,7 +524,7 @@
         window.openManual = function() { document.getElementById('manualModal').style.display = 'flex'; };
         window.closeManual = function() { document.getElementById('manualModal').style.display = 'none'; };
 
-        // [추가] 유료 점검 모달 열기/닫기/링크이동
+        // 유료 점검 모달 열기/닫기/링크이동
         window.openPaidService = function() {
             document.getElementById('paidServiceModal').style.display = 'flex';
         };

@@ -700,4 +700,44 @@
             document.getElementById('previewImage').style.display = 'none'; 
             document.getElementById('previewImage').src = "";
             document.getElementById('defectDetail').value = ""; 
-            updateStatus("다음 항목
+            updateStatus("다음 항목을 촬영하세요.");
+            
+            document.querySelector('.list-header-box').scrollIntoView({behavior: "smooth"});
+        };
+
+        window.editItem = function(id) {
+            const itemIndex = defectDataList.findIndex(i => i.id === id);
+            if (itemIndex === -1) return;
+            const item = defectDataList[itemIndex];
+            
+            document.getElementById('roomSelect').value = item.room;
+            document.getElementById('workType').value = item.work;
+            document.getElementById('defectDetail').value = item.detail;
+            
+            const preview = document.getElementById('previewImage');
+            preview.src = item.imgSrc;
+            preview.style.display = 'block';
+            
+            if(confirm("수정 모드로 불러오시겠습니까? (현재 리스트에서 삭제됩니다)")) {
+                document.getElementById(`item-${id}`).remove();
+                defectDataList.splice(itemIndex, 1);
+                document.getElementById('listCount').innerText = `(${defectDataList.length})`;
+                window.scrollTo(0, 0); 
+            }
+        };
+
+        window.deleteItem = function(id) {
+            if(confirm("이 항목을 삭제하시겠습니까?")) {
+                document.getElementById(`item-${id}`).remove();
+                defectDataList = defectDataList.filter(i => i.id !== id);
+                document.getElementById('listCount').innerText = `(${defectDataList.length})`;
+            }
+        };
+        
+        window.savePDF = function() {
+            if(defectDataList.length === 0) { alert("저장할 내용이 없습니다."); return; }
+            window.print(); 
+        };
+    </script>
+</body>
+</html>

@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 사전점검 AI앱(무료) (v14.9 Manual Update)</title>
+    <title>청개구리 사전점검 AI앱(무료) (v15.0 Wide & Checkbox)</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- [v14.9 디자인 시스템] --- */
+        /* --- [v15.0 디자인 시스템] --- */
         :root {
             --primary-grad: linear-gradient(135deg, #00b09b, #96c93d);
             --header-grad: linear-gradient(135deg, #134E5E, #71B280);
@@ -18,6 +18,7 @@
             --text-sub: #636e72;
             --shadow-soft: 0 10px 25px rgba(0,0,0,0.05);
             --dev-color: #8e44ad;
+            --container-max-width: 600px; /* [수정] 최대 너비 확장 */
         }
 
         body { 
@@ -28,6 +29,17 @@
             line-height: 1.5; 
             padding-bottom: 60px; 
             -webkit-font-smoothing: antialiased;
+            display: flex; justify-content: center; /* 중앙 정렬 */
+        }
+
+        /* [수정] 전체 컨테이너 */
+        .app-container {
+            width: 100%;
+            max-width: var(--container-max-width); /* 넓어진 최대 너비 적용 */
+            background: var(--bg-color);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1); /* 가벼운 그림자 추가 */
+            min-height: 100vh;
+            position: relative;
         }
 
         /* 헤더 스타일 */
@@ -70,9 +82,10 @@
         }
         .btn-manual-3d:active { transform: scale(0.95); }
 
-        /* 메인 카드 */
+        /* 메인 카드 (여백 조정) */
         .main-card { 
-            background: var(--card-bg); padding: 25px 20px; margin: 0 15px 25px 15px; 
+            background: var(--card-bg); padding: 25px 20px; 
+            margin: 0 10px 25px 10px; /* [수정] 좌우 마진 축소 */
             border-radius: 24px; box-shadow: var(--shadow-soft); border: 1px solid rgba(255,255,255,0.8);
         }
         .input-row { display: flex; gap: 10px; margin-bottom: 15px; }
@@ -126,8 +139,8 @@
         .btn-save-next:active { transform: translateY(4px); box-shadow: 0 0 0 #1c5985; }
         .btn-save-next:disabled { background: #b2bec3; cursor: not-allowed; box-shadow: none; transform: none; }
 
-        /* 리스트 영역 (듀얼 이미지 지원) */
-        .list-area { padding: 0 15px 10px 15px; margin-top: 20px; }
+        /* 리스트 영역 (여백 조정) */
+        .list-area { padding: 0 10px 10px 10px; margin-top: 20px; } /* [수정] 좌우 패딩 축소 */
         .list-header-box { 
             margin-bottom: 15px; background: #fff; padding: 15px; border-radius: 16px; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center; border-left: 6px solid #00b09b;
@@ -150,8 +163,8 @@
         .btn-edit-item { background: #f39c12; }
         .btn-delete-item { background: #b2bec3; }
 
-        /* 하단 액션 */
-        .bottom-actions { display: flex; gap: 12px; padding: 0 15px 20px 15px; margin-top: 30px; }
+        /* 하단 액션 (여백 조정) */
+        .bottom-actions { display: flex; gap: 12px; padding: 0 10px 20px 10px; margin-top: 30px; } /* [수정] 좌우 패딩 축소 */
         .btn-3d { 
             flex: 1; padding: 14px 0; border: none; border-radius: 16px; color: white; font-size: 1rem; font-weight: 800; cursor: pointer; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: all 0.1s; position: relative;
@@ -179,8 +192,18 @@
         .footer-info p { margin: 2px 0; padding: 0; }
         .footer-bold { font-weight: 800; color: #636e72; }
 
+        /* [수정] 사용설명서 체크박스 스타일 */
+        .manual-check-row {
+            display: flex; align-items: center; gap: 10px; cursor: pointer;
+            margin-top: 20px; padding: 10px; background: #f1f3f5; border-radius: 12px;
+        }
+        .manual-check-row input { width: 20px; height: 20px; margin: 0; cursor: pointer; accent-color: #00b09b; }
+        .manual-check-row label { font-size: 1rem; font-weight: 700; color: #2d3436; cursor: pointer; margin: 0; }
+
+
         @media print {
-            body { background: white; padding: 0; }
+            body { background: white; padding: 0; display: block; }
+            .app-container { max-width: 100%; box-shadow: none; }
             .header-container, .main-card, .bottom-actions, .footer-info, .status-bar-container, .list-footer { display: none !important; } 
             .list-area { padding: 0; margin: 0; }
             .list-header-box { border: none; padding: 0; margin-bottom: 20px; border-bottom: 2px solid #333; border-radius: 0; box-shadow: none; }
@@ -193,174 +216,175 @@
     </style>
 </head>
 <body>
-
-    <div id="paidServiceModal" class="modal-overlay" style="display:none;">
-        <div class="modal-content">
-            <div class="modal-title" style="color:#8e44ad;">🐸 유료 사전점검 안내</div>
-            <div style="text-align:left; font-size:0.9rem; margin-bottom:15px; color:#555;">
-                청개구리 전문가가 직접 방문하여 꼼꼼하게 점검해드립니다. 예약 정보를 입력해주시면 담당자가 확정 연락을 드립니다.
-            </div>
-            <table class="price-table">
-                <tr><th>20평형</th><td class="price-highlight">90,000원</td></tr>
-                <tr><th>30평형</th><td class="price-highlight">110,000원</td></tr>
-                <tr><th>40평형</th><td class="price-highlight">130,000원</td></tr>
-                <tr><th>50평형</th><td class="price-highlight">150,000원</td></tr>
-                <tr><th>기타</th><td>별도 상담</td></tr>
-            </table>
-            <div class="warning-box">
-                <b>[예약 및 환불 규정]</b><br>
-                1. <b>선입금 후 방문</b>이 확정됩니다.<br>
-                2. 방문 <b>7일 전 취소 시 100% 환불</b>됩니다.<br>
-                3. 그 외 기간은 환불이 불가합니다.<br>
-                4. 예약서 작성 시 위 내용에 동의한 것으로 간주합니다.
-            </div>
-            <button class="btn-modal-close-3d" onclick="window.goToGoogleForm()">
-                <i class="fa-solid fa-pen-to-square"></i> 예약 신청서 작성하기
-            </button>
-            <button onclick="document.getElementById('paidServiceModal').style.display='none'" style="margin-top:10px; background:none; border:none; color:#999; text-decoration:underline; cursor:pointer;">닫기</button>
-        </div>
-    </div>
-
-    <div class="header-container">
-        <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
-        <div class="header-text-group">
-            <h2 class="header-title">청개구리 사전점검 AI앱(무료)</h2>
-            <span class="version-badge" id="versionBadge" onclick="window.checkDevMode()">v14.9 Manual Update</span>
-        </div>
-    </div>
-    
-    <div class="status-bar-container">
-        <div class="status-pill" id="statusPill">
-            <i class="fa-solid fa-circle-check" style="color:#00b09b;"></i>
-            <span id="statusMsg">AI 분석 엔진 대기 중</span>
-        </div>
-        <button class="btn-manual-3d" onclick="window.openManual()">
-            사용설명서 <i class="fa-solid fa-book-open"></i>
-        </button>
-    </div>
-
-    <div class="main-card">
-        <div class="full-address-row">
-            <div class="input-label"><i class="fa-solid fa-map-location-dot"></i> 전체 주소 입력</div>
-            <input type="text" id="fullAddress" placeholder="서울 송파구 ***">
-        </div>
-
-        <div class="input-row">
-            <div class="input-col site-info-group">
-                <label class="input-label">A. 현장 정보 (리포트용)</label>
-                <div class="site-inputs">
-                    <input type="text" id="aptName" placeholder="아파트명" style="flex:1.5;">
-                    <input type="tel" id="aptDong" placeholder="000동" style="flex:1;">
-                    <input type="tel" id="aptHo" placeholder="0000호" style="flex:1;">
+    <div class="app-container">
+        <div id="paidServiceModal" class="modal-overlay" style="display:none;">
+            <div class="modal-content">
+                <div class="modal-title" style="color:#8e44ad;">🐸 유료 사전점검 안내</div>
+                <div style="text-align:left; font-size:0.9rem; margin-bottom:15px; color:#555;">
+                    청개구리 전문가가 직접 방문하여 꼼꼼하게 점검해드립니다. 예약 정보를 입력해주시면 담당자가 확정 연락을 드립니다.
                 </div>
-            </div>
-            <div class="input-col location-group">
-                <label class="input-label">B. 위치</label>
-                <select id="roomSelect">
-                    <option value="">선택</option>
-                    <option value="거실">거실</option>
-                    <option value="주방">주방</option>
-                    <option value="침실1">침실1</option>
-                    <option value="침실2">침실2</option>
-                    <option value="침실3">침실3</option>
-                    <option value="안방">안방</option>
-                    <option value="욕실1">욕실1</option>
-                    <option value="욕실2">욕실2</option>
-                    <option value="현관">현관</option>
-                    <option value="발코니">발코니</option>
-                    <option value="다용도실">다용도실</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="photo-section">
-            <input type="file" id="cameraInputWide" accept="image/*" style="display:none">
-            <label class="photo-area-wide" for="cameraInputWide">
-                <div style="text-align:center;">
-                    <i class="fa-solid fa-image" style="color:#3498db; font-size:2rem; margin-bottom:5px;"></i>
-                    <div class="photo-text" style="color:#3498db;">1. 멀리서 찍기 (위치 파악용)</div>
+                <table class="price-table">
+                    <tr><th>20평형</th><td class="price-highlight">90,000원</td></tr>
+                    <tr><th>30평형</th><td class="price-highlight">110,000원</td></tr>
+                    <tr><th>40평형</th><td class="price-highlight">130,000원</td></tr>
+                    <tr><th>50평형</th><td class="price-highlight">150,000원</td></tr>
+                    <tr><th>기타</th><td>별도 상담</td></tr>
+                </table>
+                <div class="warning-box">
+                    <b>[예약 및 환불 규정]</b><br>
+                    1. <b>선입금 후 방문</b>이 확정됩니다.<br>
+                    2. 방문 <b>7일 전 취소 시 100% 환불</b>됩니다.<br>
+                    3. 그 외 기간은 환불이 불가합니다.<br>
+                    4. 예약서 작성 시 위 내용에 동의한 것으로 간주합니다.
                 </div>
-                <img id="previewImageWide" class="preview-img">
-            </label>
-
-            <input type="file" id="cameraInputClose" accept="image/*" style="display:none">
-            <label class="photo-area-close" id="photoAreaBtn" for="cameraInputClose">
-                <div class="photo-icon"><i class="fa-solid fa-camera-retro"></i></div>
-                <div class="photo-text">2. 가까이 찍기 (자동 분석 시작)<br><span style="font-size:0.75rem; color:#999;">십자선에 하자를 맞추세요</span></div>
-                <img id="previewImageClose" class="preview-img">
-                <div class="center-crosshair"></div>
-            </label>
-        </div>
-
-        <div class="input-row">
-            <div class="input-col triple-col">
-                <label class="input-label">C. 공종</label>
-                <select id="workType"><option value="">자동입력</option></select>
-            </div>
-            <div class="input-col triple-col">
-                <label class="input-label">D. 세부</label>
-                <select id="subWorkType"><option value="">자동입력</option></select>
-            </div>
-            <div class="input-col triple-col">
-                <label class="input-label">E. 유형</label>
-                <input type="text" id="defectType" placeholder="자동입력">
-            </div>
-        </div>
-
-        <div class="input-col" style="margin-bottom: 10px;">
-            <div class="input-label" style="color:#00b09b;">
-                <i class="fa-solid fa-robot"></i> F. AI 분석 리포트 (국토부 데이터 AI참조)
-            </div>
-            <textarea id="defectDetail" placeholder="멀리서 한 장, 가까이서 한 장 찍으시면 AI가 더 정확하게 분석합니다."></textarea>
-            
-            <div class="legal-inline-box">
-                <div class="legal-title-small"><i class="fa-solid fa-triangle-exclamation"></i> 이용 전 필수 확인</div>
-                <div class="legal-text-small">
-                    1. <b>법적 효력 없음:</b> 본 결과는 AI 추정치이며 전문가의 현장 실사가 필요합니다.<br>
-                    2. <b>책임 제한:</b> 분석 오류 및 분쟁에 대해 개발사는 법적 책임을 지지 않습니다.
-                </div>
-                <div class="legal-check-row">
-                    <input type="checkbox" id="inlineAgreeCheck" onchange="window.toggleSaveButton()">
-                    <label for="inlineAgreeCheck">위 내용을 확인하였으며 결과에 동의합니다.</label>
-                </div>
-            </div>
-
-            <div style="text-align: right;">
-                <button class="btn-save-next" id="btnSaveList" onclick="window.addToList()" disabled>
-                    리스트 저장 <i class="fa-solid fa-download"></i>
+                <button class="btn-modal-close-3d" onclick="window.goToGoogleForm()">
+                    <i class="fa-solid fa-pen-to-square"></i> 예약 신청서 작성하기
                 </button>
+                <button onclick="document.getElementById('paidServiceModal').style.display='none'" style="margin-top:10px; background:none; border:none; color:#999; text-decoration:underline; cursor:pointer;">닫기</button>
             </div>
         </div>
-    </div>
 
-    <div id="pdf-header-title" style="display:none;"></div>
-
-    <div class="list-area">
-        <div class="list-header-box">
-            <div class="list-title-text">📋 점검 리스트 <span id="listCount" style="color:#00b09b;">(0)</span></div>
-            <div id="currentAptInfo" class="list-subtitle-text">정보 입력 대기</div>
+        <div class="header-container">
+            <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
+            <div class="header-text-group">
+                <h2 class="header-title">청개구리 사전점검 AI앱(무료)</h2>
+                <span class="version-badge" id="versionBadge" onclick="window.checkDevMode()">v15.0 Wide & Checkbox</span>
+            </div>
         </div>
-        <div id="listBox"></div>
-    </div>
-    
-    <div id="pdf-disclaimer" style="display:none;">
-        ※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다. (제공: 청개구리샤시)
-    </div>
+        
+        <div class="status-bar-container">
+            <div class="status-pill" id="statusPill">
+                <i class="fa-solid fa-circle-check" style="color:#00b09b;"></i>
+                <span id="statusMsg">AI 분석 엔진 대기 중</span>
+            </div>
+            <button class="btn-manual-3d" onclick="window.openManual()">
+                사용설명서 <i class="fa-solid fa-book-open"></i>
+            </button>
+        </div>
 
-    <div class="bottom-actions">
-        <button class="btn-3d btn-pdf-3d" onclick="window.savePDF()">
-            <i class="fa-solid fa-file-pdf fa-lg"></i>
-            <span>PDF 저장</span>
-        </button>
-        <button class="btn-3d btn-reserve-3d" onclick="window.openPaidService()">
-            <i class="fa-solid fa-calendar-check fa-lg"></i>
-            <span>유료점검 예약</span>
-        </button>
-    </div>
+        <div class="main-card">
+            <div class="full-address-row">
+                <div class="input-label"><i class="fa-solid fa-map-location-dot"></i> 전체 주소 입력</div>
+                <input type="text" id="fullAddress" placeholder="서울 송파구 ***">
+            </div>
 
-    <div class="footer-info">
-        <p><span class="footer-bold">청개구리샤시</span> | 대표: 전영웅 | 사업자: 123-36-31426 | 📞 1599-7380</p>
-        <p>본 서비스는 참고용 보조 도구이며 법적 책임을 지지 않습니다. | ⓒ 2026 Cheong-gaeguri Corp.</p>
+            <div class="input-row">
+                <div class="input-col site-info-group">
+                    <label class="input-label">A. 현장 정보 (리포트용)</label>
+                    <div class="site-inputs">
+                        <input type="text" id="aptName" placeholder="아파트명" style="flex:1.5;">
+                        <input type="tel" id="aptDong" placeholder="000동" style="flex:1;">
+                        <input type="tel" id="aptHo" placeholder="0000호" style="flex:1;">
+                    </div>
+                </div>
+                <div class="input-col location-group">
+                    <label class="input-label">B. 위치</label>
+                    <select id="roomSelect">
+                        <option value="">선택</option>
+                        <option value="거실">거실</option>
+                        <option value="주방">주방</option>
+                        <option value="침실1">침실1</option>
+                        <option value="침실2">침실2</option>
+                        <option value="침실3">침실3</option>
+                        <option value="안방">안방</option>
+                        <option value="욕실1">욕실1</option>
+                        <option value="욕실2">욕실2</option>
+                        <option value="현관">현관</option>
+                        <option value="발코니">발코니</option>
+                        <option value="다용도실">다용도실</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="photo-section">
+                <input type="file" id="cameraInputWide" accept="image/*" style="display:none">
+                <label class="photo-area-wide" for="cameraInputWide">
+                    <div style="text-align:center;">
+                        <i class="fa-solid fa-image" style="color:#3498db; font-size:2rem; margin-bottom:5px;"></i>
+                        <div class="photo-text" style="color:#3498db;">1. 멀리서 찍기 (위치 파악용)</div>
+                    </div>
+                    <img id="previewImageWide" class="preview-img">
+                </label>
+
+                <input type="file" id="cameraInputClose" accept="image/*" style="display:none">
+                <label class="photo-area-close" id="photoAreaBtn" for="cameraInputClose">
+                    <div class="photo-icon"><i class="fa-solid fa-camera-retro"></i></div>
+                    <div class="photo-text">2. 가까이 찍기 (자동 분석 시작)<br><span style="font-size:0.75rem; color:#999;">십자선에 하자를 맞추세요</span></div>
+                    <img id="previewImageClose" class="preview-img">
+                    <div class="center-crosshair"></div>
+                </label>
+            </div>
+
+            <div class="input-row">
+                <div class="input-col triple-col">
+                    <label class="input-label">C. 공종</label>
+                    <select id="workType"><option value="">자동입력</option></select>
+                </div>
+                <div class="input-col triple-col">
+                    <label class="input-label">D. 세부</label>
+                    <select id="subWorkType"><option value="">자동입력</option></select>
+                </div>
+                <div class="input-col triple-col">
+                    <label class="input-label">E. 유형</label>
+                    <input type="text" id="defectType" placeholder="자동입력">
+                </div>
+            </div>
+
+            <div class="input-col" style="margin-bottom: 10px;">
+                <div class="input-label" style="color:#00b09b;">
+                    <i class="fa-solid fa-robot"></i> F. AI 분석 리포트 (국토부 데이터 AI참조)
+                </div>
+                <textarea id="defectDetail" placeholder="멀리서 한 장, 가까이서 한 장 찍으시면 AI가 더 정확하게 분석합니다."></textarea>
+                
+                <div class="legal-inline-box">
+                    <div class="legal-title-small"><i class="fa-solid fa-triangle-exclamation"></i> 이용 전 필수 확인</div>
+                    <div class="legal-text-small">
+                        1. <b>법적 효력 없음:</b> 본 결과는 AI 추정치이며 전문가의 현장 실사가 필요합니다.<br>
+                        2. <b>책임 제한:</b> 분석 오류 및 분쟁에 대해 개발사는 법적 책임을 지지 않습니다.
+                    </div>
+                    <div class="legal-check-row">
+                        <input type="checkbox" id="inlineAgreeCheck" onchange="window.toggleSaveButton()">
+                        <label for="inlineAgreeCheck">위 내용을 확인하였으며 결과에 동의합니다.</label>
+                    </div>
+                </div>
+
+                <div style="text-align: right;">
+                    <button class="btn-save-next" id="btnSaveList" onclick="window.addToList()" disabled>
+                        리스트 저장 <i class="fa-solid fa-download"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="pdf-header-title" style="display:none;"></div>
+
+        <div class="list-area">
+            <div class="list-header-box">
+                <div class="list-title-text">📋 점검 리스트 <span id="listCount" style="color:#00b09b;">(0)</span></div>
+                <div id="currentAptInfo" class="list-subtitle-text">정보 입력 대기</div>
+            </div>
+            <div id="listBox"></div>
+        </div>
+        
+        <div id="pdf-disclaimer" style="display:none;">
+            ※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다. (제공: 청개구리샤시)
+        </div>
+
+        <div class="bottom-actions">
+            <button class="btn-3d btn-pdf-3d" onclick="window.savePDF()">
+                <i class="fa-solid fa-file-pdf fa-lg"></i>
+                <span>PDF 저장</span>
+            </button>
+            <button class="btn-3d btn-reserve-3d" onclick="window.openPaidService()">
+                <i class="fa-solid fa-calendar-check fa-lg"></i>
+                <span>유료점검 예약</span>
+            </button>
+        </div>
+
+        <div class="footer-info">
+            <p><span class="footer-bold">청개구리샤시</span> | 대표: 전영웅 | 사업자: 123-36-31426 | 📞 1599-7380</p>
+            <p>본 서비스는 참고용 보조 도구이며 법적 책임을 지지 않습니다. | ⓒ 2026 Cheong-gaeguri Corp.</p>
+        </div>
     </div>
 
     <div id="manualModal" class="modal-overlay" style="display:none;">
@@ -376,9 +400,11 @@
                 7. <b>PDF저장</b>을 누르면 폰의 내파일에서 확인하실 수 있습니다.<br>
                 8. 정밀한 진단을 원하시면 <b>유료</b>로 신청하세요.
             </div>
-            <button class="btn-modal-close-3d" onclick="window.closeManual()">
-                체크박스 확인
-            </button>
+            
+            <div class="manual-check-row">
+                <input type="checkbox" id="manualCheck" onchange="window.closeManual()">
+                <label for="manualCheck">네, 모두 확인했습니다.</label>
+            </div>
         </div>
     </div>
 
@@ -453,8 +479,16 @@
             btn.style.cursor = chk.checked ? 'pointer' : 'not-allowed';
         }
 
-        window.openManual = function() { document.getElementById('manualModal').style.display = 'flex'; };
-        window.closeManual = function() { document.getElementById('manualModal').style.display = 'none'; };
+        window.openManual = function() { 
+            document.getElementById('manualCheck').checked = false; // 모달 열 때 체크박스 초기화
+            document.getElementById('manualModal').style.display = 'flex'; 
+        };
+        // [수정] 체크박스 클릭 시 모달 닫기 함수
+        window.closeManual = function() { 
+            if(document.getElementById('manualCheck').checked) {
+                document.getElementById('manualModal').style.display = 'none'; 
+            }
+        };
         window.openPaidService = function() { document.getElementById('paidServiceModal').style.display = 'flex'; };
         window.goToGoogleForm = function() { window.open(GOOGLE_FORM_URL, '_blank'); };
 

@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 사전점검 AI앱(무료) (v14.8 Print & Legal Fix)</title>
+    <title>청개구리 사전점검 AI앱(무료) (v14.9 Manual Update)</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- [v14.8 디자인 시스템] --- */
+        /* --- [v14.9 디자인 시스템] --- */
         :root {
             --primary-grad: linear-gradient(135deg, #00b09b, #96c93d);
             --header-grad: linear-gradient(135deg, #134E5E, #71B280);
@@ -30,7 +30,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 헤더 스타일 (v14.7 유지) */
+        /* 헤더 스타일 */
         .header-container { 
             background: var(--header-grad); 
             padding: 15px 20px; 
@@ -109,21 +109,13 @@
         .center-crosshair::before { width: 100%; height: 2px; top: 50%; }
         .center-crosshair::after { height: 100%; width: 2px; left: 50%; }
 
-        /* 인라인 법적 동의 박스 (수정: 체크박스 한 줄 배치) */
+        /* 인라인 법적 동의 박스 */
         .legal-inline-box { margin-top: 20px; padding: 15px; background: #fffbe6; border: 1px solid #ffeaa7; border-radius: 12px; }
         .legal-title-small { font-size: 0.9rem; font-weight: 800; color: #d35400; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
         .legal-text-small { font-size: 0.8rem; color: #636e72; line-height: 1.5; margin-bottom: 12px; }
-        .legal-check-row { 
-            display: flex; align-items: center; gap: 8px; cursor: pointer; 
-            width: 100%; /* 너비 확보 */
-        }
+        .legal-check-row { display: flex; align-items: center; gap: 8px; cursor: pointer; width: 100%; }
         .legal-check-row input { width: 18px; height: 18px; margin: 0; cursor: pointer; accent-color: #d35400; flex-shrink: 0; }
-        .legal-check-row label { 
-            font-size: 0.85rem; /* 글자 크기 축소 */
-            font-weight: 700; color: #2d3436; cursor: pointer; margin: 0; 
-            white-space: nowrap; /* 줄바꿈 방지 */
-            overflow: hidden; text-overflow: ellipsis; /* 만약 넘치면 ...처리 */
-        }
+        .legal-check-row label { font-size: 0.85rem; font-weight: 700; color: #2d3436; cursor: pointer; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* 버튼 */
         .btn-save-next { 
@@ -134,7 +126,7 @@
         .btn-save-next:active { transform: translateY(4px); box-shadow: 0 0 0 #1c5985; }
         .btn-save-next:disabled { background: #b2bec3; cursor: not-allowed; box-shadow: none; transform: none; }
 
-        /* 리스트 영역 (수정: 듀얼 이미지 출력 대응) */
+        /* 리스트 영역 (듀얼 이미지 지원) */
         .list-area { padding: 0 15px 10px 15px; margin-top: 20px; }
         .list-header-box { 
             margin-bottom: 15px; background: #fff; padding: 15px; border-radius: 16px; 
@@ -145,14 +137,10 @@
         
         .list-item { 
             background: white; padding: 12px; border-radius: 16px; margin-bottom: 12px; 
-            display: flex; flex-direction: column; /* 세로 배치로 변경 (사진2장 + 내용) */
-            gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid #f1f3f5;
+            display: flex; flex-direction: column; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid #f1f3f5;
         }
         .list-photos { display: flex; gap: 8px; width: 100%; }
-        .list-thumb { 
-            width: 50%; aspect-ratio: 4/3; border-radius: 8px; object-fit: cover; border: 1px solid #eee; 
-            background-color: #f9f9f9;
-        }
+        .list-thumb { width: 50%; aspect-ratio: 4/3; border-radius: 8px; object-fit: cover; border: 1px solid #eee; background-color: #f9f9f9; }
         .list-content { flex: 1; display: flex; flex-direction: column; gap: 4px; }
         .list-room-work { font-weight: 800; font-size: 1rem; color: #2d3436; border-bottom: 1px dashed #eee; padding-bottom: 5px; margin-bottom: 5px; }
         .list-type { font-size: 0.85rem; color: #e74c3c; font-weight: 700; background: #fff5f5; padding: 2px 8px; border-radius: 4px; align-self: flex-start; }
@@ -196,7 +184,6 @@
             .header-container, .main-card, .bottom-actions, .footer-info, .status-bar-container, .list-footer { display: none !important; } 
             .list-area { padding: 0; margin: 0; }
             .list-header-box { border: none; padding: 0; margin-bottom: 20px; border-bottom: 2px solid #333; border-radius: 0; box-shadow: none; }
-            /* [수정] 인쇄 시 사진 2개 나란히 보이도록 */
             .list-item { border: 1px solid #000; box-shadow: none; break-inside: avoid; margin-bottom: 20px; padding: 15px; }
             .list-photos { display: flex !important; gap: 10px; margin-bottom: 10px; }
             .list-thumb { width: 50% !important; height: auto; aspect-ratio: 4/3; object-fit: contain; border: 1px solid #ccc; }
@@ -238,7 +225,7 @@
         <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
         <div class="header-text-group">
             <h2 class="header-title">청개구리 사전점검 AI앱(무료)</h2>
-            <span class="version-badge" id="versionBadge" onclick="window.checkDevMode()">v14.8 Print & Legal Fix</span>
+            <span class="version-badge" id="versionBadge" onclick="window.checkDevMode()">v14.9 Manual Update</span>
         </div>
     </div>
     
@@ -380,12 +367,18 @@
         <div class="modal-content">
             <div class="modal-title">🐸 앱 사용법</div>
             <div style="text-align:left; color:#636e72; font-size:0.9rem; line-height:1.6;">
-                1. <b>전체 주소</b>를 입력하고 <b>세부 정보</b>를 확인하세요.<br>
+                1. <b>전체 주소와 현장정보 위치</b>를 입력하세요.<br>
                 2. <b>[1. 멀리서 찍기]</b>: 방 전체나 창호 전체가 나오게 찍으세요. (위치 파악용)<br>
                 3. <b>[2. 가까이 찍기]</b>: 하자 부위를 십자선에 맞춰 찍으세요. (정밀 분석용)<br>
-                4. 분석 결과 확인 후 <b>동의 체크</b> -> <b>[리스트 저장]</b>을 누르세요.
+                4. <b>공종, 세부, 유형, 분석리포트</b>는 AI가 자동으로 만들어줍니다.<br>
+                5. 분석 결과 확인 후 <b>동의 체크</b> -> <b>[리스트 저장]</b>을 누르세요.<br>
+                6. <b>F. AI 분석 리포트 (국토부 데이터 AI참조)</b> 내용의 오류 시 수동으로 내용을 변경하시고 저장하세요.<br>
+                7. <b>PDF저장</b>을 누르면 폰의 내파일에서 확인하실 수 있습니다.<br>
+                8. 정밀한 진단을 원하시면 <b>유료</b>로 신청하세요.
             </div>
-            <button class="btn-modal-close-3d" onclick="window.closeManual()">확인했습니다</button>
+            <button class="btn-modal-close-3d" onclick="window.closeManual()">
+                체크박스 확인
+            </button>
         </div>
     </div>
 
@@ -410,7 +403,6 @@
             const isDev = localStorage.getItem('is_developer') === 'true';
             if (isDev) document.getElementById('versionBadge').classList.add('dev-active');
             
-            // 공종 옵션 초기화 (간소화)
             const workType = document.getElementById('workType');
             ['타일공사','도배공사','마루공사','창호공사','가구공사','기타공사'].forEach(t => {
                 let opt = document.createElement('option'); opt.value = t; opt.innerText = t; workType.appendChild(opt);
@@ -509,7 +501,6 @@
                 const genAI = new GoogleGenerativeAI(API_KEY);
                 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
                 
-                // 프롬프트 (세부공종 목록은 생략하거나 그대로 유지)
                 const prompt = `
                     입주자 사전점검 AI입니다.
                     사진 1(Wide): 공종(Work Type) 파악.
@@ -592,7 +583,6 @@
             };
             defectDataList.push(itemData);
 
-            // [수정] 리스트 아이템에 사진 2개(Wide, Close) 모두 표시
             const itemHtml = `
                 <div class="list-item" id="item-${uniqueId}">
                     <div class="list-room-work">${itemData.room} | ${itemData.work}</div>
@@ -614,7 +604,6 @@
             document.getElementById('listBox').insertAdjacentHTML('beforeend', itemHtml); 
             document.getElementById('listCount').innerText = `(${defectDataList.length})`;
             
-            // 초기화
             document.getElementById('cameraInputWide').value = "";
             document.getElementById('cameraInputClose').value = "";
             currentWideFile = null; currentCloseFile = null;
@@ -636,7 +625,6 @@
             document.getElementById('workType').value = item.work;
             document.getElementById('defectDetail').value = item.detail;
             
-            // 사진 복구 (단, 파일 객체는 복구 불가하므로 미리보기만 복구)
             if(item.wideImg) {
                 const pWide = document.getElementById('previewImageWide');
                 pWide.src = item.wideImg; pWide.style.display = 'block';

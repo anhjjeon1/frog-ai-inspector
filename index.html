@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 사전점검 AI앱(무료) (v15.0 Wide & Checkbox)</title>
+    <title>청개구리 사전점검 AI앱(무료) (v15.1 Paid Info Update)</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- [v15.0 디자인 시스템] --- */
+        /* --- [v15.1 디자인 시스템] --- */
         :root {
             --primary-grad: linear-gradient(135deg, #00b09b, #96c93d);
             --header-grad: linear-gradient(135deg, #134E5E, #71B280);
@@ -18,7 +18,7 @@
             --text-sub: #636e72;
             --shadow-soft: 0 10px 25px rgba(0,0,0,0.05);
             --dev-color: #8e44ad;
-            --container-max-width: 600px; /* [수정] 최대 너비 확장 */
+            --container-max-width: 600px;
         }
 
         body { 
@@ -29,15 +29,15 @@
             line-height: 1.5; 
             padding-bottom: 60px; 
             -webkit-font-smoothing: antialiased;
-            display: flex; justify-content: center; /* 중앙 정렬 */
+            display: flex; justify-content: center;
         }
 
-        /* [수정] 전체 컨테이너 */
+        /* 전체 컨테이너 */
         .app-container {
             width: 100%;
-            max-width: var(--container-max-width); /* 넓어진 최대 너비 적용 */
+            max-width: var(--container-max-width);
             background: var(--bg-color);
-            box-shadow: 0 0 20px rgba(0,0,0,0.1); /* 가벼운 그림자 추가 */
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
             min-height: 100vh;
             position: relative;
         }
@@ -82,10 +82,10 @@
         }
         .btn-manual-3d:active { transform: scale(0.95); }
 
-        /* 메인 카드 (여백 조정) */
+        /* 메인 카드 */
         .main-card { 
             background: var(--card-bg); padding: 25px 20px; 
-            margin: 0 10px 25px 10px; /* [수정] 좌우 마진 축소 */
+            margin: 0 10px 25px 10px; 
             border-radius: 24px; box-shadow: var(--shadow-soft); border: 1px solid rgba(255,255,255,0.8);
         }
         .input-row { display: flex; gap: 10px; margin-bottom: 15px; }
@@ -139,8 +139,8 @@
         .btn-save-next:active { transform: translateY(4px); box-shadow: 0 0 0 #1c5985; }
         .btn-save-next:disabled { background: #b2bec3; cursor: not-allowed; box-shadow: none; transform: none; }
 
-        /* 리스트 영역 (여백 조정) */
-        .list-area { padding: 0 10px 10px 10px; margin-top: 20px; } /* [수정] 좌우 패딩 축소 */
+        /* 리스트 영역 */
+        .list-area { padding: 0 10px 10px 10px; margin-top: 20px; }
         .list-header-box { 
             margin-bottom: 15px; background: #fff; padding: 15px; border-radius: 16px; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center; border-left: 6px solid #00b09b;
@@ -163,8 +163,8 @@
         .btn-edit-item { background: #f39c12; }
         .btn-delete-item { background: #b2bec3; }
 
-        /* 하단 액션 (여백 조정) */
-        .bottom-actions { display: flex; gap: 12px; padding: 0 10px 20px 10px; margin-top: 30px; } /* [수정] 좌우 패딩 축소 */
+        /* 하단 액션 */
+        .bottom-actions { display: flex; gap: 12px; padding: 0 10px 20px 10px; margin-top: 30px; }
         .btn-3d { 
             flex: 1; padding: 14px 0; border: none; border-radius: 16px; color: white; font-size: 1rem; font-weight: 800; cursor: pointer; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: all 0.1s; position: relative;
@@ -192,7 +192,7 @@
         .footer-info p { margin: 2px 0; padding: 0; }
         .footer-bold { font-weight: 800; color: #636e72; }
 
-        /* [수정] 사용설명서 체크박스 스타일 */
+        /* 사용설명서 체크박스 스타일 */
         .manual-check-row {
             display: flex; align-items: center; gap: 10px; cursor: pointer;
             margin-top: 20px; padding: 10px; background: #f1f3f5; border-radius: 12px;
@@ -221,7 +221,7 @@
             <div class="modal-content">
                 <div class="modal-title" style="color:#8e44ad;">🐸 유료 사전점검 안내</div>
                 <div style="text-align:left; font-size:0.9rem; margin-bottom:15px; color:#555;">
-                    청개구리 전문가가 직접 방문하여 꼼꼼하게 점검해드립니다. 예약 정보를 입력해주시면 담당자가 확정 연락을 드립니다.
+                    청개구리는 불필요한 점검(라돈측정, 공기질측정, 열화상검사, 기타)를 생략하고 중대하자를 중점으로 검사합니다. 수도권 이외는 추가요금이 발생합니다. (직통) 010-2322-0949
                 </div>
                 <table class="price-table">
                     <tr><th>20평형</th><td class="price-highlight">90,000원</td></tr>
@@ -248,7 +248,7 @@
             <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
             <div class="header-text-group">
                 <h2 class="header-title">청개구리 사전점검 AI앱(무료)</h2>
-                <span class="version-badge" id="versionBadge" onclick="window.checkDevMode()">v15.0 Wide & Checkbox</span>
+                <span class="version-badge" id="versionBadge" onclick="window.checkDevMode()">v15.1 Paid Info Update</span>
             </div>
         </div>
         
@@ -480,10 +480,10 @@
         }
 
         window.openManual = function() { 
-            document.getElementById('manualCheck').checked = false; // 모달 열 때 체크박스 초기화
+            document.getElementById('manualCheck').checked = false; 
             document.getElementById('manualModal').style.display = 'flex'; 
         };
-        // [수정] 체크박스 클릭 시 모달 닫기 함수
+        
         window.closeManual = function() { 
             if(document.getElementById('manualCheck').checked) {
                 document.getElementById('manualModal').style.display = 'none'; 

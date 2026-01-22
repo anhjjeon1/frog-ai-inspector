@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 사전점검 AI앱(무료) (v15.2 Policy Detail Update)</title>
+    <title>청개구리 사전점검 AI앱(무료) (v15.3 Horizontal Buttons)</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- [v15.2 디자인 시스템] --- */
+        /* --- [v15.3 디자인 시스템] --- */
         :root {
             --primary-grad: linear-gradient(135deg, #00b09b, #96c93d);
             --header-grad: linear-gradient(135deg, #134E5E, #71B280);
@@ -163,11 +163,17 @@
         .btn-edit-item { background: #f39c12; }
         .btn-delete-item { background: #b2bec3; }
 
-        /* 하단 액션 */
+        /* [수정] 하단 액션 버튼 (가로 배치 및 높이 축소) */
         .bottom-actions { display: flex; gap: 12px; padding: 0 10px 20px 10px; margin-top: 30px; }
         .btn-3d { 
-            flex: 1; padding: 14px 0; border: none; border-radius: 16px; color: white; font-size: 1rem; font-weight: 800; cursor: pointer; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: all 0.1s; position: relative;
+            flex: 1; 
+            padding: 10px 0; /* 패딩 축소로 높이 줄임 */
+            border: none; border-radius: 16px; color: white; font-size: 1rem; font-weight: 800; cursor: pointer; 
+            display: flex; 
+            flex-direction: row; /* 가로 배치 (아이콘 좌, 텍스트 우) */
+            align-items: center; justify-content: center; 
+            gap: 8px; /* 아이콘과 텍스트 간격 */
+            transition: all 0.1s; position: relative;
         }
         .btn-pdf-3d { background: linear-gradient(to bottom, #2ecc71, #27ae60); box-shadow: 0 5px 0 #1e8449, 0 10px 20px rgba(46, 204, 113, 0.3); }
         .btn-pdf-3d:active { transform: translateY(5px); box-shadow: 0 0 0 #1e8449; }
@@ -248,7 +254,7 @@
             <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
             <div class="header-text-group">
                 <h2 class="header-title">청개구리 사전점검 AI앱(무료)</h2>
-                <span class="version-badge" id="versionBadge" onclick="window.checkDevMode()">v15.2 Policy Detail Update</span>
+                <span class="version-badge" id="versionBadge" onclick="window.checkDevMode()">v15.3 Horizontal Buttons</span>
             </div>
         </div>
         
@@ -372,13 +378,9 @@
 
         <div class="bottom-actions">
             <button class="btn-3d btn-pdf-3d" onclick="window.savePDF()">
-                <i class="fa-solid fa-file-pdf fa-lg"></i>
-                <span>PDF 저장</span>
-            </button>
+                <i class="fa-solid fa-file-pdf"></i> <span>전체 저장(PDF)</span> </button>
             <button class="btn-3d btn-reserve-3d" onclick="window.openPaidService()">
-                <i class="fa-solid fa-calendar-check fa-lg"></i>
-                <span>유료점검 예약</span>
-            </button>
+                <i class="fa-solid fa-calendar-check"></i> <span>유료점검 예약</span> </button>
         </div>
 
         <div class="footer-info">

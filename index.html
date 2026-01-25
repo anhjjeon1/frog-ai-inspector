@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 사전점검 AI앱(무료) (v16.2 Chatbot Content Upgrade)</title>
+    <title>청개구리 사전점검 AI앱(무료) (v16.3 Hybrid Input)</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- [v16.2 디자인 시스템] --- */
+        /* --- [v16.3 디자인 시스템] --- */
         :root {
             --primary-grad: linear-gradient(135deg, #00b09b, #96c93d);
             --header-grad: linear-gradient(135deg, #134E5E, #71B280);
@@ -251,7 +251,7 @@
             <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
             <div class="header-text-group">
                 <h2 class="header-title">청개구리 사전점검 AI앱(무료)</h2>
-                <span class="version-badge" id="versionBadge" onclick="window.checkDevMode()">v16.2 Chatbot Content Upgrade</span>
+                <span class="version-badge" id="versionBadge" onclick="window.checkDevMode()">v16.3 Hybrid Input</span>
             </div>
         </div>
         
@@ -318,24 +318,29 @@
                 </label>
             </div>
 
+            <div class="input-col" style="margin-bottom: 15px;">
+                <label class="input-label" style="color:#8e44ad;"><i class="fa-solid fa-keyboard"></i> C. 하자 내용 (직접 입력)</label>
+                <input type="text" id="userDefectInput" placeholder="예) 창호 우측 내부창짝 수직수평불량" style="background:#f8f9fa; border:1px solid #dcdde1;">
+            </div>
+
             <div class="input-row">
                 <div class="input-col triple-col">
-                    <label class="input-label">C. 공종</label>
+                    <label class="input-label">D. 공종</label>
                     <select id="workType"><option value="">자동입력</option></select>
                 </div>
                 <div class="input-col triple-col">
-                    <label class="input-label">D. 세부</label>
+                    <label class="input-label">E. 세부</label>
                     <select id="subWorkType"><option value="">자동입력</option></select>
                 </div>
                 <div class="input-col triple-col">
-                    <label class="input-label">E. 유형</label>
+                    <label class="input-label">F. 유형</label>
                     <input type="text" id="defectType" placeholder="자동입력">
                 </div>
             </div>
 
             <div class="input-col" style="margin-bottom: 10px;">
                 <div class="input-label" style="color:#00b09b;">
-                    <i class="fa-solid fa-robot"></i> F. AI 분석 리포트 (국토부 데이터 AI참조)
+                    <i class="fa-solid fa-robot"></i> G. AI 분석 리포트 (국토부 데이터 AI참조)
                 </div>
                 <textarea id="defectDetail" placeholder="멀리서 한 장, 가까이서 한 장 찍으시면 AI가 더 정확하게 분석합니다."></textarea>
                 
@@ -401,9 +406,9 @@
                 1. <b>전체 주소와 현장정보 위치</b>를 입력하세요.<br>
                 2. <b>[1. 멀리서 찍기]</b>: 방 전체나 창호 전체가 나오게 찍으세요. (위치 파악용)<br>
                 3. <b>[2. 가까이 찍기]</b>: 하자 부위를 십자선에 맞춰 찍으세요. (정밀 분석용)<br>
-                4. <b>공종, 세부, 유형, 분석리포트</b>는 AI가 자동으로 만들어줍니다.<br>
-                5. 분석 결과 확인 후 <b>동의 체크</b> -> <b>[리스트 저장]</b>을 누르세요.<br>
-                6. <b>F. AI 분석 리포트 (국토부 데이터 AI참조)</b> 내용의 오류 시 수동으로 내용을 변경하시고 저장하세요.<br>
+                4. <b>[C. 하자 내용]</b>: "창호 우측 수직불량" 처럼 직접 입력하면 AI가 더 정확하게 분석합니다.<br>
+                5. <b>공종, 세부, 유형, 분석리포트</b>는 AI가 자동으로 만들어줍니다.<br>
+                6. 분석 결과 확인 후 <b>동의 체크</b> -> <b>[리스트 저장]</b>을 누르세요.<br>
                 7. <b>PDF저장</b>을 누르면 폰의 내파일에서 확인하실 수 있습니다.<br>
                 8. 정밀한 진단을 원하시면 <b>유료</b>로 신청하세요.
             </div>
@@ -556,6 +561,8 @@
         async function runTargetedAnalysis() {
             const detailBox = document.getElementById('defectDetail');
             const photoBtn = document.getElementById('photoAreaBtn');
+            const userDefectInput = document.getElementById('userDefectInput').value; // [추가] 사용자 입력값
+
             detailBox.value = "AI가 정밀 분석 중입니다...";
             updateStatus("AI 듀얼 정밀 분석 중...");
             photoBtn.style.opacity = '0.7';
@@ -564,17 +571,21 @@
                 const genAI = new GoogleGenerativeAI(API_KEY);
                 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
                 
+                // [수정] 프롬프트에 사용자 입력(userDefectInput) 반영
                 const prompt = `
                     입주자 사전점검 AI입니다.
                     사진 1(Wide): 공종(Work Type) 파악.
                     사진 2(Close): 하자 유형(Type) 및 상세 내용(Detail) 파악.
                     
+                    **[사용자 추가 입력 정보]: "${userDefectInput}"**
+                    (이 정보가 있다면, 이를 최우선으로 반영하여 분석 결과를 생성하세요.)
+
                     [출력 형식 JSON]
                     {
                         "work": "공종명(예: 창호공사)",
                         "sub": "세부공종명(예: PL창호)",
-                        "type": "하자유형(예: 파손/찍힘/오염)",
-                        "detail": "1. 현상: [보이는 대로 기술]\\n2. 💡사례매칭: [국토부 하자 판정 기준 참고 설명]"
+                        "type": "하자유형(예: 파손/찍힘/오염/수직수평불량)",
+                        "detail": "1. 현상: [보이는 대로 기술 + 사용자 입력 내용 반영]\\n2. 💡사례매칭: [국토부 하자 판정 기준 참고 설명]"
                     }
                 `;
                 
@@ -667,11 +678,13 @@
             document.getElementById('listBox').insertAdjacentHTML('beforeend', itemHtml); 
             document.getElementById('listCount').innerText = `(${defectDataList.length})`;
             
+            // [수정] 입력값 초기화 시 사용자 입력창도 초기화
             document.getElementById('cameraInputWide').value = "";
             document.getElementById('cameraInputClose').value = "";
             currentWideFile = null; currentCloseFile = null;
             document.getElementById('previewImageWide').style.display = 'none';
             document.getElementById('previewImageClose').style.display = 'none';
+            document.getElementById('userDefectInput').value = ""; 
             document.getElementById('defectDetail').value = ""; 
             document.getElementById('inlineAgreeCheck').checked = false;
             window.toggleSaveButton();
